@@ -4,6 +4,7 @@ package Entities;
  *
  */
 public class Worker {
+    private int id;
     private String pesel;
     private String name;
     private String lastName;
