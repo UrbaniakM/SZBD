@@ -8,11 +8,13 @@ import javafx.scene.shape.Circle;
 public class EntityAvatar extends HBox{
     private final Circle circle = new Circle(50);
     public EntityAvatar(Image image){
+        super();
         circle.setFill(new ImagePattern(image));
         this.getChildren().addAll(circle);
     }
 
     public EntityAvatar(){
+        super();
         this.getChildren().addAll(circle);
     }
 }
