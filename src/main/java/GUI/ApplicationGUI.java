@@ -3,17 +3,15 @@ package GUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.swing.text.html.parser.Entity;
 
 public class ApplicationGUI extends Application {
     private BorderPane borderPane;
-    private final MenuButton settingsButton = new MenuButton("Settings");
+    private final Tile settingsButton = new Tile(300, 100, "Settings");
 
     public static void main(String[] args) {
         launch(args);
@@ -30,9 +28,10 @@ public class ApplicationGUI extends Application {
         settingsButton.setAlignment(Pos.CENTER_LEFT);
         topPane.getChildren().addAll(settingsButton, userAvatar);
         topPane.setHgrow(userAvatar, Priority.ALWAYS);
+        topPane.setStyle("-fx-background-color: f0f5fa;");
         //
-        borderPane.setLeft(new Menu());
         borderPane.setTop(topPane);
+        borderPane.setCenter(new MainContent());
 
         final Scene scene = new Scene(borderPane,750,500);
         primaryStage.setScene(scene);
