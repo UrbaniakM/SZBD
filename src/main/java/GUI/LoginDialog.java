@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.Optional;

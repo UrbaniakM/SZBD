@@ -2,9 +2,6 @@ package GUI;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
-
-import java.util.ArrayList;
 
 public class MainContent extends FlowPane {
 
@@ -14,6 +11,9 @@ public class MainContent extends FlowPane {
         this.setVgap(4);
         this.setHgap(4);
         this.setStyle("-fx-background-color: f0f5fa;");
+        Tile workers = new Tile(150, "Add worker");
+        workers.changeMainContent(new AddWorkerDialog());
+        this.getChildren().add(workers);
         this.getChildren().add(new Tile(150, "Workers"));
         this.getChildren().add(new Tile(150, "Teams"));
         this.getChildren().add(new Tile(150, "Projects"));

@@ -47,4 +47,10 @@ public class Tile extends StackPane {
 
         this.getChildren().addAll(borders, text);
     }
+
+    public final void changeMainContent(AbstractDialog content){ // TODO: pop dialog zamiast setCenter
+        this.setOnMousePressed((event) -> {
+            content.popDialog();
+        });
+    }
 }

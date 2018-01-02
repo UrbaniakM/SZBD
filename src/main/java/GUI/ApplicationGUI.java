@@ -15,6 +15,7 @@ public class ApplicationGUI extends Application {
     private BorderPane borderPane;
     private final Tile settingsButton = new Tile(300, 100, "Settings");
     private DatabaseConnection connection;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -30,7 +31,6 @@ public class ApplicationGUI extends Application {
         connection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
         WorkersDisplay workersDisplay = new WorkersDisplay(connection.getConnection());
         borderPane = new BorderPane();
-
         // TOP
         HBox topPane = new HBox();
         EntityAvatar userAvatar = new EntityAvatar();
