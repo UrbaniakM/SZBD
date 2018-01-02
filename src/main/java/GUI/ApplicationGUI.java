@@ -2,14 +2,12 @@ package GUI;
 
 import Database.DatabaseConnection;
 import Features.WorkersDisplay;
+import GUI.Overviews.MainContent;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import javax.swing.text.html.parser.Entity;
 
 public class ApplicationGUI extends Application {
     private BorderPane borderPane;

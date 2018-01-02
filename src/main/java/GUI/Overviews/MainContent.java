@@ -1,5 +1,6 @@
-package GUI;
+package GUI.Overviews;
 
+import GUI.Tile;
 import GUI.Workers.AddWorkerDialog;
 import javafx.geometry.Insets;
 import javafx.scene.layout.FlowPane;
