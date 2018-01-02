@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public class TimeSpent {
     private Date beginDate;
-    private Date endDate;
+    private Date endDate = null;
 
     public Date getBeginDate() {
         return beginDate;

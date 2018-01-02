@@ -9,8 +9,8 @@ public class Project {
     private int id;
     private String name;
     private Date beginDate;
-    private Date plannedEndDate;
-    private Date endDate;
+    private Date plannedEndDate = null;
+    private Date endDate = null;
     private String projectDescription;
 
     public String getName() {

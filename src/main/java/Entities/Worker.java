@@ -1,23 +1,26 @@
 package Entities;
 
+
+import java.sql.Date;
+
 /**
  *
  */
 public class Worker {
     private int id;
-    private String pesel;
+    private int pesel;
     private String name;
     private String lastName;
-    private String hireDate;
-    private String fireDate;
-    private Integer hoursPerWeek;
-    private Integer wage;
+    private Date hireDate;
+    private Date fireDate = null;
+    private Integer hoursPerWeek = null;
+    private Float wage = null;
 
-    public String getPesel() {
+    public int getPesel() {
         return pesel;
     }
 
-    public void setPesel(String pesel) {
+    public void setPesel(int pesel) {
         this.pesel = pesel;
     }
 
@@ -37,19 +40,19 @@ public class Worker {
         this.lastName = lastName;
     }
 
-    public String getHireDate() {
+    public Date getHireDate() {
         return hireDate;
     }
 
-    public void setHireDate(String hireDate) {
+    public void setHireDate(Date hireDate) {
         this.hireDate = hireDate;
     }
 
-    public String getFireDate() {
+    public Date getFireDate() {
         return fireDate;
     }
 
-    public void setFireDate(String fireDate) {
+    public void setFireDate(Date fireDate) {
         this.fireDate = fireDate;
     }
 
@@ -61,11 +64,15 @@ public class Worker {
         this.hoursPerWeek = hoursPerWeek;
     }
 
-    public Integer getWage() {
+    public Float getWage() {
         return wage;
     }
 
-    public void setWage(Integer wage) {
+    public void setWage(Float wage) {
         this.wage = wage;
     }
+
+    public int getId() { return this.id; }
+
+    public void setId(int id) { this.id = id; }
 }
