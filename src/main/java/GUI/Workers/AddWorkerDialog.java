@@ -1,5 +1,6 @@
-package GUI;
+package GUI.Workers;
 
+import GUI.AbstractDialog;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
-public class AddWorkerDialog extends AbstractDialog{
+public class AddWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
 
     public AddWorkerDialog(){
