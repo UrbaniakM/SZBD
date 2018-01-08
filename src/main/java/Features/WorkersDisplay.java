@@ -40,7 +40,7 @@ public class WorkersDisplay {
         try {
             connection.createStatement().executeUpdate("INSERT INTO workers VALUES(" + worker.getName() + "," +
             worker.getLastName() + "," + worker.getPesel() + "," + worker.getHireDate() + "," + worker.getFireDate() + "," + worker.getHoursPerWeek() +
-                    "," + worker.getWage() + ")");
+                    "," + worker.getWage() + ")"); // TODO: "niewystarczajaca liczba wartosci"
         } catch (SQLException ex){
             System.out.println("Statement execution failed! Check output console");
             ex.printStackTrace();
