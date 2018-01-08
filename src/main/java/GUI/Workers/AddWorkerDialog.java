@@ -61,7 +61,6 @@ public class AddWorkerDialog extends AbstractDialog {
             return null;
         });
     }
-
     public void popDialog(){
         Optional<Result> result = this.showAndWait();
 
