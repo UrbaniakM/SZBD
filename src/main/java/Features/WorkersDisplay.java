@@ -9,18 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkersDisplay {
-    //private TableView<Worker> tableView = new TableView<>(); TODO: wrzucic to w klase w GUI, tutaj tylko backend
     private Connection connection;
-    public WorkersDisplay(Connection connection){
-        this.connection = connection;
-    }
 
-    public List<Worker> importWorkers(){
+    public static List<Worker> importWorkers(Connection connection){
         List <Worker> data = new ArrayList<>();
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM workers");
             while(rs.next()) {
-                //System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
                 Worker worker = new Worker();
                 worker.setId(rs.getInt(1));
                 worker.setName(rs.getString(2));
@@ -40,7 +35,7 @@ public class WorkersDisplay {
         }
     }
 
-    public void addWorker(Worker worker){
+    public static void addWorker(Worker worker, Connection connection){
         try {
             connection.createStatement().executeUpdate("INSERT INTO workers VALUES(" + worker.getId() + "," + worker.getName() + "," +
             worker.getLastName() + "," + worker.getPesel() + "," + worker.getHireDate() + "," + worker.getFireDate() + "," + worker.getHoursPerWeek() +
