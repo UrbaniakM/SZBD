@@ -64,12 +64,12 @@ public class Workers extends AnchorPane{
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddWorkerDialog().popDialog();
+            new AddWorkerDialog().popDialog(connection);
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
-                new EditWorkerDialog(selectedWorker).popDialog();
+                new EditWorkerDialog(selectedWorker).popDialog(connection);
             }
         });
 

@@ -15,6 +15,7 @@ public class Worker{
     private Date fireDate = null;
     private Integer hoursPerWeek = null;
     private Float wage = null;
+    private Integer idEtatu;
 
     public int getPesel() {
         return pesel;
@@ -75,4 +76,8 @@ public class Worker{
     public int getId() { return this.id; }
 
     public void setId(int id) { this.id = id; }
+
+    public void setIdEtatu(int id) { this.idEtatu = id; }
+
+    public int getIdEtatu() { return this.idEtatu; }
 }

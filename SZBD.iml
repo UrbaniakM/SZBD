@@ -12,5 +12,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="ojdbc7" level="project" />
+    <orderEntry type="library" name="org.mockito:mockito-core:2.7.22" level="application" />
   </component>
 </module>

@@ -24,7 +24,8 @@ public class WorkersDisplay {
                 worker.setHireDate(rs.getDate(5));
                 worker.setFireDate(rs.getDate(6));
                 worker.setHoursPerWeek(rs.getInt(7));
-                worker.setWage(rs.getFloat(8));// TODO: check if not null
+                worker.setWage(rs.getFloat(8));
+                worker.setIdEtatu(rs.getInt(9));
                 data.add(worker);
             }
             return data;
@@ -37,7 +38,7 @@ public class WorkersDisplay {
 
     public static void addWorker(Worker worker, Connection connection){
         try {
-            connection.createStatement().executeUpdate("INSERT INTO workers VALUES(" + worker.getId() + "," + worker.getName() + "," +
+            connection.createStatement().executeUpdate("INSERT INTO workers VALUES(" + worker.getName() + "," +
             worker.getLastName() + "," + worker.getPesel() + "," + worker.getHireDate() + "," + worker.getFireDate() + "," + worker.getHoursPerWeek() +
                     "," + worker.getWage() + ")");
         } catch (SQLException ex){
@@ -45,5 +46,9 @@ public class WorkersDisplay {
             ex.printStackTrace();
             return;
         }
+    }
+
+    public static void editWorker(Worker previousWorker, Worker newWorker, Connection connection){
+        // TODO
     }
 }

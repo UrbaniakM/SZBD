@@ -7,6 +7,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+import java.sql.Connection;
+
 public class Tile extends StackPane {
     public Tile(int size){
         super();
@@ -48,9 +50,9 @@ public class Tile extends StackPane {
         this.getChildren().addAll(borders, text);
     }
 
-    public final void changeMainContent(AbstractDialog content){ // TODO: pop dialog zamiast setCenter
+    public final void changeMainContent(AbstractDialog content, Connection connection){ // TODO: pop dialog zamiast setCenter
         this.setOnMousePressed((event) -> {
-            content.popDialog();
+            content.popDialog(connection);
         });
     }
 }

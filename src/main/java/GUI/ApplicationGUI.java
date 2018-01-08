@@ -38,7 +38,7 @@ public class ApplicationGUI extends Application {
         topPane.setStyle("-fx-background-color: f0f5fa;");
         //
         borderPane.setTop(topPane);
-        borderPane.setCenter(new MainContent());
+        borderPane.setCenter(new MainContent(connection.getConnection()));
 
         final Scene scene = new Scene(borderPane,750,500);
         primaryStage.setScene(scene);

@@ -1,11 +1,14 @@
 package GUI.Workers;
 
+import Entities.Worker;
+import Features.WorkersDisplay;
 import GUI.AbstractDialog;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -61,11 +64,18 @@ public class AddWorkerDialog extends AbstractDialog {
             return null;
         });
     }
-    public void popDialog(){
+    public void popDialog(Connection connection){
         Optional<Result> result = this.showAndWait();
 
         if (result.isPresent()) {
-            // TODO: insert new worker
+            Worker worker = new Worker();
+            worker.setName(result.get().getName());
+            worker.setLastName(result.get().getLastName());
+            worker.setPesel(result.get().getPesel());
+            worker.setHireDate(result.get().getHireDate());
+            worker.setHoursPerWeek(result.get().getHoursPerWeek());
+            worker.setWage(result.get().getWage());
+            WorkersDisplay.addWorker(worker, connection);
         }
 
     }
@@ -74,7 +84,7 @@ public class AddWorkerDialog extends AbstractDialog {
     private class Result {
         String name;
         String lastName;
-        int pesel;
+        Integer pesel;
         Date hireDate;
         Integer hoursPerWeek;
         Float wage;
@@ -96,7 +106,7 @@ public class AddWorkerDialog extends AbstractDialog {
             return lastName;
         }
 
-        public int getPesel() {
+        public Integer getPesel() {
             return pesel;
         }
 
@@ -104,11 +114,11 @@ public class AddWorkerDialog extends AbstractDialog {
             return hireDate;
         }
 
-        public int getHoursPerWeek() {
+        public Integer getHoursPerWeek() {
             return hoursPerWeek;
         }
 
-        public float getWage() {
+        public Float getWage() {
             return wage;
         }
     }

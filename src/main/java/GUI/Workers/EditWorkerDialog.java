@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -66,11 +67,12 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
             return null;
         });
     }
-    public void popDialog(){
+    public void popDialog(Connection connection){
         Optional<Result> result = this.showAndWait();
 
         if (result.isPresent()) {
            // WorkersDisplay.editWorker(previousWorker, )
+            // TODO
         }
 
     }
