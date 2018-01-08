@@ -27,7 +27,6 @@ public class ApplicationGUI extends Application {
     public void start(Stage primaryStage) {
         LoginDialog loginDialog = new LoginDialog();
         connection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
-        WorkersDisplay workersDisplay = new WorkersDisplay(connection.getConnection());
         borderPane = new BorderPane();
         // TOP
         HBox topPane = new HBox();

@@ -6,9 +6,9 @@ import java.sql.Date;
 /**
  *
  */
-public class Worker {
+public class Worker{
     private int id;
-    private int pesel;
+    private Integer pesel;
     private String name;
     private String lastName;
     private Date hireDate;
