@@ -1,10 +1,9 @@
 package GUI.Overviews;
 
 import Entities.Worker;
-import Features.WorkersDisplay;
-import GUI.Workers.AddWorkerDialog;
-import GUI.Workers.EditWorkerDialog;
-import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
+import Database.WorkersModification;
+import GUI.Dialogs.Workers.AddWorkerDialog;
+import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -50,7 +49,7 @@ public class Workers extends AnchorPane{
         peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,Integer>("pesel"));
         workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn);
 
-        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersDisplay().importWorkers(connection));
+        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
         workersTable.setItems(observableList);
 
         workersTable.setOnMouseClicked((MouseEvent event) -> {

@@ -1,7 +1,7 @@
 package GUI;
 
 import Database.DatabaseConnection;
-import Features.WorkersDisplay;
+import GUI.Dialogs.LoginDialog;
 import GUI.Overviews.MainContent;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -28,19 +28,8 @@ public class ApplicationGUI extends Application {
         LoginDialog loginDialog = new LoginDialog();
         connection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
         borderPane = new BorderPane();
-        // TOP
-        HBox topPane = new HBox();
-        EntityAvatar userAvatar = new EntityAvatar();
-        userAvatar.setAlignment(Pos.CENTER_RIGHT);
-        settingsButton.setAlignment(Pos.CENTER_LEFT);
-        topPane.getChildren().addAll(settingsButton, userAvatar);
-        topPane.setHgrow(userAvatar, Priority.ALWAYS);
-        topPane.setStyle("-fx-background-color: f0f5fa;");
-        //
-        borderPane.setTop(topPane);
-        borderPane.setCenter(new MainContent(connection.getConnection()));
 
-        final Scene scene = new Scene(borderPane,750,500);
+        final Scene scene = new Scene(new MainContent(connection.getConnection()),750,500);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

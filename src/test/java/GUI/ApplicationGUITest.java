@@ -1,6 +1,7 @@
 package GUI;
 
 import Database.DatabaseConnection;
+import GUI.Dialogs.LoginDialog;
 import GUI.Overviews.Workers;
 import javafx.application.Application;
 import javafx.scene.Scene;

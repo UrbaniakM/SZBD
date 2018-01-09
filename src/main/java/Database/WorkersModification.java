@@ -1,4 +1,4 @@
-package Features;
+package Database;
 
 import Entities.Worker;
 
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkersDisplay {
+public class WorkersModification {
     private Connection connection;
 
     public static List<Worker> importWorkers(Connection connection){

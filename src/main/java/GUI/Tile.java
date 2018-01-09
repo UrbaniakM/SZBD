@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.Dialogs.AbstractDialog;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;

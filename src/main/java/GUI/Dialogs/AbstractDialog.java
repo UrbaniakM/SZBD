@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Dialogs;
 
 import javafx.scene.control.Dialog;
 

@@ -1,8 +1,8 @@
-package GUI.Workers;
+package GUI.Dialogs.Workers;
 
 import Entities.Worker;
-import Features.WorkersDisplay;
-import GUI.AbstractDialog;
+import Database.WorkersModification;
+import GUI.Dialogs.AbstractDialog;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -14,14 +14,11 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
-public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
+public class AddWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
-    Worker previousWorker = new Worker();
 
-    public EditWorkerDialog(Worker worker){
+    public AddWorkerDialog(){
         super();
-        previousWorker = worker; // used to edit in database
-
         this.setTitle("New worker");
         confirmButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         this.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
@@ -71,8 +68,14 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
         Optional<Result> result = this.showAndWait();
 
         if (result.isPresent()) {
-           // WorkersDisplay.editWorker(previousWorker, )
-            // TODO
+            Worker worker = new Worker();
+            worker.setName(result.get().getName());
+            worker.setLastName(result.get().getLastName());
+            worker.setPesel(result.get().getPesel());
+            worker.setHireDate(result.get().getHireDate());
+            worker.setHoursPerWeek(result.get().getHoursPerWeek());
+            worker.setWage(result.get().getWage());
+            WorkersModification.addWorker(worker, connection);
         }
 
     }
@@ -81,7 +84,7 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
     private class Result {
         String name;
         String lastName;
-        int pesel;
+        Integer pesel;
         Date hireDate;
         Integer hoursPerWeek;
         Float wage;
@@ -103,7 +106,7 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
             return lastName;
         }
 
-        public int getPesel() {
+        public Integer getPesel() {
             return pesel;
         }
 
@@ -111,11 +114,11 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
             return hireDate;
         }
 
-        public int getHoursPerWeek() {
+        public Integer getHoursPerWeek() {
             return hoursPerWeek;
         }
 
-        public float getWage() {
+        public Float getWage() {
             return wage;
         }
     }
