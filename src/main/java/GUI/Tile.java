@@ -10,8 +10,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-
 public class Tile extends StackPane {
     public int size;
 

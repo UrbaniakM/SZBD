@@ -1,7 +1,7 @@
 package GUI.Overviews;
 
-import Entities.Worker;
 import Database.WorkersModification;
+import Entities.Worker;
 import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.collections.FXCollections;

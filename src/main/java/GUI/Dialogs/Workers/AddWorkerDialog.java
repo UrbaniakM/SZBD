@@ -1,17 +1,14 @@
 package GUI.Dialogs.Workers;
 
-import Entities.Worker;
 import Database.WorkersModification;
+import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-import javax.xml.soap.Text;
 import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
