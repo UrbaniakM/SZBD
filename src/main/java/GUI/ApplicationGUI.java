@@ -11,8 +11,11 @@ import javafx.stage.Stage;
 
 public class ApplicationGUI extends Application {
     private DatabaseConnection connection;
-    private Stage mainStage;
-    private Scene mainScene;
+
+    private static Stage mainStage;
+    private static Scene mainScene;
+
+    private static Tile workersTile = new Tile(150);
 
     public static void main(String[] args) {
         launch(args);
@@ -29,9 +32,8 @@ public class ApplicationGUI extends Application {
         flowPane.setVgap(4);
         flowPane.setHgap(4);
 
-        Tile workersTile = new Tile(150);
         workersTile.setText("Workers");
-        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene, connection.getConnection())), mainStage);
+
 
         flowPane.getChildren().addAll(workersTile);
 
@@ -44,6 +46,8 @@ public class ApplicationGUI extends Application {
         LoginDialog loginDialog = new LoginDialog();
         connection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
         mainScene = mainGUI();
+        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene, connection.getConnection())), mainStage);
+
 
         mainStage.setScene(mainScene);
         mainStage.show();

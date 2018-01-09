@@ -36,10 +36,12 @@ public class Workers extends AnchorPane{
     private static Label hoursPerWeek = new Label();
     private static Label wage = new Label();
 
+    private static ButtonBar buttons = new ButtonBar();
     private static Button addWorkerButton = new Button("Add");;
     private static Button editWorkerButton = new Button("Edit");
+    private static Button backButton = new Button("\u2ba8");
 
-    private static ButtonBar buttons = new ButtonBar();
+
     private static HBox display = new HBox();
     private static VBox moreData = new VBox();
 
@@ -77,10 +79,16 @@ public class Workers extends AnchorPane{
 
         buttons.getButtons().addAll(addWorkerButton, editWorkerButton);
 
-        this.getChildren().addAll(display,buttons);
+        backButton.setOnMouseClicked((MouseEvent event) -> {
+            mainStage.setScene(mainScene);
+        });
+
+        this.getChildren().addAll(display,buttons, backButton);
         this.setTopAnchor(display,2.0);
         this.setLeftAnchor(display,2.0);
         this.setRightAnchor(buttons,2.0);
         this.setBottomAnchor(buttons,4.0);
+        this.setTopAnchor(backButton, 2.0);
+        this.setLeftAnchor(backButton, 2.0);
     }
 }
