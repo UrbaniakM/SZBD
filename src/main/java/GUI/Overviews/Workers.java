@@ -47,11 +47,12 @@ public class Workers extends AnchorPane{
         super();
         this.mainStage = mainStage; // TODO: button do powrotu do glownej sceny
         this.mainScene = mainScene;
+
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
         peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,Integer>("pesel"));
         workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn);
-
+        workersTable.setEditable(false);
         ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
         workersTable.setItems(observableList);
 
@@ -62,7 +63,6 @@ public class Workers extends AnchorPane{
         });
 
         moreData.getChildren().addAll(name, lastName, pesel, hireData, fireData, hoursPerWeek, wage);
-
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
@@ -74,7 +74,7 @@ public class Workers extends AnchorPane{
                 new EditWorkerDialog(selectedWorker).popDialog(connection);
             }
         });
-        
+
         buttons.getButtons().addAll(addWorkerButton, editWorkerButton);
 
         this.getChildren().addAll(display,buttons);
