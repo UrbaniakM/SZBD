@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import javax.xml.soap.Text;
 import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -37,16 +38,16 @@ public class AddWorkerDialog extends AbstractDialog {
         lastNameTF.setPromptText("Last name");
         TextField peselTF = new TextField();
         peselTF.setPromptText("Pesel");
-        DatePicker hireDateDP = new DatePicker(); // TODO: Date input
+        DatePicker hireDateDP = new DatePicker();
         hireDateDP.setPromptText("Hire date");
         TextField hoursPerWeekTF = new TextField();
         hoursPerWeekTF.setPromptText("Working hours per week");
         TextField wageTF = new TextField();
         wageTF.setPromptText("Wage per hour");
 
-        TextFieldRestrictions.addIntegerRestriction(peselTF);
         TextFieldRestrictions.addIntegerRestriction(hoursPerWeekTF);
         TextFieldRestrictions.addIntegerRestriction(wageTF);
+        TextFieldRestrictions.addIntegerRestriction(peselTF);
 
         TextFieldRestrictions.addTextLimiter(nameTF,32);
         TextFieldRestrictions.addTextLimiter(lastNameTF,32);
@@ -96,7 +97,7 @@ public class AddWorkerDialog extends AbstractDialog {
     private class Result {
         String name;
         String lastName;
-        Integer pesel;
+        String pesel;
         Date hireDate;
         Integer hoursPerWeek;
         Integer wage;
@@ -104,7 +105,7 @@ public class AddWorkerDialog extends AbstractDialog {
         public Result(String name, String lastName, String pesel, LocalDate hireDate, String hoursPerWeek, String wage){
             this.name = name;
             this.lastName = lastName;
-            this.pesel = Integer.valueOf(pesel);
+            this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
             this.hoursPerWeek = Integer.valueOf(hoursPerWeek);
             this.wage = Integer.valueOf(wage);
@@ -118,7 +119,7 @@ public class AddWorkerDialog extends AbstractDialog {
             return lastName;
         }
 
-        public Integer getPesel() {
+        public String getPesel() {
             return pesel;
         }
 

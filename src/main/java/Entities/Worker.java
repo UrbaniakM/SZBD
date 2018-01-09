@@ -8,20 +8,20 @@ import java.sql.Date;
  */
 public class Worker{
     private int id;
-    private Integer pesel;
+    private String pesel;
     private String name;
     private String lastName;
     private Date hireDate;
     private Date fireDate = null;
     private Integer hoursPerWeek = null;
     private Integer wage = null;
-    private Integer idEtatu;
+    private Integer idEtatu = 0;//null; TODO: foreign key, 0 for tests
 
-    public int getPesel() {
+    public String getPesel() {
         return pesel;
     }
 
-    public void setPesel(int pesel) {
+    public void setPesel(String pesel) {
         this.pesel = pesel;
     }
 
