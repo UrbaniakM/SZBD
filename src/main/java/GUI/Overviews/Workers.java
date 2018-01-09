@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 public class Workers extends AnchorPane{
     private Stage mainStage;
@@ -28,13 +30,13 @@ public class Workers extends AnchorPane{
 
     private Worker selectedWorker = null;
 
-    private static Label name = new Label();
-    private static Label lastName = new Label();
-    private static Label pesel = new Label();
-    private static Label hireData = new Label();
-    private static Label fireData = new Label();
-    private static Label hoursPerWeek = new Label();
-    private static Label wage = new Label();
+    private static Label nameLabel = new Label();
+    private static Label lastNameLabel = new Label();
+    private static Label peselLabel = new Label();
+    private static Label hireDataLabel = new Label();
+    private static Label fireDataLabel = new Label();
+    private static Label hoursPerWeekLabel = new Label();
+    private static Label wageLabel = new Label();
 
     private static ButtonBar buttons = new ButtonBar();
     private static Button addWorkerButton = new Button("Add");;
@@ -59,12 +61,13 @@ public class Workers extends AnchorPane{
         workersTable.setItems(observableList);
 
         workersTable.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() > 1) {
+            if (event.getClickCount() >= 1) {
                 selectedWorker = workersTable.getSelectionModel().getSelectedItem();
+                showWorkerDetail();
             }
         });
 
-        moreData.getChildren().addAll(name, lastName, pesel, hireData, fireData, hoursPerWeek, wage);
+        moreData.getChildren().addAll(nameLabel, lastNameLabel, peselLabel, hireDataLabel, fireDataLabel, hoursPerWeekLabel, wageLabel);
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
@@ -92,5 +95,40 @@ public class Workers extends AnchorPane{
         this.setLeftAnchor(backButton, 2.0);
     }
 
-    //public static void
+    private void showWorkerDetail(){
+        if(selectedWorker != null){
+            nameLabel.setText(selectedWorker.getName());
+            lastNameLabel.setText(selectedWorker.getLastName());
+            peselLabel.setText(selectedWorker.getPesel());
+            Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+            if(selectedWorker.getHireDate() != null) {
+                hireDataLabel.setText(formatter.format(selectedWorker.getHireDate()));
+            } else {
+                hireDataLabel.setText("");
+            }
+            if(selectedWorker.getFireDate() != null) {
+                fireDataLabel.setText(formatter.format(selectedWorker.getFireDate()));
+            } else {
+                fireDataLabel.setText("");
+            }
+            if(selectedWorker.getHoursPerWeek() != null) {
+                hoursPerWeekLabel.setText(String.valueOf(selectedWorker.getHoursPerWeek()));
+            } else {
+                hoursPerWeekLabel.setText("");
+            }
+            if(selectedWorker.getWage() != null) {
+                wageLabel.setText(String.valueOf(selectedWorker.getWage()));
+            } else {
+                wageLabel.setText("");
+            }
+        } else {
+            nameLabel.setText("");
+            lastNameLabel.setText("");
+            peselLabel.setText("");
+            hireDataLabel.setText("");
+            fireDataLabel.setText("");
+            hoursPerWeekLabel.setText("");
+            wageLabel.setText("");
+        }
+    }
 }
