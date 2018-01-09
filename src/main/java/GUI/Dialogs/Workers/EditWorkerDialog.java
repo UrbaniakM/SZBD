@@ -66,14 +66,14 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
             return null;
         });
     }
-    public void popDialog(Connection connection){
+    public Worker popDialog(Connection connection){
         Optional<Result> result = this.showAndWait();
 
         if (result.isPresent()) {
            // WorkersModification.editWorker(previousWorker, )
             // TODO
         }
-
+        return null;
     }
 
 

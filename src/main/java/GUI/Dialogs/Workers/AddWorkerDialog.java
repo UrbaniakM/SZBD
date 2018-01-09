@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
+//public class AddWorkerDialog extends Dialog implements AbstractDialog {
 public class AddWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
 
@@ -77,9 +78,8 @@ public class AddWorkerDialog extends AbstractDialog {
             return null;
         });
     }
-    public void popDialog(Connection connection){
+    public Worker popDialog(Connection connection){
         Optional<Result> result = this.showAndWait();
-
         if (result.isPresent()) {
             Worker worker = new Worker();
             worker.setName(result.get().getName());
@@ -89,8 +89,9 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setHoursPerWeek(result.get().getHoursPerWeek());
             worker.setWage(result.get().getWage());
             WorkersModification.addWorker(worker, connection);
+            return worker;
         }
-
+        return null;
     }
 
 

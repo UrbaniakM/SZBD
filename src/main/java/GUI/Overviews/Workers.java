@@ -68,7 +68,7 @@ public class Workers extends AnchorPane{
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddWorkerDialog().popDialog(connection);
+            observableList.add(new AddWorkerDialog().popDialog(connection));
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
@@ -91,4 +91,6 @@ public class Workers extends AnchorPane{
         this.setTopAnchor(backButton, 2.0);
         this.setLeftAnchor(backButton, 2.0);
     }
+
+    //public static void
 }
