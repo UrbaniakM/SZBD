@@ -40,7 +40,8 @@ public class WorkersDisplay {
         try {
             connection.createStatement().executeUpdate("INSERT INTO workers VALUES(" + worker.getName() + "," +
             worker.getLastName() + "," + worker.getPesel() + "," + worker.getHireDate() + "," + worker.getFireDate() + "," + worker.getHoursPerWeek() +
-                    "," + worker.getWage() + ")"); // TODO: "niewystarczajaca liczba wartosci"
+                    "," + worker.getWage() + ")"); // TODO: "niewystarczajaca liczba wartosci", INNY FORMAT (potrzebne znaki ' ' w stringach)
+            // TODO: jesli juz istnieje, na nowo hire zamiast dodawanie - sprawdzanie czy juz jest w tabeli
         } catch (SQLException ex){
             System.out.println("Statement execution failed! Check output console");
             ex.printStackTrace();

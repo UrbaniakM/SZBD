@@ -22,9 +22,9 @@ import java.sql.Connection;
 
 public class Workers extends AnchorPane{
     private TableView<Worker> workersTable = new TableView<>();
-    private TableColumn firstNameColumn = new TableColumn("First name");
-    private TableColumn lastNameColumn = new TableColumn("Last name");
-    private TableColumn peselColumn = new TableColumn("Pesel");
+    private TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
+    private TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
+    private TableColumn<Worker, Integer> peselColumn = new TableColumn<>("Pesel");
 
     private Worker selectedWorker = null;
 
@@ -45,9 +45,9 @@ public class Workers extends AnchorPane{
 
     public Workers(Stage mainStage, Connection connection){
         super();
-        firstNameColumn.setCellFactory(new PropertyValueFactory<Worker,String>("name"));
-        lastNameColumn.setCellFactory(new PropertyValueFactory<Worker,String>("lastName"));
-        peselColumn.setCellFactory(new PropertyValueFactory<Worker,Integer>("pesel"));
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
+        peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,Integer>("pesel"));
         workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn);
 
         ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersDisplay().importWorkers(connection));

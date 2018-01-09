@@ -30,7 +30,7 @@ public class Worker{
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toUpperCase();
     }
 
     public String getLastName() {
@@ -38,7 +38,7 @@ public class Worker{
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.toUpperCase();
     }
 
     public Date getHireDate() {
