@@ -1,6 +1,7 @@
 package GUI;
 
 import javafx.scene.Scene;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -23,6 +24,12 @@ public class Tile extends StackPane {
         borders.setArcHeight(10);
         borders.setArcWidth(10);
         borders.setStroke(Color.BLACK);
+
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setOffsetX(2);
+        dropShadow.setOffsetY(2);
+
+        borders.setEffect(dropShadow);
 
         this.getChildren().addAll(borders);
     }
