@@ -3,7 +3,10 @@ package GUI.Dialogs.Workers;
 import Entities.Worker;
 import Database.WorkersModification;
 import GUI.Dialogs.AbstractDialog;
+import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -41,6 +44,15 @@ public class AddWorkerDialog extends AbstractDialog {
         TextField wageTF = new TextField();
         wageTF.setPromptText("Wage per hour");
 
+        TextFieldRestrictions.addIntegerRestriction(peselTF);
+        TextFieldRestrictions.addIntegerRestriction(hoursPerWeekTF);
+        TextFieldRestrictions.addIntegerRestriction(wageTF);
+
+        TextFieldRestrictions.addTextLimiter(nameTF,32);
+        TextFieldRestrictions.addTextLimiter(lastNameTF,32);
+        TextFieldRestrictions.addTextLimiter(peselTF,11);
+        TextFieldRestrictions.addTextLimiter(hoursPerWeekTF,2);
+        TextFieldRestrictions.addTextLimiter(wageTF,6);
 
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
@@ -87,7 +99,7 @@ public class AddWorkerDialog extends AbstractDialog {
         Integer pesel;
         Date hireDate;
         Integer hoursPerWeek;
-        Float wage;
+        Integer wage;
 
         public Result(String name, String lastName, String pesel, LocalDate hireDate, String hoursPerWeek, String wage){
             this.name = name;
@@ -95,7 +107,7 @@ public class AddWorkerDialog extends AbstractDialog {
             this.pesel = Integer.valueOf(pesel);
             this.hireDate = Date.valueOf(hireDate);
             this.hoursPerWeek = Integer.valueOf(hoursPerWeek);
-            this.wage = Float.valueOf(wage);
+            this.wage = Integer.valueOf(wage);
         }
 
         public String getName() {
@@ -118,7 +130,7 @@ public class AddWorkerDialog extends AbstractDialog {
             return hoursPerWeek;
         }
 
-        public Float getWage() {
+        public Integer getWage() {
             return wage;
         }
     }

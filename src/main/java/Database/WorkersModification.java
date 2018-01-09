@@ -24,7 +24,7 @@ public class WorkersModification {
                 worker.setHireDate(rs.getDate(5));
                 worker.setFireDate(rs.getDate(6));
                 worker.setHoursPerWeek(rs.getInt(7));
-                worker.setWage(rs.getFloat(8));
+                worker.setWage(rs.getInt(8));
                 worker.setIdEtatu(rs.getInt(9));
                 data.add(worker);
             }

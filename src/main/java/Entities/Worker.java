@@ -14,7 +14,7 @@ public class Worker{
     private Date hireDate;
     private Date fireDate = null;
     private Integer hoursPerWeek = null;
-    private Float wage = null;
+    private Integer wage = null;
     private Integer idEtatu;
 
     public int getPesel() {
@@ -65,11 +65,11 @@ public class Worker{
         this.hoursPerWeek = hoursPerWeek;
     }
 
-    public Float getWage() {
+    public Integer getWage() {
         return wage;
     }
 
-    public void setWage(Float wage) {
+    public void setWage(Integer wage) {
         this.wage = wage;
     }
 

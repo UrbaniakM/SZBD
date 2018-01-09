@@ -83,7 +83,7 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
         int pesel;
         Date hireDate;
         Integer hoursPerWeek;
-        Float wage;
+        Integer wage;
 
         public Result(String name, String lastName, String pesel, LocalDate hireDate, String hoursPerWeek, String wage){
             this.name = name;
@@ -91,7 +91,7 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
             this.pesel = Integer.valueOf(pesel);
             this.hireDate = Date.valueOf(hireDate);
             this.hoursPerWeek = Integer.valueOf(hoursPerWeek);
-            this.wage = Float.valueOf(wage);
+            this.wage = Integer.valueOf(wage);
         }
 
         public String getName() {
@@ -114,7 +114,7 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
             return hoursPerWeek;
         }
 
-        public float getWage() {
+        public Integer getWage() {
             return wage;
         }
     }
