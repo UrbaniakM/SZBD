@@ -7,10 +7,7 @@ import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -42,7 +39,7 @@ public class Workers extends AnchorPane{
     private static Button addWorkerButton = new Button("Add");;
     private static Button editWorkerButton = new Button("Edit");
 
-    private static HBox buttons = new HBox();
+    private static ButtonBar buttons = new ButtonBar();
     private static HBox display = new HBox();
     private static VBox moreData = new VBox();
 
@@ -77,9 +74,8 @@ public class Workers extends AnchorPane{
                 new EditWorkerDialog(selectedWorker).popDialog(connection);
             }
         });
-
-        buttons.setSpacing(2);
-        buttons.getChildren().addAll(addWorkerButton, editWorkerButton);
+        
+        buttons.getButtons().addAll(addWorkerButton, editWorkerButton);
 
         this.getChildren().addAll(display,buttons);
         this.setTopAnchor(display,2.0);
