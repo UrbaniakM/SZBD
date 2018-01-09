@@ -6,6 +6,7 @@ import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -20,6 +21,9 @@ import javafx.stage.Stage;
 import java.sql.Connection;
 
 public class Workers extends AnchorPane{
+    private Stage mainStage;
+    private Scene mainScene;
+
     private TableView<Worker> workersTable = new TableView<>();
     private TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
     private TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
@@ -42,8 +46,10 @@ public class Workers extends AnchorPane{
     private static HBox display = new HBox();
     private static VBox moreData = new VBox();
 
-    public Workers(Stage mainStage, Connection connection){
+    public Workers(Stage mainStage, Scene mainScene, Connection connection){
         super();
+        this.mainStage = mainStage; // TODO: button do powrotu do glownej sceny
+        this.mainScene = mainScene;
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
         peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,Integer>("pesel"));

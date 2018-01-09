@@ -1,59 +1,45 @@
 package GUI;
 
-import GUI.Dialogs.AbstractDialog;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
 import java.sql.Connection;
 
 public class Tile extends StackPane {
+    public int size;
+
     public Tile(int size){
         super();
-        Rectangle borders = new Rectangle(size,size);
-        borders.setFill(Paint.valueOf("DAE6F3"));
-        borders.setArcHeight(25);
-        borders.setArcWidth(25);
+        this.size = size;
+
+        Rectangle borders = new Rectangle(size-1, size-1);
+        borders.setFill(Color.WHITE);
+        borders.setArcHeight(10);
+        borders.setArcWidth(10);
+        borders.setStroke(Color.BLACK);
 
         this.getChildren().addAll(borders);
     }
 
-    public Tile(int size, String content){
-        super();
-        Rectangle borders = new Rectangle(size,size);
-        borders.setFill(Paint.valueOf("DAE6F3"));
-        borders.setArcHeight(25);
-        borders.setArcWidth(25);
-
+    public void setText(String content){
         Text text = new Text(content);
         text.setFont(Font.font("Verdana",25));
         text.setWrappingWidth(size);
         text.setTextAlignment(TextAlignment.CENTER);
 
-        this.getChildren().addAll(borders, text);
+        this.getChildren().add(text);
     }
 
-    public Tile(int width, int height, String content){
-        super();
-        Rectangle borders = new Rectangle(width,height);
-        borders.setFill(Paint.valueOf("DAE6F3"));
-        borders.setArcHeight(25);
-        borders.setArcWidth(25);
 
-        Text text = new Text(content);
-        text.setFont(Font.font("Verdana",25));
-        text.setWrappingWidth(width);
-        text.setTextAlignment(TextAlignment.CENTER);
-
-        this.getChildren().addAll(borders, text);
-    }
-
-    public final void changeMainContent(AbstractDialog content, Connection connection){ // TODO: pop dialog zamiast setCenter
+    public final void changeMainContent(Scene content, Stage mainStage){
         this.setOnMousePressed((event) -> {
-            content.popDialog(connection);
+            mainStage.setScene(content);
         });
     }
 }
