@@ -13,13 +13,13 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
-public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
+public class EditWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
-    Worker previousWorker = new Worker();
+    Worker previousWorker;
 
     public EditWorkerDialog(Worker worker){
         super();
-        previousWorker = worker; // used to edit in database
+        previousWorker = new Worker(worker); // used to edit in database
 
         this.setTitle("New worker");
         confirmButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
@@ -31,13 +31,13 @@ public class EditWorkerDialog extends AbstractDialog { // TODO: WHOLE DIALOG
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField nameTF = new TextField();
-        nameTF.setPromptText("Name");
+        nameTF.setPromptText(previousWorker.getName());
         TextField lastNameTF = new TextField();
-        lastNameTF.setPromptText("Last name");
+        lastNameTF.setPromptText(previousWorker.getLastName());
         TextField peselTF = new TextField();
-        peselTF.setPromptText("Pesel");
+        peselTF.setPromptText(previousWorker.getPesel());
         DatePicker hireDateDP = new DatePicker(); // TODO: Date input
-        hireDateDP.setPromptText("Hire date");
+        hireDateDP.setPromptText(previousWorker.getHireDate().toString());
         TextField hoursPerWeekTF = new TextField();
         hoursPerWeekTF.setPromptText("Working hours per week");
         TextField wageTF = new TextField();

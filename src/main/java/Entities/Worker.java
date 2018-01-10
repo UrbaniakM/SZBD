@@ -17,6 +17,22 @@ public class Worker{
     private Integer wage = null;
     private Integer idEtatu = 0;//null; TODO: foreign key, 0 for tests
 
+    public Worker(Worker worker){
+        this.id = worker.getId();
+        this.pesel = worker.getPesel();
+        this.name = worker.getName();
+        this.lastName = worker.getLastName();
+        this.hireDate = worker.getHireDate();
+        this.fireDate = worker.getFireDate();
+        this.wage = worker.getWage();
+        this.idEtatu = worker.getIdEtatu();
+    }
+
+    public Worker(){
+
+    }
+
+
     public String getPesel() {
         return pesel;
     }

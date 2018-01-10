@@ -4,7 +4,8 @@ import Database.WorkersModification;
 import Entities.Worker;
 import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
-import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
@@ -56,8 +58,20 @@ public class Workers extends AnchorPane{
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
         peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("pesel"));
-        hireDateColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("hireDate"));
-        hireDateColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("fireDate"));
+        hireDateColumn.setCellValueFactory(value -> {
+            if(value.getValue().getHireDate() != null) {
+                return new ReadOnlyStringWrapper(value.getValue().getHireDate().toString());
+            } else {
+                return new ReadOnlyStringWrapper("");
+            }
+        });
+        fireDateColumn.setCellValueFactory(value -> {
+            if(value.getValue().getFireDate() != null) {
+                return new ReadOnlyStringWrapper(value.getValue().getFireDate().toString());
+            } else {
+                return new ReadOnlyStringWrapper("");
+            }
+        });
         hoursPerWeekColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("hoursPerWeek"));
         wageColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("wage"));
         workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, fireDateColumn, hoursPerWeekColumn, wageColumn);
@@ -87,7 +101,7 @@ public class Workers extends AnchorPane{
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            observableList.add(new AddWorkerDialog().popDialog(connection));
+            observableList.add(new AddWorkerDialog().popDialog(connection)); // zamiast tego - ponowny import? bo bedzie problem z id do editWorker
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
