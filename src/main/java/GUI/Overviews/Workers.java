@@ -4,6 +4,7 @@ import Database.WorkersModification;
 import Entities.Worker;
 import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
+import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -20,21 +21,23 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 public class Workers extends AnchorPane{
-    private Stage mainStage;
-    private Scene mainScene;
 
     private TableView<Worker> workersTable = new TableView<>();
     private TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
     private TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
-    private TableColumn<Worker, Integer> peselColumn = new TableColumn<>("Pesel");
+    private TableColumn<Worker, String> peselColumn = new TableColumn<>("Pesel");
+    private TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hire date");
+    private TableColumn<Worker, String> fireDateColumn = new TableColumn<>("Fire date");
+    private TableColumn<Worker, String> hoursPerWeekColumn = new TableColumn<>("Hours per week");
+    private TableColumn<Worker, String> wageColumn = new TableColumn<>("Wage");
 
     private Worker selectedWorker = null;
 
     private static Label nameLabel = new Label();
     private static Label lastNameLabel = new Label();
     private static Label peselLabel = new Label();
-    private static Label hireDataLabel = new Label();
-    private static Label fireDataLabel = new Label();
+    private static Label hireDateLabel = new Label();
+    private static Label fireDateLabel = new Label();
     private static Label hoursPerWeekLabel = new Label();
     private static Label wageLabel = new Label();
 
@@ -49,16 +52,20 @@ public class Workers extends AnchorPane{
 
     public Workers(Stage mainStage, Scene mainScene, Connection connection){
         super();
-        this.mainStage = mainStage; // TODO: button do powrotu do glownej sceny
-        this.mainScene = mainScene;
 
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
-        peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,Integer>("pesel"));
-        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn);
+        peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("pesel"));
+        hireDateColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("hireDate"));
+        hireDateColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("fireDate"));
+        hoursPerWeekColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("hoursPerWeek"));
+        wageColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("wage"));
+        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, fireDateColumn, hoursPerWeekColumn, wageColumn);
         workersTable.setEditable(false);
         ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
         workersTable.setItems(observableList);
+
+        workersTable.setColumnResizePolicy((param) -> true);
 
         workersTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() >= 1) {
@@ -67,7 +74,16 @@ public class Workers extends AnchorPane{
             }
         });
 
-        moreData.getChildren().addAll(nameLabel, lastNameLabel, peselLabel, hireDataLabel, fireDataLabel, hoursPerWeekLabel, wageLabel);
+        moreData.getChildren().addAll( // TODO: flowpane
+                new Label("Selected worker details:"),
+                new HBox(new Label("Name: "),nameLabel),
+                new HBox(new Label("Last name: "),lastNameLabel),
+                new HBox(new Label("Pesel: "),peselLabel),
+                new HBox(new Label("Hire date: "),hireDateLabel),
+                new HBox(new Label("Fire date: "),fireDateLabel),
+                new HBox(new Label("Hours per week: "),hoursPerWeekLabel),
+                new HBox(new Label("Wage: "),wageLabel)
+        );
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
@@ -89,6 +105,7 @@ public class Workers extends AnchorPane{
         this.getChildren().addAll(display,buttons, backButton);
         this.setTopAnchor(display,2.0);
         this.setLeftAnchor(display,2.0);
+
         this.setRightAnchor(buttons,2.0);
         this.setBottomAnchor(buttons,4.0);
         this.setTopAnchor(backButton, 2.0);
@@ -102,14 +119,14 @@ public class Workers extends AnchorPane{
             peselLabel.setText(selectedWorker.getPesel());
             Format formatter = new SimpleDateFormat("dd-MM-yyyy");
             if(selectedWorker.getHireDate() != null) {
-                hireDataLabel.setText(formatter.format(selectedWorker.getHireDate()));
+                hireDateLabel.setText(formatter.format(selectedWorker.getHireDate()));
             } else {
-                hireDataLabel.setText("");
+                hireDateLabel.setText("");
             }
             if(selectedWorker.getFireDate() != null) {
-                fireDataLabel.setText(formatter.format(selectedWorker.getFireDate()));
+                fireDateLabel.setText(formatter.format(selectedWorker.getFireDate()));
             } else {
-                fireDataLabel.setText("");
+                fireDateLabel.setText("");
             }
             if(selectedWorker.getHoursPerWeek() != null) {
                 hoursPerWeekLabel.setText(String.valueOf(selectedWorker.getHoursPerWeek()));
@@ -125,8 +142,8 @@ public class Workers extends AnchorPane{
             nameLabel.setText("");
             lastNameLabel.setText("");
             peselLabel.setText("");
-            hireDataLabel.setText("");
-            fireDataLabel.setText("");
+            hireDateLabel.setText("");
+            fireDateLabel.setText("");
             hoursPerWeekLabel.setText("");
             wageLabel.setText("");
         }
