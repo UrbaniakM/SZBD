@@ -61,16 +61,17 @@ public class WorkersModification {
             );
             if(selectStatement.next()){
                 connection.createStatement().executeQuery("DELETE FROM workers WHERE pesel='" + previousWorker.getPesel() + "'");
-                String insertStatement = "INSERT INTO workers(id_pracownika,imie, nazwisko, pesel, data_zatrudnienia, wymiar_godzin, pensja) VALUES " +
-                        "(?,?,?,?,?,?)";
+                String insertStatement = "INSERT INTO workers(id_pracownika,imie, nazwisko, pesel, data_zatrudnienia, data_zwolnienia, " +
+                        "wymiar_godzin, pensja) VALUES (?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(insertStatement);
                 preparedStatement.setInt(1, previousWorker.getId());
                 preparedStatement.setString(2,newWorker.getName());
                 preparedStatement.setString(3,newWorker.getLastName());
                 preparedStatement.setString(4,newWorker.getPesel());
                 preparedStatement.setDate(5,newWorker.getHireDate());
-                preparedStatement.setInt(6,newWorker.getHoursPerWeek());
-                preparedStatement.setInt(7,newWorker.getWage());
+                preparedStatement.setDate(6,newWorker.getFireDate());
+                preparedStatement.setInt(7,newWorker.getHoursPerWeek());
+                preparedStatement.setInt(8,newWorker.getWage());
                 preparedStatement.executeUpdate();
             } else {
                 System.err.println("Worker no longer in database. Data loss possible");

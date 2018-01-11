@@ -1,7 +1,9 @@
 package GUI.Dialogs.Workers;
 
+import Database.WorkersModification;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
+import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -15,13 +17,15 @@ import java.util.Optional;
 
 public class EditWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
-    Worker previousWorker;
+    Worker workerAfterEdition;
+    Worker workerBeforeEdition;
 
     public EditWorkerDialog(Worker worker){
         super();
-        previousWorker = new Worker(worker); // used to edit in database
+        workerAfterEdition = worker;
+        workerBeforeEdition = new Worker(worker);
 
-        this.setTitle("New worker");
+        this.setTitle("Edit worker");
         confirmButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         this.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
 
@@ -31,17 +35,17 @@ public class EditWorkerDialog extends AbstractDialog {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField nameTF = new TextField();
-        nameTF.setPromptText(previousWorker.getName());
+        nameTF.setText(workerBeforeEdition.getName());
         TextField lastNameTF = new TextField();
-        lastNameTF.setPromptText(previousWorker.getLastName());
+        lastNameTF.setText(workerBeforeEdition.getLastName());
         TextField peselTF = new TextField();
-        peselTF.setPromptText(previousWorker.getPesel());
-        DatePicker hireDateDP = new DatePicker(); // TODO: Date input
-        hireDateDP.setPromptText(previousWorker.getHireDate().toString());
+        peselTF.setText(workerBeforeEdition.getPesel());
+        DatePicker hireDateDP = new DatePicker();
+        hireDateDP.setValue(workerBeforeEdition.getHireDate().toLocalDate());
         TextField hoursPerWeekTF = new TextField();
-        hoursPerWeekTF.setPromptText("Working hours per week");
+        hoursPerWeekTF.setText(workerBeforeEdition.getHoursPerWeek().toString());
         TextField wageTF = new TextField();
-        wageTF.setPromptText("Wage per hour");
+        wageTF.setText(workerBeforeEdition.getHoursPerWeek().toString());
 
 
         grid.add(new Label("Name:"), 0, 1);
@@ -57,6 +61,17 @@ public class EditWorkerDialog extends AbstractDialog {
         grid.add(new Label("Wage:"), 0, 6);
         grid.add(wageTF, 1, 6);
 
+
+        TextFieldRestrictions.addIntegerRestriction(hoursPerWeekTF);
+        TextFieldRestrictions.addIntegerRestriction(wageTF);
+        TextFieldRestrictions.addIntegerRestriction(peselTF);
+
+        TextFieldRestrictions.addTextLimiter(nameTF,32);
+        TextFieldRestrictions.addTextLimiter(lastNameTF,32);
+        TextFieldRestrictions.addTextLimiter(peselTF,11);
+        TextFieldRestrictions.addTextLimiter(hoursPerWeekTF,2);
+        TextFieldRestrictions.addTextLimiter(wageTF,6);
+
         this.getDialogPane().setContent(grid);
         Platform.runLater(() -> nameTF.requestFocus());
         this.setResultConverter(dialogButton -> {
@@ -70,8 +85,14 @@ public class EditWorkerDialog extends AbstractDialog {
         Optional<Result> result = this.showAndWait();
 
         if (result.isPresent()) {
-           // WorkersModification.editWorker(previousWorker, )
-            // TODO
+            workerAfterEdition.setName(result.get().getName());
+            workerAfterEdition.setLastName(result.get().getLastName());
+            workerAfterEdition.setPesel(result.get().getPesel());
+            workerAfterEdition.setHireDate(result.get().getHireDate());
+            workerAfterEdition.setHoursPerWeek(result.get().getHoursPerWeek());
+            workerAfterEdition.setWage(result.get().getWage());
+            WorkersModification.editWorker(workerBeforeEdition,workerAfterEdition, connection);
+            return workerAfterEdition;
         }
         return null;
     }
@@ -80,7 +101,7 @@ public class EditWorkerDialog extends AbstractDialog {
     private class Result {
         String name;
         String lastName;
-        int pesel;
+        String pesel;
         Date hireDate;
         Integer hoursPerWeek;
         Integer wage;
@@ -88,7 +109,7 @@ public class EditWorkerDialog extends AbstractDialog {
         public Result(String name, String lastName, String pesel, LocalDate hireDate, String hoursPerWeek, String wage){
             this.name = name;
             this.lastName = lastName;
-            this.pesel = Integer.valueOf(pesel);
+            this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
             this.hoursPerWeek = Integer.valueOf(hoursPerWeek);
             this.wage = Integer.valueOf(wage);
@@ -102,7 +123,7 @@ public class EditWorkerDialog extends AbstractDialog {
             return lastName;
         }
 
-        public int getPesel() {
+        public String getPesel() {
             return pesel;
         }
 
@@ -110,7 +131,7 @@ public class EditWorkerDialog extends AbstractDialog {
             return hireDate;
         }
 
-        public int getHoursPerWeek() {
+        public Integer getHoursPerWeek() {
             return hoursPerWeek;
         }
 

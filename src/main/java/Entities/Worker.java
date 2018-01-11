@@ -24,6 +24,7 @@ public class Worker{
         this.lastName = worker.getLastName();
         this.hireDate = worker.getHireDate();
         this.fireDate = worker.getFireDate();
+        this.hoursPerWeek = worker.getHoursPerWeek();
         this.wage = worker.getWage();
         this.idEtatu = worker.getIdEtatu();
     }

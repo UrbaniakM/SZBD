@@ -5,7 +5,6 @@ import Entities.Worker;
 import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -23,6 +22,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 public class Workers extends AnchorPane{
+    private Connection connection;
 
     private TableView<Worker> workersTable = new TableView<>();
     private TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
@@ -52,8 +52,14 @@ public class Workers extends AnchorPane{
     private static HBox display = new HBox();
     private static VBox moreData = new VBox();
 
+    private void refreshTableView(){
+        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
+        workersTable.setItems(observableList);
+    }
+
     public Workers(Stage mainStage, Scene mainScene, Connection connection){
         super();
+        this.connection = connection;
 
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
@@ -76,8 +82,7 @@ public class Workers extends AnchorPane{
         wageColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("wage"));
         workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, fireDateColumn, hoursPerWeekColumn, wageColumn);
         workersTable.setEditable(false);
-        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
-        workersTable.setItems(observableList);
+        refreshTableView();
 
         workersTable.setColumnResizePolicy((param) -> true);
 
@@ -88,7 +93,7 @@ public class Workers extends AnchorPane{
             }
         });
 
-        moreData.getChildren().addAll( // TODO: flowpane
+        moreData.getChildren().addAll( // TODO: usunac to
                 new Label("Selected worker details:"),
                 new HBox(new Label("Name: "),nameLabel),
                 new HBox(new Label("Last name: "),lastNameLabel),
@@ -101,13 +106,15 @@ public class Workers extends AnchorPane{
         display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            observableList.add(new AddWorkerDialog().popDialog(connection)); // zamiast tego - ponowny import? bo bedzie problem z id do editWorker
+            new AddWorkerDialog().popDialog(connection);
+            refreshTableView(); // TODO refresh tylko dla nowo dodanego
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
-                new EditWorkerDialog(selectedWorker).popDialog(connection);
+               new EditWorkerDialog(selectedWorker).popDialog(connection);
             }
+            refreshTableView(); // TODO refresh tylko dla edytowanego
         });
 
         buttons.getButtons().addAll(addWorkerButton, editWorkerButton);
