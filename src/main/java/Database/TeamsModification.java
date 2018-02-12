@@ -1,6 +1,6 @@
 package Database;
 
-import Entities.Position;
+import Entities.Team;
 import GUI.ApplicationGUI;
 
 import java.sql.Connection;
@@ -10,18 +10,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PositionsModification {
-    public static List<Position> importObject(){
-        List <Position> data = new ArrayList<>();
+public class TeamsModification {
+    public static List<Team> importObject(){
+        List <Team> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM positions");
+            rs = connection.createStatement().executeQuery("SELECT * FROM teams");
             while(rs.next()) {
-                Position position = new Position();
-                position.setName(rs.getString(1));
-                position.setWage(rs.getInt(2));
-                data.add(position);
+                Team team = new Team();
+                team.setName(rs.getString(1));
+                team.setCreationDate(rs.getDate(2));
+                team.setLeaderPesel(rs.getString(3));
+                data.add(team);
             }
             return data;
         } catch (SQLException ex){
@@ -34,15 +35,16 @@ public class PositionsModification {
         }
     }
 
-    public static void addObject(Position position){ // TODO: EMPTY VALUES
+    public static void addObject(Team team){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            String sqlStatement = "INSERT INTO positions(nazwa, pensja) VALUES " +
-                    "(?,?)";
+            String sqlStatement = "INSERT INTO teams(nazwa, data_utworzenia, pesel_leader) VALUES " +
+                    "(?,?,?)";
             preparedStatement = connection.prepareStatement(sqlStatement);
-            preparedStatement.setString(1,position.getName());
-            preparedStatement.setInt(2,position.getWage());
+            preparedStatement.setString(1,team.getName());
+            preparedStatement.setDate(2,team.getCreationDate());
+            preparedStatement.setString(3,team.getLeaderPesel());
             preparedStatement.executeUpdate();
             // TODO: sprawdzanie, czy jest w tabeli juz
         } catch (SQLException ex){
@@ -54,23 +56,25 @@ public class PositionsModification {
         }
     }
 
-    public static void editObject(Position previousPosition, Position newPosition){ // TODO: EMPTY VALUES
+    public static void editObject(Team previousTeam, Team newTeam){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT nazwa FROM positions WHERE nazwa='" + previousPosition.getName() + "'"
+                    "SELECT nazwa FROM teams WHERE nazwa='" + previousTeam.getName() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE positions SET nazwa = ?, pensja = ? WHERE nazwa = ?";
+                String updateStatement = "UPDATE teams SET nazwa = ?, data_utworzenia = ?, pesel_leader = ?" +
+                        "WHERE nazwa = ?";
                 preparedStatement = connection.prepareStatement(updateStatement);
-                preparedStatement.setString(1,newPosition.getName());
-                preparedStatement.setInt(2,newPosition.getWage());
-                preparedStatement.setString(3,previousPosition.getName());
+                preparedStatement.setString(1,newTeam.getName());
+                preparedStatement.setDate(2,newTeam.getCreationDate());
+                preparedStatement.setString(3,newTeam.getLeaderPesel());
+                preparedStatement.setString(4,previousTeam.getName());
                 preparedStatement.executeUpdate();
             } else {
-                System.err.println("Holiday no longer in database. Data loss possible");
+                System.err.println("Team no longer in database. Data loss possible");
             }
         } catch (SQLException ex){  //  TODO - DIALOG + THROW EXCEPTION?
             System.err.println("Statement execution failed! Check output console");

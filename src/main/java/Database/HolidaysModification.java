@@ -86,4 +86,6 @@ public class HolidaysModification {
             try { preparedStatement.close(); }  catch (Exception ex) { };
         }
     }
+
+    // TODO: DELETE OBJECT
 }

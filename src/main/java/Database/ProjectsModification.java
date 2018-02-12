@@ -1,6 +1,6 @@
 package Database;
 
-import Entities.Position;
+import Entities.Project;
 import GUI.ApplicationGUI;
 
 import java.sql.Connection;
@@ -10,18 +10,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PositionsModification {
-    public static List<Position> importObject(){
-        List <Position> data = new ArrayList<>();
+public class ProjectsModification {
+    public static List<Project> importObject(){
+        List <Project> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM positions");
+            rs = connection.createStatement().executeQuery("SELECT * FROM projects");
             while(rs.next()) {
-                Position position = new Position();
-                position.setName(rs.getString(1));
-                position.setWage(rs.getInt(2));
-                data.add(position);
+                Project project = new Project();
+                project.setName(rs.getString(1));
+                project.setBeginDate(rs.getDate(2));
+                project.setEndDate(rs.getDate(3));
+                project.setTeamName(rs.getString(4));
+                data.add(project);
             }
             return data;
         } catch (SQLException ex){
@@ -34,15 +36,17 @@ public class PositionsModification {
         }
     }
 
-    public static void addObject(Position position){ // TODO: EMPTY VALUES
+    public static void addObject(Project project){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            String sqlStatement = "INSERT INTO positions(nazwa, pensja) VALUES " +
-                    "(?,?)";
+            String sqlStatement = "INSERT INTO projects(nazwa, data_rozpoczecia, data_zakonczenia, nazwa_zespolu) VALUES " +
+                    "(?,?,?)";
             preparedStatement = connection.prepareStatement(sqlStatement);
-            preparedStatement.setString(1,position.getName());
-            preparedStatement.setInt(2,position.getWage());
+            preparedStatement.setString(1,project.getName());
+            preparedStatement.setDate(2,project.getBeginDate());
+            preparedStatement.setDate(3,project.getEndDate());
+            preparedStatement.setString(4,project.getTeamName());
             preparedStatement.executeUpdate();
             // TODO: sprawdzanie, czy jest w tabeli juz
         } catch (SQLException ex){
@@ -54,23 +58,26 @@ public class PositionsModification {
         }
     }
 
-    public static void editObject(Position previousPosition, Position newPosition){ // TODO: EMPTY VALUES
+    public static void editObject(Project previousProject, Project newProject){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT nazwa FROM positions WHERE nazwa='" + previousPosition.getName() + "'"
+                    "SELECT nazwa FROM projects WHERE nazwa='" + previousProject.getName() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE positions SET nazwa = ?, pensja = ? WHERE nazwa = ?";
+                String updateStatement = "UPDATE projects SET nazwa = ?, data_rozpoczecia = ?, data_zakonczenia = ?, nazwa_zespolu = ?" +
+                        "WHERE nazwa = ?";
                 preparedStatement = connection.prepareStatement(updateStatement);
-                preparedStatement.setString(1,newPosition.getName());
-                preparedStatement.setInt(2,newPosition.getWage());
-                preparedStatement.setString(3,previousPosition.getName());
+                preparedStatement.setString(1,newProject.getName());
+                preparedStatement.setDate(2,newProject.getBeginDate());
+                preparedStatement.setDate(3,newProject.getEndDate());
+                preparedStatement.setString(4,newProject.getTeamName());
+                preparedStatement.setString(5,previousProject.getName());
                 preparedStatement.executeUpdate();
             } else {
-                System.err.println("Holiday no longer in database. Data loss possible");
+                System.err.println("Project no longer in database. Data loss possible");
             }
         } catch (SQLException ex){  //  TODO - DIALOG + THROW EXCEPTION?
             System.err.println("Statement execution failed! Check output console");

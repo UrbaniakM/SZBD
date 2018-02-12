@@ -83,7 +83,7 @@ public class WorkersModification {
                 preparedStatement.setString(7,newWorker.getTeamName());
                 preparedStatement.setString(8,previousWorker.getPesel());
                 preparedStatement.executeUpdate();
-            } else { //  TODO - DIALOG
+            } else { //  TODO - DIALOG + THROW EXCEPTION?
                 System.err.println("Worker no longer in database. Data loss possible");
             }
 
@@ -96,4 +96,6 @@ public class WorkersModification {
             try { preparedStatement.close(); }  catch (Exception ex) { };
         }
     }
+
+    // TODO: DELETE OBJECT
 }
