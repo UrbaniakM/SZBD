@@ -12,8 +12,9 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -45,9 +46,25 @@ public class AddWorkerDialog extends AbstractDialog {
         TextField bonusTF = new TextField();
         bonusTF.setPromptText("Bonus");
 
-        /*ComboBox<Position> positionComboBox = new ComboBox<>();
+        ComboBox<Position> positionComboBox = new ComboBox<>();
         ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
-        positionComboBox.setItems();*/
+        positionComboBox.setItems(observableList);
+        positionComboBox.setEditable(false);
+
+        positionComboBox.setConverter(new StringConverter<Position>() {
+
+            @Override
+            public String toString(Position object) {
+                return object.getName() + " " + object.getWage();
+            }
+
+            @Override
+            public Position fromString(String string) {
+                return positionComboBox.getItems().stream().filter(ap ->
+                        ap.getName().equals(string)).findFirst().orElse(null);
+            }
+        });
+
 
         // TODO: position, team
 
@@ -69,12 +86,15 @@ public class AddWorkerDialog extends AbstractDialog {
         grid.add(hireDateDP, 1, 4);
         grid.add(new Label("Bonus:"), 0, 5);
         grid.add(bonusTF, 1, 5);
+        grid.add(new Label("Position:"),0,6);
+        grid.add(positionComboBox, 1, 6);
 
         this.getDialogPane().setContent(grid);
         Platform.runLater(() -> nameTF.requestFocus());
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText());
+                return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText(),
+                        positionComboBox.getValue().getName());
             }
             return null;
         });
@@ -88,6 +108,7 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setPesel(result.get().getPesel());
             worker.setHireDate(result.get().getHireDate());
             worker.setBonus(result.get().getBonus());
+            worker.setPositionName(result.get().getPositionName());
             WorkersModification.addObject(worker);
             return worker;
         }
@@ -101,13 +122,15 @@ public class AddWorkerDialog extends AbstractDialog {
         String pesel;
         Date hireDate;
         Integer bonus;
+        String positionName;
 
-        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus){
+        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName){
             this.name = name;
             this.lastName = lastName;
             this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
             this.bonus = Integer.valueOf(bonus);
+            this.positionName = positionName;
         }
 
         public String getName() {
@@ -128,6 +151,10 @@ public class AddWorkerDialog extends AbstractDialog {
 
         public Integer getBonus() {
             return bonus;
+        }
+
+        public String getPositionName() {
+            return positionName;
         }
     }
 }

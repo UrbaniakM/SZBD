@@ -34,7 +34,7 @@ public class PositionsModification {
         }
     }
 
-    public static void addObject(Position position){
+    public static void addObject(Position position){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -54,7 +54,7 @@ public class PositionsModification {
         }
     }
 
-    public static void editObject(Position previousPosition, Position newPosition){
+    public static void editObject(Position previousPosition, Position newPosition){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;

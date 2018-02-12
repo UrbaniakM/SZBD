@@ -36,7 +36,7 @@ public class HolidaysModification {
         }
     }
 
-    public static void addObject(Holiday holiday){
+    public static void addObject(Holiday holiday){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         try {
@@ -57,7 +57,7 @@ public class HolidaysModification {
         }
     }
 
-    public static void editObject(Holiday previousHoliday, Holiday newHoliday){
+    public static void editObject(Holiday previousHoliday, Holiday newHoliday){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;

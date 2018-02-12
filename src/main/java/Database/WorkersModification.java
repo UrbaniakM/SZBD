@@ -36,12 +36,12 @@ public class WorkersModification {
         }
     }
 
-    public static void addObject(Worker worker){
+    public static void addObject(Worker worker){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         try {
             String sqlStatement = "INSERT INTO workers(imie, nazwisko, pesel, data_zatrudnienia, premia, nazwa_etatu, nazwa_zespolu) VALUES " +
-                    "(?,?,?,?,?,?)";
+                    "(?,?,?,?,?,?,?)";
             preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setString(1,worker.getName());
             preparedStatement.setString(2,worker.getLastName());
@@ -61,7 +61,7 @@ public class WorkersModification {
         }
     }
 
-    public static void editObject(Worker previousWorker, Worker newWorker){
+    public static void editObject(Worker previousWorker, Worker newWorker){ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;

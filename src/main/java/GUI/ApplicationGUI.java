@@ -25,11 +25,6 @@ public class ApplicationGUI extends Application {
         launch(args);
     }
 
-    @Override
-    public void stop() throws Exception{
-        databaseConnection.getConnection().close();
-    }
-
     public Scene mainGUI(){
         FlowPane flowPane = new FlowPane();
         flowPane.setPadding(new Insets(5, 5, 5, 5));

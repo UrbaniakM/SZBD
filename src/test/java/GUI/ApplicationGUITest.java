@@ -19,7 +19,7 @@ public class ApplicationGUITest extends Application {
     public void start(Stage primaryStage) {
         LoginDialog loginDialog = new LoginDialog();
         Connection connection = new DatabaseConnection(loginDialog.getUsername(),loginDialog.getPassword()).getConnection();
-        primaryStage.setScene(new Scene(new Workers(primaryStage,null, connection)));
+        primaryStage.setScene(new Scene(new Workers(primaryStage,null)));
         primaryStage.show();
     }
 }
