@@ -17,14 +17,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-
 public class Holidays extends AnchorPane {
-
     private static final TableView<Holiday> holidaysTable = new TableView<>();
     private static final TableColumn<Holiday, String> peselColumn = new TableColumn<>("Pesel");
-    private static final TableColumn<Holiday, String> beginDateColumn = new TableColumn<>("Hire date");
-    private static final TableColumn<Holiday, String> endDateColumn = new TableColumn<>("Bonus");
+    private static final TableColumn<Holiday, String> beginDateColumn = new TableColumn<>("Begin");
+    private static final TableColumn<Holiday, String> endDateColumn = new TableColumn<>("End");
 
     private Holiday selectedHoliday = null;
 

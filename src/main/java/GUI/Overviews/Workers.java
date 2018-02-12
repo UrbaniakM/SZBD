@@ -27,7 +27,7 @@ public class Workers extends AnchorPane{
     private static final TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
     private static final TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
     private static final TableColumn<Worker, String> peselColumn = new TableColumn<>("Pesel");
-    private static final TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hire date");
+    private static final TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hired");
     private static final TableColumn<Worker, String> bonusColumn = new TableColumn<>("Bonus");
     private static final TableColumn<Worker, String> positionNameColumn = new TableColumn<>("Position");
     private static final TableColumn<Worker, String> teamNameColumn = new TableColumn<>("Team");

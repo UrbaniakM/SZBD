@@ -1,8 +1,10 @@
 package GUI.Dialogs.Workers;
 
 import Database.PositionsModification;
+import Database.TeamsModification;
 import Database.WorkersModification;
 import Entities.Position;
+import Entities.Team;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
 import GUI.TextFieldRestrictions;
@@ -47,8 +49,8 @@ public class AddWorkerDialog extends AbstractDialog {
         bonusTF.setPromptText("Bonus");
 
         ComboBox<Position> positionComboBox = new ComboBox<>();
-        ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
-        positionComboBox.setItems(observableList);
+        ObservableList<Position> positionObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+        positionComboBox.setItems(positionObservableList);
         positionComboBox.setEditable(false);
 
         positionComboBox.setConverter(new StringConverter<Position>() {
@@ -65,8 +67,24 @@ public class AddWorkerDialog extends AbstractDialog {
             }
         });
 
+        ComboBox<Team> teamComboBox = new ComboBox<>();
+        ObservableList<Team> teamObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
+        teamComboBox.setItems(teamObservableList);
+        teamComboBox.setEditable(false);
 
-        // TODO: position, team
+        teamComboBox.setConverter(new StringConverter<Team>() {
+
+            @Override
+            public String toString(Team object) {
+                return object.getName();
+            }
+
+            @Override
+            public Team fromString(String string) {
+                return teamComboBox.getItems().stream().filter(ap ->
+                        ap.getName().equals(string)).findFirst().orElse(null);
+            }
+        });
 
         TextFieldRestrictions.addIntegerRestriction(bonusTF);
         TextFieldRestrictions.addIntegerRestriction(peselTF);
@@ -88,13 +106,15 @@ public class AddWorkerDialog extends AbstractDialog {
         grid.add(bonusTF, 1, 5);
         grid.add(new Label("Position:"),0,6);
         grid.add(positionComboBox, 1, 6);
+        grid.add(new Label("Team:"),0,7);
+        grid.add(teamComboBox, 1, 7);
 
         this.getDialogPane().setContent(grid);
         Platform.runLater(() -> nameTF.requestFocus());
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
                 return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText(),
-                        positionComboBox.getValue().getName());
+                        positionComboBox.getValue().getName(), teamComboBox.getValue().getName());
             }
             return null;
         });
@@ -109,6 +129,7 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setHireDate(result.get().getHireDate());
             worker.setBonus(result.get().getBonus());
             worker.setPositionName(result.get().getPositionName());
+            worker.setTeamName(result.get().getTeamName());
             WorkersModification.addObject(worker);
             return worker;
         }
@@ -121,16 +142,22 @@ public class AddWorkerDialog extends AbstractDialog {
         private String lastName;
         private String pesel;
         private Date hireDate;
-        private Integer bonus;
+        private Integer bonus = null;
         private String positionName;
+        private String teamName = null;
 
-        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName){
+        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName, String teamName){
             this.name = name;
             this.lastName = lastName;
             this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
-            this.bonus = Integer.valueOf(bonus);
+            if(bonus != null) {
+                this.bonus = Integer.valueOf(bonus);
+            }
             this.positionName = positionName;
+            if(teamName != null){
+                this.teamName = teamName;
+            }
         }
 
         public String getName() {
@@ -155,6 +182,10 @@ public class AddWorkerDialog extends AbstractDialog {
 
         public String getPositionName() {
             return positionName;
+        }
+
+        public String getTeamName() {
+            return teamName;
         }
     }
 }
