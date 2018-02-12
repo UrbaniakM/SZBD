@@ -6,12 +6,10 @@ import java.util.Date;
  *
  */
 public class Project {
-    private int id;
     private String name;
     private Date beginDate;
-    private Date plannedEndDate = null;
     private Date endDate = null;
-    private String projectDescription;
+    private String teamName;
 
     public String getName() {
         return name;
@@ -29,14 +27,6 @@ public class Project {
         this.beginDate = beginDate;
     }
 
-    public Date getPlannedEndDate() {
-        return plannedEndDate;
-    }
-
-    public void setPlannedEndDate(Date plannedEndDate) {
-        this.plannedEndDate = plannedEndDate;
-    }
-
     public Date getEndDate() {
         return endDate;
     }
@@ -45,11 +35,11 @@ public class Project {
         this.endDate = endDate;
     }
 
-    public String getProjectDescription() {
-        return projectDescription;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setProjectDescription(String projectDescription) {
-        this.projectDescription = projectDescription;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 }

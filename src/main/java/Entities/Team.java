@@ -6,10 +6,17 @@ import java.util.Date;
  *
  */
 public class Team {
-    private int id;
     private String name;
     private Date creationDate;
+    private String leaderPesel;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Date getCreationDate() {
         return creationDate;
@@ -19,11 +26,11 @@ public class Team {
         this.creationDate = creationDate;
     }
 
-    public String getName() {
-        return name;
+    public String getLeaderPesel() {
+        return leaderPesel;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLeaderPesel(String leaderPesel) {
+        this.leaderPesel = leaderPesel;
     }
 }

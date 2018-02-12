@@ -24,33 +24,22 @@ import java.text.SimpleDateFormat;
 public class Workers extends AnchorPane{
     private Connection connection;
 
-    private TableView<Worker> workersTable = new TableView<>();
-    private TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
-    private TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
-    private TableColumn<Worker, String> peselColumn = new TableColumn<>("Pesel");
-    private TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hire date");
-    private TableColumn<Worker, String> fireDateColumn = new TableColumn<>("Fire date");
-    private TableColumn<Worker, String> hoursPerWeekColumn = new TableColumn<>("Hours per week");
-    private TableColumn<Worker, String> wageColumn = new TableColumn<>("Wage");
+    private static final TableView<Worker> workersTable = new TableView<>();
+    private static final TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
+    private static final TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
+    private static final TableColumn<Worker, String> peselColumn = new TableColumn<>("Pesel");
+    private static final TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hire date");
+    private static final TableColumn<Worker, String> bonusColumn = new TableColumn<>("Bonus");
+    private static final TableColumn<Worker, String> positionNameColumn = new TableColumn<>("Position");
+    private static final TableColumn<Worker, String> teamNameColumn = new TableColumn<>("Team");
 
     private Worker selectedWorker = null;
-
-    private static Label nameLabel = new Label();
-    private static Label lastNameLabel = new Label();
-    private static Label peselLabel = new Label();
-    private static Label hireDateLabel = new Label();
-    private static Label fireDateLabel = new Label();
-    private static Label hoursPerWeekLabel = new Label();
-    private static Label wageLabel = new Label();
 
     private static ButtonBar buttons = new ButtonBar();
     private static Button addWorkerButton = new Button("Add");;
     private static Button editWorkerButton = new Button("Edit");
     private static Button backButton = new Button("\u2ba8");
 
-
-    private static HBox display = new HBox();
-    private static VBox moreData = new VBox();
 
     private void refreshTableView(){
         ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
@@ -71,16 +60,10 @@ public class Workers extends AnchorPane{
                 return new ReadOnlyStringWrapper("");
             }
         });
-        fireDateColumn.setCellValueFactory(value -> {
-            if(value.getValue().getFireDate() != null) {
-                return new ReadOnlyStringWrapper(value.getValue().getFireDate().toString());
-            } else {
-                return new ReadOnlyStringWrapper("");
-            }
-        });
-        hoursPerWeekColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("hoursPerWeek"));
-        wageColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("wage"));
-        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, fireDateColumn, hoursPerWeekColumn, wageColumn);
+        bonusColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("bonus"));
+        positionNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("positionName"));
+        teamNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("teamName"));
+        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, bonusColumn, positionNameColumn, teamNameColumn);
         workersTable.setEditable(false);
         refreshTableView();
 
@@ -89,21 +72,9 @@ public class Workers extends AnchorPane{
         workersTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() >= 1) {
                 selectedWorker = workersTable.getSelectionModel().getSelectedItem();
-                showWorkerDetail();
+                //showWorkerDetail();
             }
         });
-
-        moreData.getChildren().addAll( // TODO: usunac to
-                new Label("Selected worker details:"),
-                new HBox(new Label("Name: "),nameLabel),
-                new HBox(new Label("Last name: "),lastNameLabel),
-                new HBox(new Label("Pesel: "),peselLabel),
-                new HBox(new Label("Hire date: "),hireDateLabel),
-                new HBox(new Label("Fire date: "),fireDateLabel),
-                new HBox(new Label("Hours per week: "),hoursPerWeekLabel),
-                new HBox(new Label("Wage: "),wageLabel)
-        );
-        display.getChildren().addAll(workersTable, moreData);
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             new AddWorkerDialog().popDialog(connection);
@@ -123,9 +94,9 @@ public class Workers extends AnchorPane{
             mainStage.setScene(mainScene);
         });
 
-        this.getChildren().addAll(display,buttons, backButton);
-        this.setTopAnchor(display,2.0);
-        this.setLeftAnchor(display,2.0);
+        this.getChildren().addAll(workersTable,buttons, backButton);
+        this.setTopAnchor(workersTable,2.0);
+        this.setLeftAnchor(workersTable,2.0);
 
         this.setRightAnchor(buttons,2.0);
         this.setBottomAnchor(buttons,4.0);
@@ -133,7 +104,7 @@ public class Workers extends AnchorPane{
         this.setLeftAnchor(backButton, 2.0);
     }
 
-    private void showWorkerDetail(){
+    /*private void showWorkerDetail(){
         if(selectedWorker != null){
             nameLabel.setText(selectedWorker.getName());
             lastNameLabel.setText(selectedWorker.getLastName());
@@ -168,5 +139,5 @@ public class Workers extends AnchorPane{
             hoursPerWeekLabel.setText("");
             wageLabel.setText("");
         }
-    }
+    }*/
 }

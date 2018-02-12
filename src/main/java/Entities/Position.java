@@ -1,18 +1,8 @@
 package Entities;
 
 public class Position {
-    private int id;
     private String name;
-    private float minWage;
-    private float maxWage;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private int wage;
 
     public String getName() {
         return name;
@@ -22,19 +12,12 @@ public class Position {
         this.name = name;
     }
 
-    public float getMinWage() {
-        return minWage;
+
+    public float getWage() {
+        return wage;
     }
 
-    public void setMinWage(float minWage) {
-        this.minWage = minWage;
-    }
-
-    public float getMaxWage() {
-        return maxWage;
-    }
-
-    public void setMaxWage(float maxWage) {
-        this.maxWage = maxWage;
+    public void setMaxWage(int wage) {
+        this.wage = wage;
     }
 }

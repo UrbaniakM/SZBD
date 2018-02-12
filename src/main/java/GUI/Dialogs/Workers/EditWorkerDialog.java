@@ -42,10 +42,9 @@ public class EditWorkerDialog extends AbstractDialog {
         peselTF.setText(workerBeforeEdition.getPesel());
         DatePicker hireDateDP = new DatePicker();
         hireDateDP.setValue(workerBeforeEdition.getHireDate().toLocalDate());
-        TextField hoursPerWeekTF = new TextField();
-        hoursPerWeekTF.setText(workerBeforeEdition.getHoursPerWeek().toString());
-        TextField wageTF = new TextField();
-        wageTF.setText(workerBeforeEdition.getHoursPerWeek().toString());
+        TextField bonusTF = new TextField();
+        bonusTF.setText(workerBeforeEdition.getBonus().toString());
+        // TODO: position, team - SWITCH
 
 
         grid.add(new Label("Name:"), 0, 1);
@@ -56,27 +55,23 @@ public class EditWorkerDialog extends AbstractDialog {
         grid.add(peselTF, 1, 3);
         grid.add(new Label("Hire Date:"), 0, 4);
         grid.add(hireDateDP, 1, 4);
-        grid.add(new Label("Working hours per week:"), 0, 5);
-        grid.add(hoursPerWeekTF, 1, 5);
-        grid.add(new Label("Wage:"), 0, 6);
-        grid.add(wageTF, 1, 6);
+        grid.add(new Label("Bonus:"), 0, 5);
+        grid.add(bonusTF, 1, 5);
 
 
-        TextFieldRestrictions.addIntegerRestriction(hoursPerWeekTF);
-        TextFieldRestrictions.addIntegerRestriction(wageTF);
+        TextFieldRestrictions.addIntegerRestriction(bonusTF);
         TextFieldRestrictions.addIntegerRestriction(peselTF);
 
         TextFieldRestrictions.addTextLimiter(nameTF,32);
         TextFieldRestrictions.addTextLimiter(lastNameTF,32);
         TextFieldRestrictions.addTextLimiter(peselTF,11);
-        TextFieldRestrictions.addTextLimiter(hoursPerWeekTF,2);
-        TextFieldRestrictions.addTextLimiter(wageTF,6);
+        TextFieldRestrictions.addTextLimiter(bonusTF,6);
 
         this.getDialogPane().setContent(grid);
         Platform.runLater(() -> nameTF.requestFocus());
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), hoursPerWeekTF.getText(), wageTF.getText());
+                return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText());
             }
             return null;
         });
@@ -89,8 +84,7 @@ public class EditWorkerDialog extends AbstractDialog {
             workerAfterEdition.setLastName(result.get().getLastName());
             workerAfterEdition.setPesel(result.get().getPesel());
             workerAfterEdition.setHireDate(result.get().getHireDate());
-            workerAfterEdition.setHoursPerWeek(result.get().getHoursPerWeek());
-            workerAfterEdition.setWage(result.get().getWage());
+            workerAfterEdition.setBonus(result.get().getBonus());
             WorkersModification.editWorker(workerBeforeEdition,workerAfterEdition, connection);
             return workerAfterEdition;
         }
@@ -103,16 +97,14 @@ public class EditWorkerDialog extends AbstractDialog {
         String lastName;
         String pesel;
         Date hireDate;
-        Integer hoursPerWeek;
-        Integer wage;
+        Integer bonus;
 
-        public Result(String name, String lastName, String pesel, LocalDate hireDate, String hoursPerWeek, String wage){
+        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus){
             this.name = name;
             this.lastName = lastName;
             this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
-            this.hoursPerWeek = Integer.valueOf(hoursPerWeek);
-            this.wage = Integer.valueOf(wage);
+            this.bonus = Integer.valueOf(bonus);
         }
 
         public String getName() {
@@ -131,12 +123,8 @@ public class EditWorkerDialog extends AbstractDialog {
             return hireDate;
         }
 
-        public Integer getHoursPerWeek() {
-            return hoursPerWeek;
-        }
-
-        public Integer getWage() {
-            return wage;
+        public Integer getBonus() {
+            return bonus;
         }
     }
 }

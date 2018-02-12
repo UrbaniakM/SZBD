@@ -7,26 +7,22 @@ import java.sql.Date;
  *
  */
 public class Worker{
-    private int id;
     private String pesel;
     private String name;
     private String lastName;
     private Date hireDate;
-    private Date fireDate = null;
-    private Integer hoursPerWeek = null;
-    private Integer wage = null;
-    private Integer idEtatu = 0;//null; TODO: foreign key, 0 for tests
+    private Integer bonus = null;
+    private String positionName;
+    private String teamName = null;
 
-    public Worker(Worker worker){
-        this.id = worker.getId();
+    public Worker(Worker worker) {
         this.pesel = worker.getPesel();
         this.name = worker.getName();
         this.lastName = worker.getLastName();
         this.hireDate = worker.getHireDate();
-        this.fireDate = worker.getFireDate();
-        this.hoursPerWeek = worker.getHoursPerWeek();
-        this.wage = worker.getWage();
-        this.idEtatu = worker.getIdEtatu();
+        this.bonus = worker.getBonus();
+        this.positionName = worker.getPositionName();
+        this.teamName = worker.getPositionName();
     }
 
     public Worker(){
@@ -47,7 +43,7 @@ public class Worker{
     }
 
     public void setName(String name) {
-        this.name = name.toUpperCase();
+        this.name = name;
     }
 
     public String getLastName() {
@@ -55,7 +51,7 @@ public class Worker{
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName.toUpperCase();
+        this.lastName = lastName;
     }
 
     public Date getHireDate() {
@@ -66,35 +62,27 @@ public class Worker{
         this.hireDate = hireDate;
     }
 
-    public Date getFireDate() {
-        return fireDate;
+    public Integer getBonus() {
+        return bonus;
     }
 
-    public void setFireDate(Date fireDate) {
-        this.fireDate = fireDate;
+    public void setBonus(Integer bonus) {
+        this.bonus = bonus;
     }
 
-    public Integer getHoursPerWeek() {
-        return hoursPerWeek;
+    public String getPositionName() {
+        return positionName;
     }
 
-    public void setHoursPerWeek(Integer hoursPerWeek) {
-        this.hoursPerWeek = hoursPerWeek;
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 
-    public Integer getWage() {
-        return wage;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setWage(Integer wage) {
-        this.wage = wage;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
-
-    public int getId() { return this.id; }
-
-    public void setId(int id) { this.id = id; }
-
-    public void setIdEtatu(int id) { this.idEtatu = id; }
-
-    public int getIdEtatu() { return this.idEtatu; }
 }
