@@ -1,8 +1,9 @@
 package GUI;
 
 import Database.DatabaseConnection;
+import Entities.Position;
 import GUI.Dialogs.LoginDialog;
-import GUI.Overviews.Workers;
+import GUI.Overviews.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -20,6 +21,10 @@ public class ApplicationGUI extends Application {
     private static Scene mainScene;
 
     private static Tile workersTile = new Tile(150);
+    private static Tile teamsTile = new Tile(150);
+    private static Tile projectsTile = new Tile(150);
+    private static Tile positionsTile = new Tile(150);
+    private static Tile holidaysTile = new Tile(150);
 
     public static void main(String[] args) {
         launch(args);
@@ -32,11 +37,14 @@ public class ApplicationGUI extends Application {
         flowPane.setHgap(4);
 
         workersTile.setText("Workers");
+        teamsTile.setText("Teams");
+        projectsTile.setText("Projects");
+        positionsTile.setText("Positions");
+        holidaysTile.setText("Holidays");
 
+        flowPane.getChildren().addAll(workersTile, teamsTile, projectsTile, positionsTile, holidaysTile);
 
-        flowPane.getChildren().addAll(workersTile);
-
-        return new Scene(flowPane, 750, 750);
+        return new Scene(flowPane, 468, 314);
     }
 
     @Override
@@ -46,9 +54,15 @@ public class ApplicationGUI extends Application {
         username = loginDialog.getUsername();
         password = loginDialog.getPassword();
         databaseConnection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
-        mainScene = mainGUI();
-        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene)), mainStage);
 
+        mainScene = mainGUI();
+        mainStage.setResizable(false);
+
+        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene)), mainStage);
+        teamsTile.changeMainContent(new Scene(new Teams(mainStage, mainScene)), mainStage);
+        projectsTile.changeMainContent(new Scene(new Projects(mainStage, mainScene)), mainStage);
+        positionsTile.changeMainContent(new Scene(new Positions(mainStage, mainScene)), mainStage);
+        holidaysTile.changeMainContent(new Scene(new Holidays(mainStage, mainScene)), mainStage);
 
         mainStage.setScene(mainScene);
         mainStage.show();
