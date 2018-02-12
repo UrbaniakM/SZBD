@@ -9,8 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
+
 public class ApplicationGUI extends Application {
-    private DatabaseConnection connection;
+    public static DatabaseConnection databaseConnection;
+    public static String username;
+    public static String password;
 
     private static Stage mainStage;
     private static Scene mainScene;
@@ -23,7 +27,7 @@ public class ApplicationGUI extends Application {
 
     @Override
     public void stop() throws Exception{
-        connection.getConnection().close();
+        databaseConnection.getConnection().close();
     }
 
     public Scene mainGUI(){
@@ -44,9 +48,11 @@ public class ApplicationGUI extends Application {
     public void start(Stage mainStage) {
         this.mainStage = mainStage;
         LoginDialog loginDialog = new LoginDialog();
-        connection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
+        username = loginDialog.getUsername();
+        password = loginDialog.getPassword();
+        databaseConnection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
         mainScene = mainGUI();
-        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene, connection.getConnection())), mainStage);
+        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene)), mainStage);
 
 
         mainStage.setScene(mainScene);

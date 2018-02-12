@@ -12,12 +12,11 @@ public class Position {
         this.name = name;
     }
 
-
-    public float getWage() {
+    public int getWage() {
         return wage;
     }
 
-    public void setMaxWage(int wage) {
+    public void setWage(int wage) {
         this.wage = wage;
     }
 }

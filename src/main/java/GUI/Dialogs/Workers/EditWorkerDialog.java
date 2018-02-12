@@ -76,7 +76,7 @@ public class EditWorkerDialog extends AbstractDialog {
             return null;
         });
     }
-    public Worker popDialog(Connection connection){
+    public Worker popDialog(){
         Optional<Result> result = this.showAndWait();
 
         if (result.isPresent()) {
@@ -85,7 +85,7 @@ public class EditWorkerDialog extends AbstractDialog {
             workerAfterEdition.setPesel(result.get().getPesel());
             workerAfterEdition.setHireDate(result.get().getHireDate());
             workerAfterEdition.setBonus(result.get().getBonus());
-            WorkersModification.editWorker(workerBeforeEdition,workerAfterEdition, connection);
+            WorkersModification.editObject(workerBeforeEdition,workerAfterEdition);
             return workerAfterEdition;
         }
         return null;

@@ -1,13 +1,14 @@
 package Entities;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
  */
 public class Holiday {
+    private int id;
     private Date beginDate;
-    private Date endDate = null;
+    private Date endDate;
     private String pesel;
 
     public Date getBeginDate() {
@@ -32,5 +33,13 @@ public class Holiday {
 
     public void setPesel(String pesel) {
         this.pesel = pesel;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -5,14 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private Connection connection;
-    private String username;
-    private String password;
+    private static String username;
+    private static String password;
 
     public DatabaseConnection(String username, String password){
         this.username = username;
         this.password = password;
-        connection = null;
+    }
+
+    public static Connection getConnection(){
+        Connection connection;
         try {
             Class.forName("oracle.jdbc.OracleDriver");
             connection = DriverManager.getConnection(
@@ -24,27 +26,16 @@ public class DatabaseConnection {
 
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
-            return;
+            return null;
 
         } catch (ClassNotFoundException e) {
 
             System.out.println("Oracle JDBC Driver failure! Check output console");
             e.printStackTrace();
-            return;
+            return null;
 
         }
         System.out.println("Connected to database");
-    }
-
-    public Connection getConnection(){
-        return this.connection;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
+        return connection;
     }
 }

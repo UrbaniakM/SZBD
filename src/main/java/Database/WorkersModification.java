@@ -1,18 +1,19 @@
 package Database;
 
 import Entities.Worker;
+import GUI.ApplicationGUI;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkersModification {
-    private Connection connection;
-
-    public static List<Worker> importWorkers(Connection connection){
+    public static List<Worker> importObject(){
         List <Worker> data = new ArrayList<>();
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet rs = null;
         try {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM workers");
+            rs = connection.createStatement().executeQuery("SELECT * FROM workers");
             while(rs.next()) {
                 Worker worker = new Worker();
                 worker.setPesel(rs.getString(1));
@@ -29,14 +30,19 @@ public class WorkersModification {
             System.out.println("Statement execution failed! Check output console");
             ex.printStackTrace();
             return null;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { rs.close(); }  catch (Exception ex) { };
         }
     }
 
-    public static void addWorker(Worker worker, Connection connection){
+    public static void addObject(Worker worker){
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        PreparedStatement preparedStatement = null;
         try {
             String sqlStatement = "INSERT INTO workers(imie, nazwisko, pesel, data_zatrudnienia, premia, nazwa_etatu, nazwa_zespolu) VALUES " +
                     "(?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+            preparedStatement = connection.prepareStatement(sqlStatement);
             preparedStatement.setString(1,worker.getName());
             preparedStatement.setString(2,worker.getLastName());
             preparedStatement.setString(3,worker.getPesel());
@@ -49,19 +55,24 @@ public class WorkersModification {
         } catch (SQLException ex){
             System.err.println("Statement execution failed! Check output console");
             ex.printStackTrace();
-            return;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { preparedStatement.close(); }  catch (Exception ex) { };
         }
     }
 
-    public static void editWorker(Worker previousWorker, Worker newWorker, Connection connection){
+    public static void editObject(Worker previousWorker, Worker newWorker){
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        PreparedStatement preparedStatement = null;
         try {
-            ResultSet selectStatement = connection.createStatement().executeQuery(
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT pesel FROM workers WHERE pesel='" + previousWorker.getPesel() + "'"
             );
             if(selectStatement.next()){
-                String insertStatement = "UPDATE workers SET imie = ?,  nazwisko = ?,  pesel = ?, data_zatrudnienia = ?, premia = ?, " +
-                        "nazwa_etatu = ?, nazwa_zespolu = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(insertStatement);
+                String updateStatement = "UPDATE workers SET imie = ?,  nazwisko = ?,  pesel = ?, data_zatrudnienia = ?, premia = ?, " +
+                        "nazwa_etatu = ?, nazwa_zespolu = ? WHERE pesel = ?";
+                preparedStatement = connection.prepareStatement(updateStatement);
                 preparedStatement.setString(1,newWorker.getName());
                 preparedStatement.setString(2,newWorker.getLastName());
                 preparedStatement.setString(3,newWorker.getPesel());
@@ -70,15 +81,19 @@ public class WorkersModification {
                 preparedStatement.setInt(5,newWorker.getBonus());
                 preparedStatement.setString(6,newWorker.getPositionName());
                 preparedStatement.setString(7,newWorker.getTeamName());
+                preparedStatement.setString(8,previousWorker.getPesel());
                 preparedStatement.executeUpdate();
-            } else {
+            } else { //  TODO - DIALOG
                 System.err.println("Worker no longer in database. Data loss possible");
             }
 
         } catch (SQLException ex){
             System.err.println("Statement execution failed! Check output console");
             ex.printStackTrace();
-            return;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+            try { preparedStatement.close(); }  catch (Exception ex) { };
         }
     }
 }

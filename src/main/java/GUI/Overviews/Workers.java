@@ -22,7 +22,6 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 public class Workers extends AnchorPane{
-    private Connection connection;
 
     private static final TableView<Worker> workersTable = new TableView<>();
     private static final TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
@@ -42,13 +41,12 @@ public class Workers extends AnchorPane{
 
 
     private void refreshTableView(){
-        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importWorkers(connection));
+        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
         workersTable.setItems(observableList);
     }
 
-    public Workers(Stage mainStage, Scene mainScene, Connection connection){
+    public Workers(Stage mainStage, Scene mainScene){
         super();
-        this.connection = connection;
 
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
@@ -72,21 +70,21 @@ public class Workers extends AnchorPane{
         workersTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() >= 1) {
                 selectedWorker = workersTable.getSelectionModel().getSelectedItem();
-                //showWorkerDetail();
             }
         });
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddWorkerDialog().popDialog(connection);
+            new AddWorkerDialog().popDialog();
             refreshTableView(); // TODO refresh tylko dla nowo dodanego
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
-               new EditWorkerDialog(selectedWorker).popDialog(connection);
+               new EditWorkerDialog(selectedWorker).popDialog();
             }
             refreshTableView(); // TODO refresh tylko dla edytowanego
         });
+        //TODO removeWorkerButton
 
         buttons.getButtons().addAll(addWorkerButton, editWorkerButton);
 
@@ -103,41 +101,4 @@ public class Workers extends AnchorPane{
         this.setTopAnchor(backButton, 2.0);
         this.setLeftAnchor(backButton, 2.0);
     }
-
-    /*private void showWorkerDetail(){
-        if(selectedWorker != null){
-            nameLabel.setText(selectedWorker.getName());
-            lastNameLabel.setText(selectedWorker.getLastName());
-            peselLabel.setText(selectedWorker.getPesel());
-            Format formatter = new SimpleDateFormat("dd-MM-yyyy");
-            if(selectedWorker.getHireDate() != null) {
-                hireDateLabel.setText(formatter.format(selectedWorker.getHireDate()));
-            } else {
-                hireDateLabel.setText("");
-            }
-            if(selectedWorker.getFireDate() != null) {
-                fireDateLabel.setText(formatter.format(selectedWorker.getFireDate()));
-            } else {
-                fireDateLabel.setText("");
-            }
-            if(selectedWorker.getHoursPerWeek() != null) {
-                hoursPerWeekLabel.setText(String.valueOf(selectedWorker.getHoursPerWeek()));
-            } else {
-                hoursPerWeekLabel.setText("");
-            }
-            if(selectedWorker.getWage() != null) {
-                wageLabel.setText(String.valueOf(selectedWorker.getWage()));
-            } else {
-                wageLabel.setText("");
-            }
-        } else {
-            nameLabel.setText("");
-            lastNameLabel.setText("");
-            peselLabel.setText("");
-            hireDateLabel.setText("");
-            fireDateLabel.setText("");
-            hoursPerWeekLabel.setText("");
-            wageLabel.setText("");
-        }
-    }*/
 }

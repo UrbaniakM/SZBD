@@ -1,10 +1,14 @@
 package GUI.Dialogs.Workers;
 
+import Database.PositionsModification;
 import Database.WorkersModification;
+import Entities.Position;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -40,6 +44,11 @@ public class AddWorkerDialog extends AbstractDialog {
         hireDateDP.setPromptText("Hire date");
         TextField bonusTF = new TextField();
         bonusTF.setPromptText("Bonus");
+
+        /*ComboBox<Position> positionComboBox = new ComboBox<>();
+        ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+        positionComboBox.setItems();*/
+
         // TODO: position, team
 
         TextFieldRestrictions.addIntegerRestriction(bonusTF);
@@ -70,7 +79,7 @@ public class AddWorkerDialog extends AbstractDialog {
             return null;
         });
     }
-    public Worker popDialog(Connection connection){
+    public Worker popDialog(){
         Optional<Result> result = this.showAndWait();
         if (result.isPresent()) {
             Worker worker = new Worker();
@@ -79,7 +88,7 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setPesel(result.get().getPesel());
             worker.setHireDate(result.get().getHireDate());
             worker.setBonus(result.get().getBonus());
-            WorkersModification.addWorker(worker, connection);
+            WorkersModification.addObject(worker);
             return worker;
         }
         return null;
