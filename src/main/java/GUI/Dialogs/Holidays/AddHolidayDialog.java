@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public class AddHolidayDialog extends AbstractDialog {
-    ButtonType confirmButtonType;
+    private ButtonType confirmButtonType;
 
     // TODO WSZYSTKO
 
@@ -28,9 +28,9 @@ public class AddHolidayDialog extends AbstractDialog {
     }
 
     private class Result {
-        String pesel;
-        Date beginDate;
-        Date endDate;
+        private String pesel;
+        private Date beginDate;
+        private Date endDate;
 
         public Result(String pesel, LocalDate beginDate, LocalDate endDate){
             this.pesel = pesel;

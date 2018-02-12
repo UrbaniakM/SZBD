@@ -93,11 +93,11 @@ public class EditWorkerDialog extends AbstractDialog {
 
 
     private class Result {
-        String name;
-        String lastName;
-        String pesel;
-        Date hireDate;
-        Integer bonus;
+        private String name;
+        private String lastName;
+        private String pesel;
+        private Date hireDate;
+        private Integer bonus;
 
         public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus){
             this.name = name;

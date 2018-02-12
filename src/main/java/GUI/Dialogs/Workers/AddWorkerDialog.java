@@ -117,12 +117,12 @@ public class AddWorkerDialog extends AbstractDialog {
 
 
     private class Result {
-        String name;
-        String lastName;
-        String pesel;
-        Date hireDate;
-        Integer bonus;
-        String positionName;
+        private String name;
+        private String lastName;
+        private String pesel;
+        private Date hireDate;
+        private Integer bonus;
+        private String positionName;
 
         public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName){
             this.name = name;
