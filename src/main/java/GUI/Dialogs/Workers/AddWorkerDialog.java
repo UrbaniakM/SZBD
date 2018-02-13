@@ -7,17 +7,20 @@ import Entities.Position;
 import Entities.Team;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -44,7 +47,7 @@ public class AddWorkerDialog extends AbstractDialog {
         TextField peselTF = new TextField();
         peselTF.setPromptText("Pesel");
         DatePicker hireDateDP = new DatePicker();
-        hireDateDP.setPromptText("Hire date");
+        hireDateDP.setValue(LocalDate.now());
         TextField bonusTF = new TextField();
         bonusTF.setPromptText("Bonus");
 
@@ -94,6 +97,16 @@ public class AddWorkerDialog extends AbstractDialog {
         TextFieldRestrictions.addTextLimiter(peselTF,11);
         TextFieldRestrictions.addTextLimiter(bonusTF,6);
 
+        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType); // TODO: copy to another dialogs
+        loginButton.setDisable(true);
+        loginButton.disableProperty().bind(
+                nameTF.textProperty().isEmpty()
+                        .or( positionComboBox.valueProperty().isNull() )
+                        .or( lastNameTF.textProperty().isEmpty() )
+                        .or( peselTF.textProperty().isEmpty() )
+        );
+
+
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
         grid.add(new Label("Last name:"), 0, 2);
@@ -114,12 +127,12 @@ public class AddWorkerDialog extends AbstractDialog {
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
                 return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText(),
-                        positionComboBox.getValue().getName(), teamComboBox.getValue().getName());
+                        positionComboBox.getValue().getName(), teamComboBox.getValue());
             }
             return null;
         });
     }
-    public Worker popDialog(){
+    public Worker popDialog() {
         Optional<Result> result = this.showAndWait();
         if (result.isPresent()) {
             Worker worker = new Worker();
@@ -130,7 +143,13 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setBonus(result.get().getBonus());
             worker.setPositionName(result.get().getPositionName());
             worker.setTeamName(result.get().getTeamName());
-            WorkersModification.addObject(worker);
+            try{
+                WorkersModification.addObject(worker);
+            } catch (SQLException ex){
+                new ExceptionAlert("Error with database", "Try again.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with adding new worker", "Worker with this PESEL already in database.").showAndWait();
+            }
             return worker;
         }
         return null;
@@ -146,17 +165,17 @@ public class AddWorkerDialog extends AbstractDialog {
         private String positionName;
         private String teamName = null;
 
-        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName, String teamName){
+        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName, Team team){
             this.name = name;
             this.lastName = lastName;
             this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
-            if(bonus != null) {
+            if(!bonus.trim().equals("")) {
                 this.bonus = Integer.valueOf(bonus);
             }
             this.positionName = positionName;
-            if(teamName != null){
-                this.teamName = teamName;
+            if(team != null){  // TODO: allow team and bonus to be null - W KAZDYM DIALOGU
+                this.teamName = team.getName();
             }
         }
 

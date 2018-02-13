@@ -32,7 +32,7 @@ public class Holidays extends AnchorPane {
     private static Button backButton = new Button("\u2ba8");
 
 
-    private void refreshTableView(){
+    public final static void refreshTableView(){ // TODO: wywolanie tego dla kazdej zmiany w klasach w paczce Database
         ObservableList<Holiday> observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
         holidaysTable.setItems(observableList);
     }

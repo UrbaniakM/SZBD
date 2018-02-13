@@ -2,6 +2,7 @@ package Database;
 
 import Entities.Worker;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.ExceptionAlert;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -36,28 +37,34 @@ public class WorkersModification {
         }
     }
 
-    public static void addObject(Worker worker){ // TODO: EMPTY VALUES
+    public static void addObject(Worker worker) throws SQLException, IllegalArgumentException { // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
+        ResultSet selectStatement = null;
         try {
+            selectStatement = connection.createStatement().executeQuery(
+                    "SELECT * FROM workers WHERE pesel='" + worker.getPesel() + "'"
+            );
+            if (selectStatement.next()) {
+                throw new IllegalArgumentException("Worker with this PESEL already in database.");
+            }
             String sqlStatement = "INSERT INTO workers(imie, nazwisko, pesel, data_zatrudnienia, premia, nazwa_etatu, nazwa_zespolu) VALUES " +
                     "(?,?,?,?,?,?,?)";
             preparedStatement = connection.prepareStatement(sqlStatement);
-            preparedStatement.setString(1,worker.getName());
-            preparedStatement.setString(2,worker.getLastName());
-            preparedStatement.setString(3,worker.getPesel());
-            preparedStatement.setDate(4,worker.getHireDate());
-            preparedStatement.setInt(5,worker.getBonus());
-            preparedStatement.setString(6,worker.getPositionName());
-            preparedStatement.setString(7,worker.getTeamName());
+            preparedStatement.setString(1, worker.getName());
+            preparedStatement.setString(2, worker.getLastName());
+            preparedStatement.setString(3, worker.getPesel());
+            preparedStatement.setDate(4, worker.getHireDate());
+            preparedStatement.setInt(5, worker.getBonus());
+            preparedStatement.setString(6, worker.getPositionName());
+            preparedStatement.setString(7, worker.getTeamName());
             preparedStatement.executeUpdate();
-            // TODO: sprawdzanie, czy jest w tabeli juz
-        } catch (SQLException ex){
-            System.err.println("Statement execution failed! Check output console");
-            ex.printStackTrace();
-        } finally {
+        } catch (SQLException | IllegalArgumentException ex) {
+            throw ex;
+        }finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
+            try { selectStatement.close();; } catch (Exception ex) { };
         }
     }
 
