@@ -2,6 +2,7 @@ package GUI.Overviews;
 
 import Database.PositionsModification;
 import Entities.Position;
+import GUI.ApplicationGUI;
 import GUI.Dialogs.Positions.AddPositionDialog;
 import GUI.Dialogs.Positions.EditPositionDialog;
 import javafx.collections.FXCollections;
@@ -34,7 +35,7 @@ public class Positions extends AnchorPane {
         positionsTable.setItems(observableList);
     }
 
-    public Positions(Stage mainStage, Scene mainScene){
+    public Positions(){
         super();
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<Position,String>("name"));
@@ -68,7 +69,7 @@ public class Positions extends AnchorPane {
         buttons.getButtons().addAll(addPositionButton, editPositionButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
-            mainStage.setScene(mainScene);
+            ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());
         });
 
         this.getChildren().addAll(positionsTable,buttons, backButton);

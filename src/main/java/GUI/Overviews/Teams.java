@@ -2,6 +2,7 @@ package GUI.Overviews;
 
 import Database.TeamsModification;
 import Entities.Team;
+import GUI.ApplicationGUI;
 import GUI.Dialogs.Teams.AddTeamDialog;
 import GUI.Dialogs.Teams.EditTeamDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -36,7 +37,7 @@ public class Teams extends AnchorPane{
         teamsTable.setItems(observableList);
     }
 
-    public Teams(Stage mainStage, Scene mainScene){
+    public Teams(){
         super();
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<Team,String>("name"));
@@ -73,7 +74,7 @@ public class Teams extends AnchorPane{
         buttons.getButtons().addAll(addTeamButton, editTeamButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
-            mainStage.setScene(mainScene);
+            ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());
         });
 
         this.getChildren().addAll(teamsTable,buttons, backButton);

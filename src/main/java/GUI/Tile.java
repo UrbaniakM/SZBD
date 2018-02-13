@@ -42,9 +42,9 @@ public class Tile extends StackPane {
     }
 
 
-    public final void changeMainContent(Scene content, Stage mainStage){
+    public final void changeMainContent(Scene content){
         this.setOnMouseClicked((event) -> {
-            mainStage.setScene(content);
+            ApplicationGUI.getMainStage().setScene(content);
         });
     }
 }

@@ -14,8 +14,6 @@ import java.sql.Connection;
 
 public class ApplicationGUI extends Application {
     public static DatabaseConnection databaseConnection;
-    public static String username;
-    public static String password;
 
     private static Stage mainStage;
     private static Scene mainScene;
@@ -30,7 +28,7 @@ public class ApplicationGUI extends Application {
         launch(args);
     }
 
-    public Scene mainGUI(){
+    private Scene mainGUI(){
         FlowPane flowPane = new FlowPane();
         flowPane.setPadding(new Insets(5, 5, 5, 5));
         flowPane.setVgap(4);
@@ -47,22 +45,28 @@ public class ApplicationGUI extends Application {
         return new Scene(flowPane, 468, 314);
     }
 
+    public static Stage getMainStage(){
+        return mainStage;
+    }
+
+    public static Scene getMainScene(){
+        return mainScene;
+    }
+
     @Override
     public void start(Stage mainStage) {
         this.mainStage = mainStage;
         LoginDialog loginDialog = new LoginDialog();
-        username = loginDialog.getUsername();
-        password = loginDialog.getPassword();
         databaseConnection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
 
         mainScene = mainGUI();
         mainStage.setResizable(false);
 
-        workersTile.changeMainContent(new Scene(new Workers(mainStage, mainScene)), mainStage);
-        teamsTile.changeMainContent(new Scene(new Teams(mainStage, mainScene)), mainStage);
-        projectsTile.changeMainContent(new Scene(new Projects(mainStage, mainScene)), mainStage);
-        positionsTile.changeMainContent(new Scene(new Positions(mainStage, mainScene)), mainStage);
-        holidaysTile.changeMainContent(new Scene(new Holidays(mainStage, mainScene)), mainStage);
+        workersTile.changeMainContent(new Scene(new Workers()));
+        teamsTile.changeMainContent(new Scene(new Teams()));
+        projectsTile.changeMainContent(new Scene(new Projects()));
+        positionsTile.changeMainContent(new Scene(new Positions()));
+        holidaysTile.changeMainContent(new Scene(new Holidays()));
 
         mainStage.setScene(mainScene);
         mainStage.show();

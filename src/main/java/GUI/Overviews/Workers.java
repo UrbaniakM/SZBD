@@ -2,24 +2,16 @@ package GUI.Overviews;
 
 import Database.WorkersModification;
 import Entities.Worker;
+import GUI.ApplicationGUI;
 import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
-import java.sql.Connection;
-import java.sql.Date;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 
 public class Workers extends AnchorPane{
 
@@ -45,7 +37,7 @@ public class Workers extends AnchorPane{
         workersTable.setItems(observableList);
     }
 
-    public Workers(Stage mainStage, Scene mainScene){
+    public Workers(){
         super();
 
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
@@ -89,7 +81,7 @@ public class Workers extends AnchorPane{
         buttons.getButtons().addAll(addWorkerButton, editWorkerButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
-            mainStage.setScene(mainScene);
+            ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());
         });
 
         this.getChildren().addAll(workersTable,buttons, backButton);
@@ -100,5 +92,6 @@ public class Workers extends AnchorPane{
         this.setBottomAnchor(buttons,4.0);
         this.setTopAnchor(backButton, 2.0);
         this.setLeftAnchor(backButton, 2.0);
+        workersTable.setPrefWidth(800);
     }
 }

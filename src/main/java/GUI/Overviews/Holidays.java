@@ -2,6 +2,7 @@ package GUI.Overviews;
 
 import Database.HolidaysModification;
 import Entities.Holiday;
+import GUI.ApplicationGUI;
 import GUI.Dialogs.Holidays.AddHolidayDialog;
 import GUI.Dialogs.Holidays.EditHolidayDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -36,7 +37,7 @@ public class Holidays extends AnchorPane {
         holidaysTable.setItems(observableList);
     }
 
-    public Holidays(Stage mainStage, Scene mainScene){
+    public Holidays(){
         super();
 
         peselColumn.setCellValueFactory(new PropertyValueFactory<Holiday,String>("pesel"));
@@ -75,7 +76,7 @@ public class Holidays extends AnchorPane {
         buttons.getButtons().addAll(addHolidayButton, editHolidayButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
-            mainStage.setScene(mainScene);
+            ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());
         });
 
         this.getChildren().addAll(holidaysTable,buttons, backButton);

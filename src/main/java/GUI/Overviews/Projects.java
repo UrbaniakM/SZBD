@@ -2,6 +2,7 @@ package GUI.Overviews;
 
 import Database.ProjectsModification;
 import Entities.Project;
+import GUI.ApplicationGUI;
 import GUI.Dialogs.Projects.AddProjectDialog;
 import GUI.Dialogs.Projects.EditProjectDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -37,7 +38,7 @@ public class Projects extends AnchorPane{
         projectsTable.setItems(observableList);
     }
 
-    public Projects(Stage mainStage, Scene mainScene){
+    public Projects(){
         super();
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("name"));
@@ -77,7 +78,7 @@ public class Projects extends AnchorPane{
         buttons.getButtons().addAll(addTeamButton, editTeamButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
-            mainStage.setScene(mainScene);
+            ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());
         });
 
         this.getChildren().addAll(projectsTable,buttons, backButton);
