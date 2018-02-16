@@ -92,5 +92,6 @@ public class Teams extends AnchorPane{
         this.setBottomAnchor(buttons,4.0);
         this.setTopAnchor(backButton, 2.0);
         this.setLeftAnchor(backButton, 2.0);
+        teamsTable.setPrefWidth(400);
     }
 }

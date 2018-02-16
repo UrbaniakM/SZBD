@@ -54,7 +54,7 @@ public class WorkersModification {
                 preparedStatement.setString(2, worker.getLastName());
                 preparedStatement.setString(3, worker.getPesel());
                 preparedStatement.setDate(4, worker.getHireDate());
-                preparedStatement.setInt(5, worker.getBonus());
+                preparedStatement.setObject(5, worker.getBonus());
                 preparedStatement.setString(6, worker.getPositionName());
                 preparedStatement.setString(7, worker.getTeamName());
                 preparedStatement.executeUpdate();
@@ -68,7 +68,7 @@ public class WorkersModification {
         }
     }
 
-    public static void editObject(Worker previousWorker, Worker newWorker) throws SQLException{ // TODO: EMPTY VALUES
+    public static void editObject(Worker previousWorker, Worker newWorker) throws SQLException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -84,8 +84,7 @@ public class WorkersModification {
                 preparedStatement.setString(2,newWorker.getLastName());
                 preparedStatement.setString(3,newWorker.getPesel());
                 preparedStatement.setDate(4,newWorker.getHireDate());
-                // TODO: if bonus == null then setNull
-                preparedStatement.setInt(5,newWorker.getBonus());
+                preparedStatement.setObject(5,newWorker.getBonus()); // TODO: EMPTY VALUES: setObject where integer can be null
                 preparedStatement.setString(6,newWorker.getPositionName());
                 preparedStatement.setString(7,newWorker.getTeamName());
                 preparedStatement.setString(8,previousWorker.getPesel());

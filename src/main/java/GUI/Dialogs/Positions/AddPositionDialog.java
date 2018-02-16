@@ -4,7 +4,14 @@ import Database.PositionsModification;
 import Entities.Position;
 import GUI.Dialogs.AbstractDialog;
 import GUI.Dialogs.ExceptionAlert;
-import javafx.scene.control.ButtonType;
+import GUI.TextFieldRestrictions;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.util.StringConverter;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -14,7 +21,49 @@ import java.util.Optional;
 public class AddPositionDialog extends AbstractDialog {
     private ButtonType confirmButtonType;
 
-    // TODO WSZYSTKO
+    public AddPositionDialog(){
+        super();
+        this.setTitle("New position");
+        confirmButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        this.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField nameTF = new TextField();
+        nameTF.setPromptText("Name");
+        TextField wageTF = new TextField();
+        wageTF.setPromptText("Wage");
+
+        TextFieldRestrictions.addIntegerRestriction(wageTF);
+
+        TextFieldRestrictions.addTextLimiter(nameTF,32);
+        TextFieldRestrictions.addTextLimiter(wageTF,6);
+
+        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType); // TODO: copy to another dialogs
+        loginButton.setDisable(true);
+        loginButton.disableProperty().bind(
+                nameTF.textProperty().isEmpty()
+                        .or( wageTF.textProperty().isEmpty() )
+        );
+
+
+        grid.add(new Label("Name:"), 0, 1);
+        grid.add(nameTF, 1, 1);
+        grid.add(new Label("Wage:"), 0, 2);
+        grid.add(wageTF, 1, 2);
+
+        this.getDialogPane().setContent(grid);
+        this.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButtonType) {
+                return new Result(nameTF.getText(), wageTF.getText());
+            }
+            return null;
+        });
+    }
+
 
     public Position popDialog(){
         Optional<Result> result = this.showAndWait();

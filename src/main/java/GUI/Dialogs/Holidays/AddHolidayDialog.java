@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public class AddHolidayDialog extends AbstractDialog {
     private ButtonType confirmButtonType;
-    
+
     public AddHolidayDialog(){
         super();
         this.setTitle("New holiday");

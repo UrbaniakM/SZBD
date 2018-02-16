@@ -48,7 +48,7 @@ public class AddWorkerDialog extends AbstractDialog {
         DatePicker hireDateDP = new DatePicker();
         hireDateDP.setValue(LocalDate.now());
         TextField bonusTF = new TextField();
-        bonusTF.setPromptText("Bonus");
+        //bonusTF.setPromptText("Bonus");
 
         ComboBox<Position> positionComboBox = new ComboBox<>();
         try {
@@ -178,7 +178,7 @@ public class AddWorkerDialog extends AbstractDialog {
             this.lastName = lastName;
             this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
-            if(!bonus.trim().equals("")) {
+            if(bonus != null && !bonus.trim().equals("")) {
                 this.bonus = Integer.valueOf(bonus);
             }
             this.positionName = positionName;
