@@ -60,6 +60,7 @@ public class ProjectsModification {
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
+            try { selectStatement.close();; } catch (Exception ex) { };
         }
     }
 

@@ -40,13 +40,13 @@ public class HolidaysModification {
         PreparedStatement preparedStatement = null;
         try {
             selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
-                    "SELECT * FROM holidays WHERE pesel='" + holiday.getPesel() + "' AND czas_rozpoczecia='" + holiday.getBeginDate() + "'"
+                    "SELECT * FROM holidays WHERE pesel='" + holiday.getPesel() + "' AND czas_rozpoczecia='" + holiday.getBeginDate()+"'"
             );
             if (selectStatement.next()) {
                 throw new IllegalArgumentException("Holiday already in database.");
             }
             else {
-                String sqlStatement = "INSERT INTO holidays(pesel, czas_rozpoczecia, czas_zakonczenia) VALUES " +
+                String sqlStatement = "INSERT INTO holidays(pesel, czas_rozpoczecia, czas_zakoczenia) VALUES " + // TODO: zakoNczenia, nie zakoczenia
                         "(?,?,?)";
                 preparedStatement = connection.prepareStatement(sqlStatement);
                 preparedStatement.setString(1, holiday.getPesel());
@@ -59,6 +59,7 @@ public class HolidaysModification {
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
+            try { selectStatement.close();; } catch (Exception ex) { };
         }
     }
 
@@ -71,7 +72,7 @@ public class HolidaysModification {
                     "SELECT id_num FROM holidays WHERE id_num='" + previousHoliday.getPesel() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE holidays SET pesel = ?, czas_rozpoczecia = ?, czas_zakonczenia = ?" +
+                String updateStatement = "UPDATE holidays SET pesel = ?, czas_rozpoczecia = ?, czas_zakoczenia = ?" + // TODO: zakoNczenia, nie zakoczenia
                         "WHERE id_num = ?";
                 preparedStatement = connection.prepareStatement(updateStatement);
                 preparedStatement.setString(1,newHoliday.getPesel());

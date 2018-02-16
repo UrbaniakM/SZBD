@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
-//public class AddWorkerDialog extends Dialog implements AbstractDialog {
 public class AddWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
 

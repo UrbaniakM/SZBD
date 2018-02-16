@@ -20,7 +20,7 @@ public class LoginDialog extends Dialog {
         }
     };*/
 
-    public LoginDialog(){
+    public LoginDialog(){ // TODO: if cancel, then exit application; IF WRONG LOGIN, ANOTHER 2 ATTEMPTS
         super();
         this.setTitle("Log to database");
 
