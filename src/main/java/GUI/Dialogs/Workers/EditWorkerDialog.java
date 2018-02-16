@@ -3,6 +3,7 @@ package GUI.Dialogs.Workers;
 import Database.WorkersModification;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -11,6 +12,7 @@ import javafx.scene.layout.GridPane;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -85,7 +87,13 @@ public class EditWorkerDialog extends AbstractDialog {
             workerAfterEdition.setPesel(result.get().getPesel());
             workerAfterEdition.setHireDate(result.get().getHireDate());
             workerAfterEdition.setBonus(result.get().getBonus());
-            WorkersModification.editObject(workerBeforeEdition,workerAfterEdition);
+            try{
+                WorkersModification.editObject(workerBeforeEdition,workerAfterEdition);
+            } catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with editing the worker", "Worker no longer in database.").showAndWait();
+            }
             return workerAfterEdition;
         }
         return null;

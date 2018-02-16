@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.WorkersModification;
 import Entities.Worker;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Workers.AddWorkerDialog;
 import GUI.Dialogs.Workers.EditWorkerDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -12,6 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+
+import java.sql.SQLException;
 
 public class Workers extends AnchorPane{
 
@@ -33,8 +36,12 @@ public class Workers extends AnchorPane{
 
 
     private void refreshTableView(){
-        ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
-        workersTable.setItems(observableList);
+        try {
+            ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
+            workersTable.setItems(observableList);
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
     }
 
     public Workers(){

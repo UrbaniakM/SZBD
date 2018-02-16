@@ -3,9 +3,11 @@ package GUI.Dialogs.Projects;
 import Database.ProjectsModification;
 import Entities.Project;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import javafx.scene.control.ButtonType;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -22,7 +24,13 @@ public class AddProjectDialog extends AbstractDialog {
             project.setBeginDate(result.get().getBeginDate());
             project.setEndDate(result.get().getEndDate());
             project.setTeamName(result.get().getTeamName());
-            ProjectsModification.addObject(project);
+            try {
+                ProjectsModification.addObject(project);
+            } catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with adding new project", "Project already in database.").showAndWait();
+            }
             return project;
         }
         return null;

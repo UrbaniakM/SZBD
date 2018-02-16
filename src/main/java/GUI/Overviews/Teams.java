@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.TeamsModification;
 import Entities.Team;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Teams.AddTeamDialog;
 import GUI.Dialogs.Teams.EditTeamDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -17,6 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class Teams extends AnchorPane{
     private static final TableView<Team> teamsTable = new TableView<>();
@@ -33,8 +36,12 @@ public class Teams extends AnchorPane{
 
 
     private void refreshTableView(){
-        ObservableList<Team> observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
-        teamsTable.setItems(observableList);
+        try {
+            ObservableList<Team> observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
+            teamsTable.setItems(observableList);
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
     }
 
     public Teams(){

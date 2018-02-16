@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.HolidaysModification;
 import Entities.Holiday;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Holidays.AddHolidayDialog;
 import GUI.Dialogs.Holidays.EditHolidayDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -17,6 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class Holidays extends AnchorPane {
     private static final TableView<Holiday> holidaysTable = new TableView<>();
@@ -33,8 +36,12 @@ public class Holidays extends AnchorPane {
 
 
     public final static void refreshTableView(){ // TODO: wywolanie tego dla kazdej zmiany w klasach w paczce Database
-        ObservableList<Holiday> observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
-        holidaysTable.setItems(observableList);
+        try {
+            ObservableList<Holiday> observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
+            holidaysTable.setItems(observableList);
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
     }
 
     public Holidays(){

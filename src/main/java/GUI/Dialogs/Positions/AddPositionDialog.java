@@ -3,9 +3,11 @@ package GUI.Dialogs.Positions;
 import Database.PositionsModification;
 import Entities.Position;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import javafx.scene.control.ButtonType;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -20,7 +22,13 @@ public class AddPositionDialog extends AbstractDialog {
             Position position = new Position();
             position.setName(result.get().getName());
             position.setWage(result.get().getWage());
-            PositionsModification.addObject(position);
+            try {
+                PositionsModification.addObject(position);
+            } catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with adding new position", "Position with this name already in database.").showAndWait();
+            }
             return position;
         }
         return null;

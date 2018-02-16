@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.PositionsModification;
 import Entities.Position;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Positions.AddPositionDialog;
 import GUI.Dialogs.Positions.EditPositionDialog;
 import javafx.collections.FXCollections;
@@ -16,6 +17,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class Positions extends AnchorPane {
     private static final TableView<Position> positionsTable = new TableView<>();
@@ -31,8 +34,12 @@ public class Positions extends AnchorPane {
 
 
     private void refreshTableView(){
-        ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
-        positionsTable.setItems(observableList);
+        try {
+            ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+            positionsTable.setItems(observableList);
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
     }
 
     public Positions(){

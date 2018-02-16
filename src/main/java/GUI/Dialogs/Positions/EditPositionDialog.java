@@ -3,8 +3,10 @@ package GUI.Dialogs.Positions;
 import Database.PositionsModification;
 import Entities.Position;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import javafx.scene.control.ButtonType;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class EditPositionDialog extends AbstractDialog {
@@ -23,7 +25,13 @@ public class EditPositionDialog extends AbstractDialog {
         if (result.isPresent()) {
             positionAfterEdition.setName(result.get().getName());
             positionAfterEdition.setWage(result.get().getWage());
-            PositionsModification.editObject(positionBeforeEdition,positionAfterEdition);
+            try{
+                PositionsModification.editObject(positionBeforeEdition,positionAfterEdition);
+            }catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with editing the position", "Position no longer in database.").showAndWait();
+            }
             return positionAfterEdition;
         }
         return null;

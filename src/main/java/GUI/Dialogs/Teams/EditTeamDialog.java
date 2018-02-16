@@ -3,9 +3,11 @@ package GUI.Dialogs.Teams;
 import Database.TeamsModification;
 import Entities.Team;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import javafx.scene.control.ButtonType;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -26,7 +28,13 @@ public class EditTeamDialog extends AbstractDialog {
             teamAfterEdition.setName(result.get().getName());
             teamAfterEdition.setCreationDate(result.get().getCreationDate());
             teamAfterEdition.setLeaderPesel(result.get().getPeselLeader());
-            TeamsModification.editObject(teamBeforeEdition,teamAfterEdition);
+            try {
+                TeamsModification.editObject(teamBeforeEdition,teamAfterEdition);
+            } catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with editing the team", "Team no longer in database.").showAndWait();
+            }
             return teamAfterEdition;
         }
         return null;

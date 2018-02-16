@@ -3,9 +3,11 @@ package GUI.Dialogs.Projects;
 import Database.ProjectsModification;
 import Entities.Project;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import javafx.scene.control.ButtonType;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -27,7 +29,13 @@ public class EditProjectDialog extends AbstractDialog {
             projectAfterEdition.setBeginDate(result.get().getBeginDate());
             projectAfterEdition.setEndDate(result.get().getEndDate());
             projectAfterEdition.setTeamName(result.get().getTeamName());
-            ProjectsModification.editObject(projectBeforeEdition,projectAfterEdition);
+            try {
+                ProjectsModification.editObject(projectBeforeEdition,projectAfterEdition);
+            } catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with editing the project", "Project no longer in database.").showAndWait();
+            }
             return projectAfterEdition;
         }
         return null;

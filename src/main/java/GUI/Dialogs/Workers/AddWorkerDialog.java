@@ -52,42 +52,51 @@ public class AddWorkerDialog extends AbstractDialog {
         bonusTF.setPromptText("Bonus");
 
         ComboBox<Position> positionComboBox = new ComboBox<>();
-        ObservableList<Position> positionObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
-        positionComboBox.setItems(positionObservableList);
-        positionComboBox.setEditable(false);
+        try {
+            ObservableList<Position> positionObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+            positionComboBox.setItems(positionObservableList);
+            positionComboBox.setEditable(false);
 
-        positionComboBox.setConverter(new StringConverter<Position>() {
+            positionComboBox.setConverter(new StringConverter<Position>() {
 
-            @Override
-            public String toString(Position object) {
-                return object.getName() + " " + object.getWage();
-            }
+                @Override
+                public String toString(Position object) {
+                    return object.getName() + " " + object.getWage();
+                }
 
-            @Override
-            public Position fromString(String string) {
-                return positionComboBox.getItems().stream().filter(ap ->
-                        ap.getName().equals(string)).findFirst().orElse(null);
-            }
-        });
+                @Override
+                public Position fromString(String string) {
+                    return positionComboBox.getItems().stream().filter(ap ->
+                            ap.getName().equals(string)).findFirst().orElse(null);
+                }
+            });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
 
         ComboBox<Team> teamComboBox = new ComboBox<>();
-        ObservableList<Team> teamObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
-        teamComboBox.setItems(teamObservableList);
-        teamComboBox.setEditable(false);
+        try {
+            ObservableList<Team> teamObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
+            teamComboBox.setItems(teamObservableList);
+            teamComboBox.setEditable(false);
 
-        teamComboBox.setConverter(new StringConverter<Team>() {
+            teamComboBox.setConverter(new StringConverter<Team>() {
 
-            @Override
-            public String toString(Team object) {
-                return object.getName();
-            }
+                @Override
+                public String toString(Team object) {
+                    return object.getName();
+                }
 
-            @Override
-            public Team fromString(String string) {
-                return teamComboBox.getItems().stream().filter(ap ->
-                        ap.getName().equals(string)).findFirst().orElse(null);
-            }
-        });
+                @Override
+                public Team fromString(String string) {
+                    return teamComboBox.getItems().stream().filter(ap ->
+                            ap.getName().equals(string)).findFirst().orElse(null);
+                }
+            });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
+
 
         TextFieldRestrictions.addIntegerRestriction(bonusTF);
         TextFieldRestrictions.addIntegerRestriction(peselTF);
@@ -146,7 +155,7 @@ public class AddWorkerDialog extends AbstractDialog {
             try{
                 WorkersModification.addObject(worker);
             } catch (SQLException ex){
-                new ExceptionAlert("Error with database", "Try again.").showAndWait();
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new worker", "Worker with this PESEL already in database.").showAndWait();
             }

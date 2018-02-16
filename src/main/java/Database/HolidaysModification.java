@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HolidaysModification {
-    public static List<Holiday> importObject(){
+    public static List<Holiday> importObject() throws SQLException{
         List <Holiday> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
@@ -26,43 +26,48 @@ public class HolidaysModification {
                 data.add(holiday);
             }
             return data;
-        } catch (SQLException ex){
-            System.out.println("Statement execution failed! Check output console");
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { rs.close(); }  catch (Exception ex) { };
         }
     }
 
-    public static void addObject(Holiday holiday){ // TODO: EMPTY VALUES
+    public static void addObject(Holiday holiday) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
-            String sqlStatement = "INSERT INTO holidays(pesel, czas_rozpoczecia, czas_zakonczenia) VALUES " +
-                    "(?,?,?)";
-            preparedStatement = connection.prepareStatement(sqlStatement);
-            preparedStatement.setString(1,holiday.getPesel());
-            preparedStatement.setDate(2,holiday.getBeginDate());
-            preparedStatement.setDate(3,holiday.getEndDate());
-            preparedStatement.executeUpdate();
-            // TODO: sprawdzanie, czy jest w tabeli juz
-        } catch (SQLException ex){
-            System.err.println("Statement execution failed! Check output console");
-            ex.printStackTrace();
+            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+                    "SELECT * FROM holidays WHERE pesel='" + holiday.getPesel() + "' AND czas_rozpoczecia='" + holiday.getBeginDate() + "'"
+            );
+            if (selectStatement.next()) {
+                throw new IllegalArgumentException("Holiday already in database.");
+            }
+            else {
+                String sqlStatement = "INSERT INTO holidays(pesel, czas_rozpoczecia, czas_zakonczenia) VALUES " +
+                        "(?,?,?)";
+                preparedStatement = connection.prepareStatement(sqlStatement);
+                preparedStatement.setString(1, holiday.getPesel());
+                preparedStatement.setDate(2, holiday.getBeginDate());
+                preparedStatement.setDate(3, holiday.getEndDate());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | IllegalArgumentException ex) {
+            throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
         }
     }
 
-    public static void editObject(Holiday previousHoliday, Holiday newHoliday){ // TODO: EMPTY VALUES
+    public static void editObject(Holiday previousHoliday, Holiday newHoliday) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery(
+            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
                     "SELECT id_num FROM holidays WHERE id_num='" + previousHoliday.getPesel() + "'"
             );
             if(selectStatement.next()){
@@ -75,11 +80,10 @@ public class HolidaysModification {
                 preparedStatement.setInt(4,previousHoliday.getId());
                 preparedStatement.executeUpdate();
             } else {
-                System.err.println("Holiday no longer in database. Data loss possible");
+                throw new IllegalArgumentException("Holiday no longer in database.");
             }
-        } catch (SQLException ex){  //  TODO - DIALOG
-            System.err.println("Statement execution failed! Check output console");
-            ex.printStackTrace();
+        } catch (SQLException | IllegalArgumentException ex){
+            throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { selectStatement.close(); }  catch (Exception ex) { };

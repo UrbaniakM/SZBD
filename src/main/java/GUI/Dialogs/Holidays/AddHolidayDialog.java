@@ -3,9 +3,11 @@ package GUI.Dialogs.Holidays;
 import Database.HolidaysModification;
 import Entities.Holiday;
 import GUI.Dialogs.AbstractDialog;
+import GUI.Dialogs.ExceptionAlert;
 import javafx.scene.control.ButtonType;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -21,7 +23,13 @@ public class AddHolidayDialog extends AbstractDialog {
             holiday.setPesel(result.get().getPesel());
             holiday.setBeginDate(result.get().getBeginDate());
             holiday.setEndDate(result.get().getEndDate());
-            HolidaysModification.addObject(holiday);
+            try {
+                HolidaysModification.addObject(holiday);
+            } catch (SQLException ex){
+                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+            } catch (IllegalArgumentException ex){
+                new ExceptionAlert("Error with adding new holiday", "Holiday already in database.").showAndWait();
+            }
             return holiday;
         }
         return null;

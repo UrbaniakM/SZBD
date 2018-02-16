@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.ProjectsModification;
 import Entities.Project;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Projects.AddProjectDialog;
 import GUI.Dialogs.Projects.EditProjectDialog;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -17,6 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class Projects extends AnchorPane{
     private static final TableView<Project> projectsTable = new TableView<>();
@@ -34,8 +37,12 @@ public class Projects extends AnchorPane{
 
 
     private void refreshTableView(){
-        ObservableList<Project> observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
-        projectsTable.setItems(observableList);
+        try {
+            ObservableList<Project> observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
+            projectsTable.setItems(observableList);
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
     }
 
     public Projects(){
