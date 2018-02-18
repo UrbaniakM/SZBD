@@ -2,6 +2,7 @@ package Database;
 
 import Entities.Holiday;
 import GUI.ApplicationGUI;
+import oracle.net.jdbc.nl.NLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HolidaysModification {
-    public static List<Holiday> importObject() throws SQLException{
+    public static List<Holiday> importObject() throws SQLException, NullPointerException{
         List <Holiday> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
@@ -26,7 +27,7 @@ public class HolidaysModification {
                 data.add(holiday);
             }
             return data;
-        } catch (SQLException ex) {
+        } catch (SQLException | NullPointerException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -35,7 +36,7 @@ public class HolidaysModification {
         }
     }
 
-    public static void addObject(Holiday holiday) throws SQLException, IllegalArgumentException{
+    public static void addObject(Holiday holiday) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -55,7 +56,7 @@ public class HolidaysModification {
                 preparedStatement.setDate(3, holiday.getEndDate());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IllegalArgumentException ex) {
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -65,7 +66,7 @@ public class HolidaysModification {
         }
     }
 
-    public static void editObject(Holiday previousHoliday, Holiday newHoliday) throws SQLException, IllegalArgumentException{
+    public static void editObject(Holiday previousHoliday, Holiday newHoliday) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -85,7 +86,7 @@ public class HolidaysModification {
             } else {
                 throw new IllegalArgumentException("Holiday no longer in database.");
             }
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkersModification {
-    public static List<Worker> importObject() throws SQLException{
+    public static List<Worker> importObject() throws SQLException, NullPointerException{
         List <Worker> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
@@ -27,7 +27,7 @@ public class WorkersModification {
                 data.add(worker);
             }
             return data;
-        } catch (SQLException ex) {
+        } catch (SQLException | NullPointerException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -36,7 +36,7 @@ public class WorkersModification {
         }
     }
 
-    public static void addObject(Worker worker) throws SQLException, IllegalArgumentException { // TODO: EMPTY VALUES
+    public static void addObject(Worker worker) throws SQLException, IllegalArgumentException, NullPointerException { // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -60,7 +60,7 @@ public class WorkersModification {
                 preparedStatement.setString(7, worker.getTeamName());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IllegalArgumentException ex) {
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         }finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -70,7 +70,7 @@ public class WorkersModification {
         }
     }
 
-    public static void editObject(Worker previousWorker, Worker newWorker) throws SQLException{
+    public static void editObject(Worker previousWorker, Worker newWorker) throws SQLException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -95,7 +95,7 @@ public class WorkersModification {
                 throw new IllegalArgumentException("Worker no longer in database.");
             }
 
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };

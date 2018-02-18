@@ -41,7 +41,7 @@ public class Holidays extends AnchorPane {
         try {
             ObservableList<Holiday> observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
             holidaysTable.setItems(observableList);
-        } catch (SQLException ex){
+        } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
         }
     }

@@ -39,7 +39,7 @@ public class Teams extends AnchorPane{
         try {
             ObservableList<Team> observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
             teamsTable.setItems(observableList);
-        } catch (SQLException ex){
+        } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
         }
     }

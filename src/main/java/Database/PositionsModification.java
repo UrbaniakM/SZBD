@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PositionsModification {
-    public static List<Position> importObject() throws SQLException{
+    public static List<Position> importObject() throws SQLException, NullPointerException{
         List <Position> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
@@ -21,7 +21,7 @@ public class PositionsModification {
                 data.add(position);
             }
             return data;
-        } catch (SQLException ex) {
+        } catch (SQLException | NullPointerException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -30,7 +30,7 @@ public class PositionsModification {
         }
     }
 
-    public static void addObject(Position position) throws SQLException, IllegalArgumentException { // TODO: EMPTY VALUES
+    public static void addObject(Position position) throws SQLException, IllegalArgumentException, NullPointerException { // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -49,7 +49,7 @@ public class PositionsModification {
                 preparedStatement.setInt(2, position.getWage());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IllegalArgumentException ex) {
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -59,7 +59,7 @@ public class PositionsModification {
         }
     }
 
-    public static void editObject(Position previousPosition, Position newPosition) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void editObject(Position previousPosition, Position newPosition) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -77,7 +77,7 @@ public class PositionsModification {
             } else {
                 throw new IllegalArgumentException("Position no longer in database.");
             }
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -87,13 +87,13 @@ public class PositionsModification {
         }
     }
 
-    public static void deleteObject(Position position) throws SQLException, IllegalArgumentException{
+    public static void deleteObject(Position position) throws SQLException, IllegalArgumentException, NullPointerException {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         ResultSet inAnotherDatabase = null;
         try {
             selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
-                    "SELECT * FROM positions WHERE nazwa='" + position.getName() + "'"
+                    "SELECT positions.* FROM positions WHERE nazwa='" + position.getName() + "'"
             );
             inAnotherDatabase = connection.createStatement().executeQuery(
               "SELECT * FROM workers WHERE nazwa_etatu='" + position.getName() + "'"
@@ -106,10 +106,12 @@ public class PositionsModification {
             } else {
                 throw new IllegalArgumentException("Position no longer in database.");
             }
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { inAnotherDatabase.getStatement().close(); } catch (Exception ex) { };
+            try { inAnotherDatabase.close(); }  catch (Exception ex) { };
             try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { selectStatement.close(); }  catch (Exception ex) { };
         }

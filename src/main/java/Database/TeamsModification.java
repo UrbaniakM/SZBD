@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamsModification {
-    public static List<Team> importObject() throws SQLException{
+    public static List<Team> importObject() throws SQLException, NullPointerException{
         List <Team> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
@@ -25,7 +25,7 @@ public class TeamsModification {
                 data.add(team);
             }
             return data;
-        } catch (SQLException ex) {
+        } catch (SQLException | NullPointerException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -34,7 +34,7 @@ public class TeamsModification {
         }
     }
 
-    public static void addObject(Team team) throws SQLException, IllegalArgumentException{
+    public static void addObject(Team team) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -54,7 +54,7 @@ public class TeamsModification {
                 preparedStatement.setObject(3, team.getLeaderPesel());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -64,7 +64,7 @@ public class TeamsModification {
         }
     }
 
-    public static void editObject(Team previousTeam, Team newTeam) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void editObject(Team previousTeam, Team newTeam) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -84,7 +84,7 @@ public class TeamsModification {
             } else {
                 throw new IllegalArgumentException("Team no longer in database.");
             }
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };

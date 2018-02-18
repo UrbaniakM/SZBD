@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectsModification {
-    public static List<Project> importObject() throws SQLException{
+    public static List<Project> importObject() throws SQLException, NullPointerException{
         List <Project> data = new ArrayList<>();
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
@@ -26,7 +26,7 @@ public class ProjectsModification {
                 data.add(project);
             }
             return data;
-        } catch (SQLException ex) {
+        } catch (SQLException | NullPointerException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -35,7 +35,7 @@ public class ProjectsModification {
         }
     }
 
-    public static void addObject(Project project) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void addObject(Project project) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -56,7 +56,7 @@ public class ProjectsModification {
                 preparedStatement.setString(4, project.getTeamName());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException | IllegalArgumentException ex) {
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -66,7 +66,7 @@ public class ProjectsModification {
         }
     }
 
-    public static void editObject(Project previousProject, Project newProject) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void editObject(Project previousProject, Project newProject) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -87,7 +87,7 @@ public class ProjectsModification {
             } else {
                 throw new IllegalArgumentException("Project no longer in database.");
             }
-        } catch (SQLException | IllegalArgumentException ex){
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };

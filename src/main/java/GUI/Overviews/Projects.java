@@ -40,7 +40,7 @@ public class Projects extends AnchorPane{
         try {
             ObservableList<Project> observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
             projectsTable.setItems(observableList);
-        } catch (SQLException ex){
+        } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
         }
     }
