@@ -75,9 +75,10 @@ public class Workers extends AnchorPane{
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
-               new EditWorkerDialog(selectedWorker).popDialog();
+                new EditWorkerDialog(selectedWorker).popDialog();
+                refreshTableView(); // TODO refresh tylko dla edytowanego
+                selectedWorker = null;
             }
-            refreshTableView(); // TODO refresh tylko dla edytowanego
         });
         //TODO removeWorkerButton
 

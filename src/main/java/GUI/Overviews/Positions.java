@@ -68,8 +68,9 @@ public class Positions extends AnchorPane {
         editPositionButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedPosition != null){
                 new EditPositionDialog(selectedPosition).popDialog();
+                refreshTableView(); // TODO refresh tylko dla edytowanego
+                selectedPosition = null;
             }
-            refreshTableView(); // TODO refresh tylko dla edytowanego
         });
         // TODO removeHolidayButton
 

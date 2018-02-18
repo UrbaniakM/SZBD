@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.HolidaysModification;
 import Entities.Holiday;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.DeleteAlert;
 import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Holidays.AddHolidayDialog;
 import GUI.Dialogs.Holidays.EditHolidayDialog;
@@ -32,6 +33,7 @@ public class Holidays extends AnchorPane {
     private static ButtonBar buttons = new ButtonBar();
     private static Button addHolidayButton = new Button("Add");;
     private static Button editHolidayButton = new Button("Edit");
+    private static Button deleteHolidayButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
 
@@ -75,12 +77,29 @@ public class Holidays extends AnchorPane {
         editHolidayButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedHoliday != null){
                 new EditHolidayDialog(selectedHoliday).popDialog();
+                refreshTableView(); // TODO refresh tylko dla edytowanego
+                selectedHoliday = null;
             }
-            refreshTableView(); // TODO refresh tylko dla edytowanego
         });
-        // TODO removeHolidayButton
 
-        buttons.getButtons().addAll(addHolidayButton, editHolidayButton);
+        deleteHolidayButton.setOnMouseClicked((MouseEvent event) -> {
+            if(selectedHoliday != null){
+                if(new DeleteAlert().popDialog()){
+                    try{
+                        HolidaysModification.deleteObject(selectedHoliday);
+                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                        selectedHoliday = null;
+                    } catch (SQLException ex){
+                        ex.printStackTrace();
+                        new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                    } catch (IllegalArgumentException ex){
+                        new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
+                    }
+                }
+            }
+        });
+
+        buttons.getButtons().addAll(addHolidayButton, editHolidayButton, deleteHolidayButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
             ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());

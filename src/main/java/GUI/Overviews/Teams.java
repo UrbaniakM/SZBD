@@ -73,8 +73,9 @@ public class Teams extends AnchorPane{
         editTeamButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedTeam != null){
                 new EditTeamDialog(selectedTeam).popDialog();
+                refreshTableView(); // TODO refresh tylko dla edytowanego
+                selectedTeam = null;
             }
-            refreshTableView(); // TODO refresh tylko dla edytowanego
         });
         // TODO removeHolidayButton
 

@@ -81,8 +81,9 @@ public class Projects extends AnchorPane{
         editTeamButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedProject != null){
                 new EditProjectDialog(selectedProject).popDialog();
+                refreshTableView(); // TODO refresh tylko dla edytowanego
+                selectedProject = null;
             }
-            refreshTableView(); // TODO refresh tylko dla edytowanego
         });
         // TODO removeHolidayButton
 

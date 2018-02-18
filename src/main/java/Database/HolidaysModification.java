@@ -92,5 +92,24 @@ public class HolidaysModification {
         }
     }
 
-    // TODO: DELETE OBJECT
+    public static void deleteObject(Holiday holiday) throws SQLException, IllegalArgumentException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery( // TODO: createStatement close
+                    "SELECT id_num FROM holidays WHERE id_num='" + holiday.getId() + "'"
+            );
+            if(selectStatement.next()){
+                selectStatement.deleteRow();
+            } else {
+                throw new IllegalArgumentException("Holiday no longer in database.");
+            }
+        } catch (SQLException | IllegalArgumentException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+
+    }
 }
