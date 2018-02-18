@@ -31,6 +31,7 @@ public class WorkersModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
             try { rs.close(); }  catch (Exception ex) { };
         }
     }
@@ -40,7 +41,7 @@ public class WorkersModification {
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM workers WHERE pesel='" + worker.getPesel() + "'"
             );
             if (selectStatement.next()) {
@@ -74,7 +75,7 @@ public class WorkersModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT pesel FROM workers WHERE pesel='" + previousWorker.getPesel() + "'"
             );
             if(selectStatement.next()){

@@ -3,10 +3,7 @@ package Database;
 import Entities.Position;
 import GUI.ApplicationGUI;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +25,7 @@ public class PositionsModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
             try { rs.close(); }  catch (Exception ex) { };
         }
     }
@@ -37,7 +35,7 @@ public class PositionsModification {
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM positions WHERE nazwa='" + position.getName() + "'"
             );
             if (selectStatement.next()) {
@@ -66,7 +64,7 @@ public class PositionsModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT nazwa FROM positions WHERE nazwa='" + previousPosition.getName() + "'"
             );
             if(selectStatement.next()){
@@ -89,5 +87,32 @@ public class PositionsModification {
         }
     }
 
-    // TODO: DELETE OBJECT
+    public static void deleteObject(Position position) throws SQLException, IllegalArgumentException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        ResultSet inAnotherDatabase = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT * FROM positions WHERE nazwa='" + position.getName() + "'"
+            );
+            inAnotherDatabase = connection.createStatement().executeQuery(
+              "SELECT * FROM workers WHERE nazwa_etatu='" + position.getName() + "'"
+            );
+            if(inAnotherDatabase.next()){
+                throw new SQLDataException("Position in workers table.");
+            }
+            else if(selectStatement.next()){
+                selectStatement.deleteRow();
+            } else {
+                throw new IllegalArgumentException("Position no longer in database.");
+            }
+        } catch (SQLException | IllegalArgumentException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+
+    }
 }

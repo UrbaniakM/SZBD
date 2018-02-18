@@ -30,6 +30,7 @@ public class HolidaysModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
             try { rs.close(); }  catch (Exception ex) { };
         }
     }
@@ -39,7 +40,7 @@ public class HolidaysModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM holidays WHERE pesel='" + holiday.getPesel() + "' AND czas_rozpoczecia='" + holiday.getBeginDate()+"'"
             );
             if (selectStatement.next()) {
@@ -69,7 +70,7 @@ public class HolidaysModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT id_num FROM holidays WHERE id_num='" + previousHoliday.getId() + "'"
             );
             if(selectStatement.next()){
@@ -98,7 +99,7 @@ public class HolidaysModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         try {
-            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
                     "SELECT id_num FROM holidays WHERE id_num='" + holiday.getId() + "'"
             );
             if(selectStatement.next()){

@@ -30,6 +30,7 @@ public class ProjectsModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
             try { rs.close(); }  catch (Exception ex) { };
         }
     }
@@ -39,7 +40,7 @@ public class ProjectsModification {
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM projects WHERE nazwa='" + project.getName() + "'"
             );
             if (selectStatement.next()) {
@@ -70,7 +71,7 @@ public class ProjectsModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT nazwa FROM projects WHERE nazwa='" + previousProject.getName() + "'"
             );
             if(selectStatement.next()){

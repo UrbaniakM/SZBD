@@ -29,6 +29,7 @@ public class TeamsModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
             try { rs.close(); }  catch (Exception ex) { };
         }
     }
@@ -38,7 +39,7 @@ public class TeamsModification {
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM teams WHERE nazwa='" + team.getName() + "'"
             );
             if (selectStatement.next()) {
@@ -68,7 +69,7 @@ public class TeamsModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
-            selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
+            selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM teams WHERE nazwa='" + previousTeam.getName() + "'"
             );
             if(selectStatement.next()){
