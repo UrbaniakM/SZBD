@@ -83,10 +83,9 @@ public class Positions extends AnchorPane {
                         selectedPosition = null;
                     } catch (SQLDataException ex){
                         new ExceptionAlert("Error with deleting",
-                                "This position in assigned to at least one worker. " +
-                                        "Delete the worker or change his position before deleting this position.").showAndWait();
+                                "This position is assigned to at least one worker. " +
+                                        "Delete the worker(workers) or change his(their) position before deleting this position.").showAndWait();
                     } catch (SQLException ex){
-                        ex.printStackTrace();
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();

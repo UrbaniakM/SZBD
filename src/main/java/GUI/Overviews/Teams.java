@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.TeamsModification;
 import Entities.Team;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.DeleteAlert;
 import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Teams.AddTeamDialog;
 import GUI.Dialogs.Teams.EditTeamDialog;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 public class Teams extends AnchorPane{
@@ -32,6 +34,7 @@ public class Teams extends AnchorPane{
     private static ButtonBar buttons = new ButtonBar();
     private static Button addTeamButton = new Button("Add");;
     private static Button editTeamButton = new Button("Edit");
+    private static Button deleteTeamButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
 
@@ -77,9 +80,33 @@ public class Teams extends AnchorPane{
                 selectedTeam = null;
             }
         });
-        // TODO removeHolidayButton
-
-        buttons.getButtons().addAll(addTeamButton, editTeamButton);
+        deleteTeamButton.setOnMouseClicked((MouseEvent event) -> {
+            if(selectedTeam != null){
+                if(new DeleteAlert().popDialog()){
+                    try{
+                        TeamsModification.deleteObject(selectedTeam);
+                        selectedTeam = null;
+                    } catch (SQLDataException ex){
+                        if(ex.getMessage().equals("Team in projects table.")){
+                            new ExceptionAlert("Error with deleting",
+                                    "This team is assigned to at least one project. " +
+                                            "Delete the project(projects) or change its(their) team before deleting this team.").showAndWait();
+                        } else{
+                            new ExceptionAlert("Error with deleting",
+                                    "This team is assigned to at least one worker. " +
+                                            "Delete the worker(workers) or change his(their) team before deleting this team.").showAndWait();
+                        }
+                    } catch (SQLException ex){
+                        new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                    } catch (IllegalArgumentException ex){
+                        new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
+                    } finally {
+                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                    }
+                }
+            }
+        });
+        buttons.getButtons().addAll(addTeamButton, editTeamButton, deleteTeamButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
             ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());

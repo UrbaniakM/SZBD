@@ -3,10 +3,7 @@ package Database;
 import Entities.Team;
 import GUI.ApplicationGUI;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,5 +91,40 @@ public class TeamsModification {
         }
     }
 
-    // TODO: DELETE OBJECT
+    public static void deleteObject(Team team) throws SQLException, IllegalArgumentException, NullPointerException {
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        ResultSet inProjectDatabase = null;
+        ResultSet inWorkerDabase = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT teams.* FROM teams WHERE nazwa='" + team.getName() + "'"
+            );
+            inProjectDatabase = connection.createStatement().executeQuery(
+                    "SELECT * FROM projects WHERE nazwa_zespolu='" + team.getName() + "'"
+            );
+            inWorkerDabase = connection.createStatement().executeQuery(
+                    "SELECT * FROM workers WHERE nazwa_zespolu='" + team.getName() + "'"
+            );
+            if(inProjectDatabase.next()){
+                throw new SQLDataException("Team in projects table.");
+            } else if(inWorkerDabase.next()){
+                throw new SQLDataException("Team in workers table.");
+            } else if(selectStatement.next()){
+                selectStatement.deleteRow();
+            } else {
+                throw new IllegalArgumentException("Position no longer in database.");
+            }
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { inProjectDatabase.getStatement().close(); } catch (Exception ex) { };
+            try { inProjectDatabase.close(); }  catch (Exception ex) { };
+            try { inWorkerDabase.getStatement().close(); } catch (Exception ex) { };
+            try { inWorkerDabase.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+    }
 }
