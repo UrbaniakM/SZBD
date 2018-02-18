@@ -62,9 +62,9 @@ public class EditHolidayDialog extends AbstractDialog {
                             ap.getName().equals(string)).findFirst().orElse(null);
                 }
             });
-        } catch (SQLException ex){
+        } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-        }
+        } // TODO: InvalidArgumentException if already in database
 
         DatePicker beginDateDP = new DatePicker();
         beginDateDP.setValue(holiday.getBeginDate().toLocalDate());

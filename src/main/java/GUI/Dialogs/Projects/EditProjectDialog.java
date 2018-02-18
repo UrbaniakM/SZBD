@@ -114,7 +114,7 @@ public class EditProjectDialog extends AbstractDialog {
             projectAfterEdition.setTeamName(result.get().getTeamName());
             try {
                 ProjectsModification.editObject(projectBeforeEdition,projectAfterEdition);
-            } catch (SQLException ex){
+            } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with editing the project", "Project no longer in database.").showAndWait();

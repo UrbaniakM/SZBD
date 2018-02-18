@@ -96,7 +96,7 @@ public class AddHolidayDialog extends AbstractDialog {
             holiday.setEndDate(result.get().getEndDate());
             try {
                 HolidaysModification.addObject(holiday);
-            } catch (SQLException ex){
+            } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new holiday", "Holiday already in database.").showAndWait();

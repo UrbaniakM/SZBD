@@ -93,7 +93,7 @@ public class AddTeamDialog extends AbstractDialog {
             team.setLeaderPesel(result.get().getPeselLeader());
             try {
                 TeamsModification.addObject(team);
-            } catch (SQLException ex){
+            } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new team", "Team with this name already in database.").showAndWait();

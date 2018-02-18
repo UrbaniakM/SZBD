@@ -153,7 +153,7 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setTeamName(result.get().getTeamName());
             try{
                 WorkersModification.addObject(worker);
-            } catch (SQLException ex){
+            } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new worker", "Worker with this PESEL already in database.").showAndWait();

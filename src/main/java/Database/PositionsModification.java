@@ -56,6 +56,7 @@ public class PositionsModification {
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { selectStatement.close();; } catch (Exception ex) { };
         }
     }
@@ -82,6 +83,7 @@ public class PositionsModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { selectStatement.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
         }

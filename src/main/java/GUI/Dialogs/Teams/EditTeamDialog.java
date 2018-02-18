@@ -102,7 +102,7 @@ public class EditTeamDialog extends AbstractDialog {
             teamAfterEdition.setLeaderPesel(result.get().getPeselLeader());
             try {
                 TeamsModification.editObject(teamBeforeEdition,teamAfterEdition);
-            } catch (SQLException ex){
+            } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with editing the team", "Team no longer in database.").showAndWait();

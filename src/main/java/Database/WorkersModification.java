@@ -64,6 +64,7 @@ public class WorkersModification {
         }finally {
             try { connection.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { selectStatement.close();; } catch (Exception ex) { };
         }
     }
@@ -97,6 +98,7 @@ public class WorkersModification {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { selectStatement.close(); }  catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
         }
