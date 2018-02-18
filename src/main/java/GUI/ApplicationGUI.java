@@ -1,6 +1,6 @@
 package GUI;
 
-import Database.DatabaseConnection;
+import Database.*;
 import Entities.Position;
 import GUI.Dialogs.LoginDialog;
 import GUI.Overviews.*;
@@ -67,6 +67,15 @@ public class ApplicationGUI extends Application {
         projectsTile.changeMainContent(new Scene(new Projects()));
         positionsTile.changeMainContent(new Scene(new Positions()));
         holidaysTile.changeMainContent(new Scene(new Holidays()));
+
+        try { // TODO: new content, delete print in console
+            System.out.println("Workers: " + WorkersModification.countObjects());
+            System.out.println("Projects: " + ProjectsModification.countObjects());
+            System.out.println("Teams: " + TeamsModification.countObjects());
+            System.out.println("Positions: " + PositionsModification.countObjects());
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
 
         mainStage.setScene(mainScene);
         mainStage.show();

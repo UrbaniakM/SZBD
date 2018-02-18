@@ -129,4 +129,24 @@ public class TeamsModification {
             try { selectStatement.close(); }  catch (Exception ex) { };
         }
     }
+
+    public static int countObjects() throws SQLException {
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT COUNT(*) FROM teams"
+            );
+            if(selectStatement.next()){
+                return selectStatement.getInt(1);
+            }
+            return 0;
+        } catch (SQLException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+    }
 }
