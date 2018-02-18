@@ -33,7 +33,7 @@ public class DatabaseConnection {
             System.out.println("Oracle JDBC Driver failure! Check output console");
             e.printStackTrace();
             return null;
-
+//TODO: alerts
         }
         System.out.println("Connected to database");
         return connection;

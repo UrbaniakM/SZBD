@@ -65,6 +65,8 @@ public class AddHolidayDialog extends AbstractDialog {
         loginButton.setDisable(true);
         loginButton.disableProperty().bind(
                 workerComboBox.valueProperty().isNull()
+                .or( beginDateDP.valueProperty().isNull() )
+                .or( endDateDP.valueProperty().isNull() )
         );
 
 

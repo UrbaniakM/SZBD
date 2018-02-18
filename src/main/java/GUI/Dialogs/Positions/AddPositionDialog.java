@@ -42,7 +42,7 @@ public class AddPositionDialog extends AbstractDialog {
         TextFieldRestrictions.addTextLimiter(nameTF,32);
         TextFieldRestrictions.addTextLimiter(wageTF,6);
 
-        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType); // TODO: copy to another dialogs
+        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType);
         loginButton.setDisable(true);
         loginButton.disableProperty().bind(
                 nameTF.textProperty().isEmpty()
@@ -85,7 +85,7 @@ public class AddPositionDialog extends AbstractDialog {
 
     private class Result {
         private String name;
-        private int wage;
+        private Integer wage;
 
         public Result(String name, String wage) {
             this.name = name;
@@ -96,7 +96,7 @@ public class AddPositionDialog extends AbstractDialog {
             return name;
         }
 
-        public int getWage() {
+        public Integer getWage() {
             return wage;
         }
     }

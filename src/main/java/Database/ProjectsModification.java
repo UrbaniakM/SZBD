@@ -46,8 +46,8 @@ public class ProjectsModification {
                 throw new IllegalArgumentException("Project with this name already in database.");
             }
             else {
-                String sqlStatement = "INSERT INTO projects(nazwa, data_rozpoczecia, data_zakonczenia, nazwa_zespolu) VALUES " +
-                        "(?,?,?)";
+                String sqlStatement = "INSERT INTO projects(nazwa, data_rozpoczecia, data_zakoczenia, nazwa_zespolu) VALUES " +
+                        "(?,?,?,?)"; // TODO: data_zakoNczenia, nie data_zakoczenia
                 preparedStatement = connection.prepareStatement(sqlStatement);
                 preparedStatement.setString(1, project.getName());
                 preparedStatement.setDate(2, project.getBeginDate());
@@ -68,13 +68,13 @@ public class ProjectsModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
-        try {
+        try { // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
                     "SELECT nazwa FROM projects WHERE nazwa='" + previousProject.getName() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE projects SET nazwa = ?, data_rozpoczecia = ?, data_zakonczenia = ?, nazwa_zespolu = ?" +
-                        "WHERE nazwa = ?";
+                String updateStatement = "UPDATE projects SET nazwa = ?, data_rozpoczecia = ?, data_zakoczenia = ?, nazwa_zespolu = ?" +
+                        "WHERE nazwa = ?"; // TODO: data_zakoNczenia, nie data_zakoczenia
                 preparedStatement = connection.prepareStatement(updateStatement);
                 preparedStatement.setString(1,newProject.getName());
                 preparedStatement.setDate(2,newProject.getBeginDate());

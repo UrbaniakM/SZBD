@@ -11,6 +11,16 @@ public class Team {
     private Date creationDate;
     private String leaderPesel;
 
+    public Team(){
+
+    }
+
+    public Team(Team team){
+        this.name = team.getName();
+        this.creationDate = team.getCreationDate();
+        this.leaderPesel = team.getLeaderPesel();
+    }
+
     public String getName() {
         return name;
     }

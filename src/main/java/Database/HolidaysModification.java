@@ -34,7 +34,7 @@ public class HolidaysModification {
         }
     }
 
-    public static void addObject(Holiday holiday) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void addObject(Holiday holiday) throws SQLException, IllegalArgumentException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
@@ -63,13 +63,13 @@ public class HolidaysModification {
         }
     }
 
-    public static void editObject(Holiday previousHoliday, Holiday newHoliday) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void editObject(Holiday previousHoliday, Holiday newHoliday) throws SQLException, IllegalArgumentException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
-        try {
+        try { // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
-                    "SELECT id_num FROM holidays WHERE id_num='" + previousHoliday.getPesel() + "'"
+                    "SELECT id_num FROM holidays WHERE id_num='" + previousHoliday.getId() + "'"
             );
             if(selectStatement.next()){
                 String updateStatement = "UPDATE holidays SET pesel = ?, czas_rozpoczecia = ?, czas_zakoczenia = ?" + // TODO: zakoNczenia, nie zakoczenia

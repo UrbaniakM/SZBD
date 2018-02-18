@@ -39,7 +39,7 @@ public class AddProjectDialog extends AbstractDialog {
         DatePicker beginDateDP = new DatePicker();
         beginDateDP.setValue(LocalDate.now());
         DatePicker endDateDP = new DatePicker();
-        endDateDP.setValue(LocalDate.now().plusDays(1));
+        endDateDP.setPromptText("End date");
 
         ComboBox<Team> teamComboBox = new ComboBox<>();
         try {
@@ -64,7 +64,7 @@ public class AddProjectDialog extends AbstractDialog {
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
         }
 
-        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType); // TODO: copy to another dialogs
+        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType);
         loginButton.setDisable(true);
         loginButton.disableProperty().bind(
                 nameTF.textProperty().isEmpty()

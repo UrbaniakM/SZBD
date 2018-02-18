@@ -72,7 +72,7 @@ public class WorkersModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
-        try {
+        try { // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
                     "SELECT pesel FROM workers WHERE pesel='" + previousWorker.getPesel() + "'"
             );

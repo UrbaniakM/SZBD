@@ -33,7 +33,7 @@ public class TeamsModification {
         }
     }
 
-    public static void addObject(Team team) throws SQLException, IllegalArgumentException{ // TODO: EMPTY VALUES
+    public static void addObject(Team team) throws SQLException, IllegalArgumentException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -50,7 +50,7 @@ public class TeamsModification {
                 preparedStatement = connection.prepareStatement(sqlStatement);
                 preparedStatement.setString(1, team.getName());
                 preparedStatement.setDate(2, team.getCreationDate());
-                preparedStatement.setString(3, team.getLeaderPesel());
+                preparedStatement.setObject(3, team.getLeaderPesel());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException | IllegalArgumentException ex){

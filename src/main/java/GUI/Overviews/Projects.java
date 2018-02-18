@@ -53,7 +53,11 @@ public class Projects extends AnchorPane{
             return new ReadOnlyStringWrapper(value.getValue().getBeginDate().toString());
         });
         endDateColumn.setCellValueFactory(value -> {
-            return new ReadOnlyStringWrapper(value.getValue().getEndDate().toString());
+            if(value.getValue().getEndDate() != null) {
+                return new ReadOnlyStringWrapper(value.getValue().getEndDate().toString());
+            } else {
+                return new ReadOnlyStringWrapper("");
+            }
         });
         teamColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("teamName"));
 
@@ -96,5 +100,6 @@ public class Projects extends AnchorPane{
         this.setBottomAnchor(buttons,4.0);
         this.setTopAnchor(backButton, 2.0);
         this.setLeftAnchor(backButton, 2.0);
+        projectsTable.setPrefWidth(430);
     }
 }

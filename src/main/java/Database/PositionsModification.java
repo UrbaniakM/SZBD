@@ -64,7 +64,7 @@ public class PositionsModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
-        try {
+        try { // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery( // TODO: createStatement close
                     "SELECT nazwa FROM positions WHERE nazwa='" + previousPosition.getName() + "'"
             );

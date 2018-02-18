@@ -48,7 +48,7 @@ public class AddWorkerDialog extends AbstractDialog {
         DatePicker hireDateDP = new DatePicker();
         hireDateDP.setValue(LocalDate.now());
         TextField bonusTF = new TextField();
-        //bonusTF.setPromptText("Bonus");
+        bonusTF.setPromptText("Bonus");
 
         ComboBox<Position> positionComboBox = new ComboBox<>();
         try {

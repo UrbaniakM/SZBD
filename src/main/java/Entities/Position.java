@@ -2,7 +2,16 @@ package Entities;
 
 public class Position {
     private String name;
-    private int wage;
+    private Integer wage;
+
+    public Position(){
+
+    }
+
+    public Position(Position position){
+        this.name = position.getName();
+        this.wage = position.getWage();
+    }
 
     public String getName() {
         return name;
@@ -12,11 +21,11 @@ public class Position {
         this.name = name;
     }
 
-    public int getWage() {
+    public Integer getWage() {
         return wage;
     }
 
-    public void setWage(int wage) {
+    public void setWage(Integer wage) {
         this.wage = wage;
     }
 }

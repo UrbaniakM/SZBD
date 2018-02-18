@@ -11,6 +11,17 @@ public class Holiday {
     private Date endDate;
     private String pesel;
 
+    public Holiday(){
+
+    }
+
+    public Holiday(Holiday holiday){
+        this.id = holiday.getId();
+        this.beginDate = holiday.getBeginDate();
+        this.endDate = holiday.getEndDate();
+        this.pesel = holiday.getPesel();
+    }
+
     public Date getBeginDate() {
         return beginDate;
     }

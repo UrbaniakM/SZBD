@@ -51,11 +51,7 @@ public class Workers extends AnchorPane{
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
         peselColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("pesel"));
         hireDateColumn.setCellValueFactory(value -> {
-            if(value.getValue().getHireDate() != null) {
-                return new ReadOnlyStringWrapper(value.getValue().getHireDate().toString());
-            } else {
-                return new ReadOnlyStringWrapper("");
-            }
+            return new ReadOnlyStringWrapper(value.getValue().getHireDate().toString());
         });
         bonusColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("bonus"));
         positionNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("positionName"));
@@ -99,6 +95,6 @@ public class Workers extends AnchorPane{
         this.setBottomAnchor(buttons,4.0);
         this.setTopAnchor(backButton, 2.0);
         this.setLeftAnchor(backButton, 2.0);
-        workersTable.setPrefWidth(800);
+        workersTable.setPrefWidth(830);
     }
 }

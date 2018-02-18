@@ -64,7 +64,7 @@ public class AddTeamDialog extends AbstractDialog {
         Node loginButton = this.getDialogPane().lookupButton(confirmButtonType);
         loginButton.setDisable(true);
         loginButton.disableProperty().bind(
-                leaderComboBox.valueProperty().isNull()
+                nameTF.textProperty().isEmpty()
         );
 
 
@@ -78,7 +78,7 @@ public class AddTeamDialog extends AbstractDialog {
         this.getDialogPane().setContent(grid);
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(nameTF.getText(), creationDateDP.getValue(), leaderComboBox.getValue().getPesel());
+                return new Result(nameTF.getText(), creationDateDP.getValue(), leaderComboBox.getValue());
             }
             return null;
         });
@@ -106,12 +106,14 @@ public class AddTeamDialog extends AbstractDialog {
     private class Result {
         private String name;
         private Date creationDate;
-        private String peselLeader;
+        private String peselLeader = null;
 
-        public Result(String name, LocalDate creationDate, String peselLeader) {
+        public Result(String name, LocalDate creationDate, Worker leader) {
             this.name = name;
             this.creationDate = Date.valueOf(creationDate);
-            this.peselLeader = peselLeader;
+            if(leader != null) {
+                this.peselLeader = leader.getPesel();
+            }
         }
 
         public String getName() {

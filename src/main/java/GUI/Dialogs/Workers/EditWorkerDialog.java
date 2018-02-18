@@ -1,14 +1,22 @@
 package GUI.Dialogs.Workers;
 
+import Database.PositionsModification;
+import Database.TeamsModification;
 import Database.WorkersModification;
+import Entities.Position;
+import Entities.Team;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
 import GUI.Dialogs.ExceptionAlert;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.util.StringConverter;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -45,9 +53,83 @@ public class EditWorkerDialog extends AbstractDialog {
         DatePicker hireDateDP = new DatePicker();
         hireDateDP.setValue(workerBeforeEdition.getHireDate().toLocalDate());
         TextField bonusTF = new TextField();
+        bonusTF.setPromptText("Bonus");
         bonusTF.setText(workerBeforeEdition.getBonus().toString());
-        // TODO: position, team - SWITCH
 
+        ComboBox<Position> positionComboBox = new ComboBox<>();
+        try {
+            ObservableList<Position> positionObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+            positionComboBox.setItems(positionObservableList);
+            positionComboBox.setEditable(false);
+            for (int index = 0; index < positionObservableList.size(); index++) {
+                if(positionObservableList.get(index).getName().equals(worker.getPositionName())){
+                    positionComboBox.getSelectionModel().select(index);
+                    break;
+                }
+            }
+
+            positionComboBox.setConverter(new StringConverter<Position>() {
+
+                @Override
+                public String toString(Position object) {
+                    return object.getName() + " " + object.getWage();
+                }
+
+                @Override
+                public Position fromString(String string) {
+                    return positionComboBox.getItems().stream().filter(ap ->
+                            ap.getName().equals(string)).findFirst().orElse(null);
+                }
+            });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
+
+        ComboBox<Team> teamComboBox = new ComboBox<>();
+        try {
+            ObservableList<Team> teamObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
+            teamComboBox.setItems(teamObservableList);
+            teamComboBox.setEditable(false);
+            for (int index = 0; index < teamObservableList.size(); index++) {
+                if(teamObservableList.get(index).getName().equals(worker.getTeamName())){
+                    teamComboBox.getSelectionModel().select(index);
+                    break;
+                }
+            }
+
+            teamComboBox.setConverter(new StringConverter<Team>() {
+
+                @Override
+                public String toString(Team object) {
+                    return object.getName();
+                }
+
+                @Override
+                public Team fromString(String string) {
+                    return teamComboBox.getItems().stream().filter(ap ->
+                            ap.getName().equals(string)).findFirst().orElse(null);
+                }
+            });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
+
+        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType);
+        loginButton.setDisable(true);
+        loginButton.disableProperty().bind(
+                nameTF.textProperty().isEmpty()
+                        .or( positionComboBox.valueProperty().isNull() )
+                        .or( lastNameTF.textProperty().isEmpty() )
+                        .or( peselTF.textProperty().isEmpty() )
+        );
+
+        TextFieldRestrictions.addIntegerRestriction(bonusTF);
+        TextFieldRestrictions.addIntegerRestriction(peselTF);
+
+        TextFieldRestrictions.addTextLimiter(nameTF,32);
+        TextFieldRestrictions.addTextLimiter(lastNameTF,32);
+        TextFieldRestrictions.addTextLimiter(peselTF,11);
+        TextFieldRestrictions.addTextLimiter(bonusTF,6);
 
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
@@ -59,15 +141,11 @@ public class EditWorkerDialog extends AbstractDialog {
         grid.add(hireDateDP, 1, 4);
         grid.add(new Label("Bonus:"), 0, 5);
         grid.add(bonusTF, 1, 5);
+        grid.add(new Label("Position:"),0,6);
+        grid.add(positionComboBox, 1, 6);
+        grid.add(new Label("Team:"),0,7);
+        grid.add(teamComboBox, 1, 7);
 
-
-        TextFieldRestrictions.addIntegerRestriction(bonusTF);
-        TextFieldRestrictions.addIntegerRestriction(peselTF);
-
-        TextFieldRestrictions.addTextLimiter(nameTF,32);
-        TextFieldRestrictions.addTextLimiter(lastNameTF,32);
-        TextFieldRestrictions.addTextLimiter(peselTF,11);
-        TextFieldRestrictions.addTextLimiter(bonusTF,6);
 
         this.getDialogPane().setContent(grid);
         Platform.runLater(() -> nameTF.requestFocus());
