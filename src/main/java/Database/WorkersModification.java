@@ -1,5 +1,6 @@
 package Database;
 
+import Entities.Team;
 import Entities.Worker;
 import GUI.ApplicationGUI;
 import GUI.Dialogs.ExceptionAlert;
@@ -105,5 +106,41 @@ public class WorkersModification {
         }
     }
 
-    // TODO: DELETE OBJECT
+
+    public static void deleteObject(Worker worker) throws SQLException, IllegalArgumentException, NullPointerException {
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        ResultSet inTeamDatabase = null;
+        ResultSet inHolidaysDabase = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT workers.* FROM workers WHERE pesel='" + worker.getPesel() + "'"
+            );
+            inTeamDatabase = connection.createStatement().executeQuery(
+                    "SELECT * FROM teams WHERE pesel_leader='" + worker.getPesel() + "'"
+            );
+            inHolidaysDabase = connection.createStatement().executeQuery(
+                    "SELECT * FROM holidays WHERE pesel='" + worker.getPesel() + "'"
+            );
+            if(inTeamDatabase.next()){
+                throw new SQLDataException("Worker in teams table.");  // TODO: assign null leader
+            } else if(inHolidaysDabase.next()){
+                throw new SQLDataException("Worker in holidays table."); // TODO: delete all holidays
+            } else if(selectStatement.next()){
+                selectStatement.deleteRow();
+            } else {
+                throw new IllegalArgumentException("Position no longer in database.");
+            }
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { inTeamDatabase.getStatement().close(); } catch (Exception ex) { };
+            try { inTeamDatabase.close(); }  catch (Exception ex) { };
+            try { inHolidaysDabase.getStatement().close(); } catch (Exception ex) { };
+            try { inHolidaysDabase.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+    }
 }
