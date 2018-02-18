@@ -9,7 +9,7 @@ public class Holiday {
     private int id;
     private Date beginDate;
     private Date endDate;
-    private String pesel;
+    private Integer workerId;
 
     public Holiday(){
 
@@ -19,7 +19,7 @@ public class Holiday {
         this.id = holiday.getId();
         this.beginDate = holiday.getBeginDate();
         this.endDate = holiday.getEndDate();
-        this.pesel = holiday.getPesel();
+        this.workerId = holiday.getWorkerId();
     }
 
     public Date getBeginDate() {
@@ -38,12 +38,12 @@ public class Holiday {
         this.endDate = endDate;
     }
 
-    public String getPesel() {
-        return pesel;
+    public Integer getWorkerId() {
+        return workerId;
     }
 
-    public void setPesel(String pesel) {
-        this.pesel = pesel;
+    public void setWorkerId(Integer workerId) {
+        this.workerId = workerId;
     }
 
     public int getId() {

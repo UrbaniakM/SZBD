@@ -27,7 +27,7 @@ public class Teams extends AnchorPane{
     private static final TableView<Team> teamsTable = new TableView<>();
     private static final TableColumn<Team, String> nameColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Team, String> creationDateColumn = new TableColumn<>("Created");
-    private static final TableColumn<Team, String> peselLeaderColumn = new TableColumn<>("Leader (PESEL)");
+    //private static final TableColumn<Team, String> peselLeaderColumn = new TableColumn<>("Leader (PESEL)");
 
     private Team selectedTeam = null;
 
@@ -55,9 +55,9 @@ public class Teams extends AnchorPane{
         creationDateColumn.setCellValueFactory(value -> {
             return new ReadOnlyStringWrapper(value.getValue().getCreationDate().toString());
         });
-        peselLeaderColumn.setCellValueFactory(new PropertyValueFactory<Team,String>("leaderPesel"));
+        //peselLeaderColumn.setCellValueFactory(new PropertyValueFactory<Team,String>("leaderPesel"));
 
-        teamsTable.getColumns().addAll(nameColumn, creationDateColumn, peselLeaderColumn);
+        teamsTable.getColumns().addAll(nameColumn, creationDateColumn);//, peselLeaderColumn);
         teamsTable.setEditable(false);
         refreshTableView();
 
@@ -72,7 +72,11 @@ public class Teams extends AnchorPane{
         addTeamButton.setOnMouseClicked((MouseEvent event) -> {
             Team newTeam = new AddTeamDialog().popDialog();
             if(newTeam != null){
-                observableList.add(newTeam);
+                try {
+                    observableList.add(TeamsModification.importObject(newTeam));
+                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
+                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                }
             }
         });
 
@@ -86,7 +90,7 @@ public class Teams extends AnchorPane{
                     selectedTeam = null;
                     teamsTable.getSelectionModel().clearSelection();
                 }
-            }  // TODO: if no longer in database, remove from tableview / refresh
+            }
         });
         deleteTeamButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedTeam != null){

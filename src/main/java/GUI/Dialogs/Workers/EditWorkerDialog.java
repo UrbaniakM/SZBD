@@ -62,7 +62,7 @@ public class EditWorkerDialog extends AbstractDialog {
             positionComboBox.setItems(positionObservableList);
             positionComboBox.setEditable(false);
             for (int index = 0; index < positionObservableList.size(); index++) {
-                if(positionObservableList.get(index).getName().equals(worker.getPositionName())){
+                if(positionObservableList.get(index).getId().equals(worker.getPositionId())){
                     positionComboBox.getSelectionModel().select(index);
                     break;
                 }
@@ -91,7 +91,7 @@ public class EditWorkerDialog extends AbstractDialog {
             teamComboBox.setItems(teamObservableList);
             teamComboBox.setEditable(false);
             for (int index = 0; index < teamObservableList.size(); index++) {
-                if(teamObservableList.get(index).getName().equals(worker.getTeamName())){
+                if(teamObservableList.get(index).getId().equals(worker.getTeamId())){
                     teamComboBox.getSelectionModel().select(index);
                     break;
                 }
@@ -151,7 +151,8 @@ public class EditWorkerDialog extends AbstractDialog {
         Platform.runLater(() -> nameTF.requestFocus());
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText());
+                return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText(),
+                        positionComboBox.getValue().getId(), teamComboBox.getValue());
             }
             return null;
         });
@@ -165,6 +166,9 @@ public class EditWorkerDialog extends AbstractDialog {
             workerAfterEdition.setPesel(result.get().getPesel());
             workerAfterEdition.setHireDate(result.get().getHireDate());
             workerAfterEdition.setBonus(result.get().getBonus());
+            workerAfterEdition.setId(workerBeforeEdition.getId());
+            workerAfterEdition.setTeamId(result.get().getTeamId());
+            workerAfterEdition.setPositionId(result.get().getPositionId());
             try{
                 WorkersModification.editObject(workerBeforeEdition,workerAfterEdition);
             } catch (SQLException | NullPointerException ex){
@@ -185,14 +189,22 @@ public class EditWorkerDialog extends AbstractDialog {
         private String lastName;
         private String pesel;
         private Date hireDate;
-        private Integer bonus;
+        private Integer bonus = null;
+        private Integer positionId;
+        private Integer teamId = null;
 
-        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus){
+        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, Integer positionId, Team team){
             this.name = name;
             this.lastName = lastName;
             this.pesel = pesel;
             this.hireDate = Date.valueOf(hireDate);
-            this.bonus = Integer.valueOf(bonus);
+            if(bonus != null && !bonus.trim().equals("")) {
+                this.bonus = Integer.valueOf(bonus);
+            }
+            this.positionId = positionId;
+            if(team != null){
+                this.teamId = team.getId();
+            }
         }
 
         public String getName() {
@@ -213,6 +225,14 @@ public class EditWorkerDialog extends AbstractDialog {
 
         public Integer getBonus() {
             return bonus;
+        }
+
+        public Integer getPositionId() {
+            return positionId;
+        }
+
+        public Integer getTeamId() {
+            return teamId;
         }
     }
 }

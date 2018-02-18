@@ -90,7 +90,7 @@ public class AddTeamDialog extends AbstractDialog {
             Team team = new Team();
             team.setName(result.get().getName());
             team.setCreationDate(result.get().getCreationDate());
-            team.setLeaderPesel(result.get().getPeselLeader());
+            team.setLeaderId(result.get().getLeaderId());
             try {
                 TeamsModification.addObject(team);
             } catch (SQLException | NullPointerException ex){
@@ -108,13 +108,13 @@ public class AddTeamDialog extends AbstractDialog {
     private class Result {
         private String name;
         private Date creationDate;
-        private String peselLeader = null;
+        private Integer leaderId = null;
 
         public Result(String name, LocalDate creationDate, Worker leader) {
             this.name = name;
             this.creationDate = Date.valueOf(creationDate);
             if(leader != null) {
-                this.peselLeader = leader.getPesel();
+                this.leaderId = leader.getId();
             }
         }
 
@@ -126,8 +126,8 @@ public class AddTeamDialog extends AbstractDialog {
             return creationDate;
         }
 
-        public String getPeselLeader() {
-            return peselLeader;
+        public Integer getLeaderId() {
+            return leaderId;
         }
     }
 }

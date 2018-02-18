@@ -16,12 +16,36 @@ public class PositionsModification {
             rs = connection.createStatement().executeQuery("SELECT * FROM positions");
             while(rs.next()) {
                 Position position = new Position();
-                position.setName(rs.getString(1));
-                position.setWage(rs.getInt(2));
+                position.setId(rs.getInt(1));
+                position.setName(rs.getString(2));
+                position.setWage(rs.getInt(3));
                 data.add(position);
             }
             return data;
         } catch (SQLException | NullPointerException ex) {
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
+            try { rs.close(); }  catch (Exception ex) { };
+        }
+    }
+
+    public static Position importObject(Position fetchPosition) throws SQLException, NullPointerException, IllegalArgumentException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet rs = null;
+        try {
+            rs = connection.createStatement().executeQuery("SELECT * FROM positions WHERE nazwa='" + fetchPosition.getName() + "'");
+            if(rs.next()) {
+                Position position = new Position();
+                position.setId(rs.getInt(1));
+                position.setName(rs.getString(2));
+                position.setWage(rs.getInt(3));
+                return position;
+            } else {
+                throw new IllegalArgumentException("Position no longer in database.");
+            }
+        } catch (SQLException | NullPointerException | IllegalArgumentException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -63,17 +87,17 @@ public class PositionsModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
-        try { // TODO: check if not already in database
-            // TODO: edit in other tables
+        try {
+            // TODO: check if name not already in database
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT nazwa FROM positions WHERE nazwa='" + previousPosition.getName() + "'"
+                    "SELECT id FROM positions WHERE id='" + previousPosition.getId() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE positions SET nazwa = ?, pensja = ? WHERE nazwa = ?";
+                String updateStatement = "UPDATE positions SET nazwa = ?, pensja = ? WHERE id = ?";
                 preparedStatement = connection.prepareStatement(updateStatement);
                 preparedStatement.setString(1,newPosition.getName());
                 preparedStatement.setInt(2,newPosition.getWage());
-                preparedStatement.setString(3,previousPosition.getName());
+                preparedStatement.setInt(3,newPosition.getId());
                 preparedStatement.executeUpdate();
             } else {
                 throw new IllegalArgumentException("Position no longer in database.");
@@ -94,10 +118,10 @@ public class PositionsModification {
         ResultSet inAnotherDatabase = null;
         try {
             selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
-                    "SELECT positions.* FROM positions WHERE nazwa='" + position.getName() + "'"
+                    "SELECT positions.* FROM positions WHERE id='" + position.getId() + "'"
             );
             inAnotherDatabase = connection.createStatement().executeQuery(
-              "SELECT * FROM workers WHERE nazwa_etatu='" + position.getName() + "'"
+              "SELECT * FROM workers WHERE id_position='" + position.getId() + "'"
             );
             if(inAnotherDatabase.next()){
                 throw new SQLDataException("Position in workers table.");

@@ -24,7 +24,7 @@ import java.sql.SQLException;
 
 public class Holidays extends AnchorPane {
     private static final TableView<Holiday> holidaysTable = new TableView<>();
-    private static final TableColumn<Holiday, String> peselColumn = new TableColumn<>("Pesel");
+    //private static final TableColumn<Holiday, String> peselColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Holiday, String> beginDateColumn = new TableColumn<>("Begin");
     private static final TableColumn<Holiday, String> endDateColumn = new TableColumn<>("End");
 
@@ -51,7 +51,7 @@ public class Holidays extends AnchorPane {
     public Holidays(){
         super();
 
-        peselColumn.setCellValueFactory(new PropertyValueFactory<Holiday,String>("pesel"));
+        //peselColumn.setCellValueFactory(new PropertyValueFactory<Holiday,String>("pesel"));
         beginDateColumn.setCellValueFactory(value -> {
                 return new ReadOnlyStringWrapper(value.getValue().getBeginDate().toString());
         });
@@ -59,7 +59,8 @@ public class Holidays extends AnchorPane {
             return new ReadOnlyStringWrapper(value.getValue().getEndDate().toString());
         });
 
-        holidaysTable.getColumns().addAll(peselColumn, beginDateColumn, endDateColumn);
+        //holidaysTable.getColumns().addAll(peselColumn, beginDateColumn, endDateColumn);
+        holidaysTable.getColumns().addAll(beginDateColumn, endDateColumn);
         holidaysTable.setEditable(false);
         refreshTableView();
 
@@ -72,8 +73,14 @@ public class Holidays extends AnchorPane {
         });
 
         addHolidayButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddHolidayDialog().popDialog();
-            refreshTableView();  // TODO: fetch Holiday_Id from database rather than refresh whole table
+            Holiday newHoliday = new AddHolidayDialog().popDialog();
+            if(newHoliday != null) {
+                try {
+                    observableList.add(HolidaysModification.importObject(newHoliday));
+                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
+                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                }
+            }
         });
 
         editHolidayButton.setOnMouseClicked((MouseEvent event) -> {
@@ -86,7 +93,7 @@ public class Holidays extends AnchorPane {
                     selectedHoliday = null;
                     holidaysTable.getSelectionModel().clearSelection();
                 }
-            } // TODO: if no longer in database, remove from tableview / refresh
+            }
         });
 
         deleteHolidayButton.setOnMouseClicked((MouseEvent event) -> {

@@ -135,7 +135,7 @@ public class AddWorkerDialog extends AbstractDialog {
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
                 return new Result(nameTF.getText(), lastNameTF.getText(), peselTF.getText(), hireDateDP.getValue(), bonusTF.getText(),
-                        positionComboBox.getValue().getName(), teamComboBox.getValue());
+                        positionComboBox.getValue().getId(), teamComboBox.getValue());
             }
             return null;
         });
@@ -149,8 +149,8 @@ public class AddWorkerDialog extends AbstractDialog {
             worker.setPesel(result.get().getPesel());
             worker.setHireDate(result.get().getHireDate());
             worker.setBonus(result.get().getBonus());
-            worker.setPositionName(result.get().getPositionName());
-            worker.setTeamName(result.get().getTeamName());
+            worker.setPositionId(result.get().getPositionId());
+            worker.setTeamId(result.get().getTeamId());
             try{
                 WorkersModification.addObject(worker);
             } catch (SQLException | NullPointerException ex){
@@ -172,10 +172,10 @@ public class AddWorkerDialog extends AbstractDialog {
         private String pesel;
         private Date hireDate;
         private Integer bonus = null;
-        private String positionName;
-        private String teamName = null;
+        private Integer positionId;
+        private Integer teamId = null;
 
-        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, String positionName, Team team){
+        public Result(String name, String lastName, String pesel, LocalDate hireDate, String bonus, Integer positionId, Team team){
             this.name = name;
             this.lastName = lastName;
             this.pesel = pesel;
@@ -183,9 +183,9 @@ public class AddWorkerDialog extends AbstractDialog {
             if(bonus != null && !bonus.trim().equals("")) {
                 this.bonus = Integer.valueOf(bonus);
             }
-            this.positionName = positionName;
+            this.positionId = positionId;
             if(team != null){
-                this.teamName = team.getName();
+                this.teamId = team.getId();
             }
         }
 
@@ -209,12 +209,12 @@ public class AddWorkerDialog extends AbstractDialog {
             return bonus;
         }
 
-        public String getPositionName() {
-            return positionName;
+        public Integer getPositionId() {
+            return positionId;
         }
 
-        public String getTeamName() {
-            return teamName;
+        public Integer getTeamId() {
+            return teamId;
         }
     }
 }

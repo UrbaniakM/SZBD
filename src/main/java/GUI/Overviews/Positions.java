@@ -66,7 +66,11 @@ public class Positions extends AnchorPane {
         addPositionButton.setOnMouseClicked((MouseEvent event) -> {
             Position newPosition = new AddPositionDialog().popDialog();
             if(newPosition != null) {
-                observableList.add(newPosition);
+                try {
+                    observableList.add(PositionsModification.importObject(newPosition));
+                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
+                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                }
             }
         });
 
@@ -80,7 +84,7 @@ public class Positions extends AnchorPane {
                     selectedPosition = null;
                     positionsTable.getSelectionModel().clearSelection();
                 }
-            }  // TODO: if no longer in database, remove from tableview / refresh
+            }
         });
         deletePositionButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedPosition != null){

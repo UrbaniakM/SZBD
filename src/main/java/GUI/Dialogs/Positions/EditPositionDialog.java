@@ -71,6 +71,7 @@ public class EditPositionDialog extends AbstractDialog {
         if (result.isPresent()) {
             positionAfterEdition.setName(result.get().getName());
             positionAfterEdition.setWage(result.get().getWage());
+            positionAfterEdition.setId(positionBeforeEdition.getId());
             try{
                 PositionsModification.editObject(positionBeforeEdition,positionAfterEdition);
             } catch (SQLException | NullPointerException ex){

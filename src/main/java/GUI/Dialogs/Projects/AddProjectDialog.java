@@ -85,7 +85,7 @@ public class AddProjectDialog extends AbstractDialog {
         this.getDialogPane().setContent(grid);
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(nameTF.getText(), beginDateDP.getValue(), endDateDP.getValue(), teamComboBox.getValue().getName());
+                return new Result(nameTF.getText(), beginDateDP.getValue(), endDateDP.getValue(), teamComboBox.getValue().getId());
             }
             return null;
         });
@@ -98,7 +98,7 @@ public class AddProjectDialog extends AbstractDialog {
             project.setName(result.get().getName());
             project.setBeginDate(result.get().getBeginDate());
             project.setEndDate(result.get().getEndDate());
-            project.setTeamName(result.get().getTeamName());
+            project.setTeamId(result.get().getTeamId());
             try {
                 ProjectsModification.addObject(project);
             } catch (SQLException | NullPointerException ex){
@@ -117,15 +117,15 @@ public class AddProjectDialog extends AbstractDialog {
         private String name;
         private Date beginDate;
         private Date endDate = null;
-        private String teamName;
+        private Integer teamId;
 
-        public Result(String name, LocalDate beginDate, LocalDate endDate, String teamName) {
+        public Result(String name, LocalDate beginDate, LocalDate endDate, Integer teamId) {
             this.name = name;
             this.beginDate = Date.valueOf(beginDate);
             if(endDate != null){
                 this.endDate = Date.valueOf(endDate);
             }
-            this.teamName = teamName;
+            this.teamId = teamId;
         }
 
         public String getName() {
@@ -140,8 +140,8 @@ public class AddProjectDialog extends AbstractDialog {
             return endDate;
         }
 
-        public String getTeamName() {
-            return teamName;
+        public Integer getTeamId() {
+            return teamId;
         }
     }
 }

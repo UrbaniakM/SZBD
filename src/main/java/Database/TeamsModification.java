@@ -16,13 +16,38 @@ public class TeamsModification {
             rs = connection.createStatement().executeQuery("SELECT * FROM teams");
             while(rs.next()) {
                 Team team = new Team();
-                team.setName(rs.getString(1));
-                team.setCreationDate(rs.getDate(2));
-                team.setLeaderPesel(rs.getString(3));
+                team.setId(rs.getInt(1));
+                team.setName(rs.getString(2));
+                team.setCreationDate(rs.getDate(3));
+                team.setLeaderId(rs.getInt(4));
                 data.add(team);
             }
             return data;
         } catch (SQLException | NullPointerException ex) {
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { rs.getStatement().close(); }  catch (Exception ex) { };
+            try { rs.close(); }  catch (Exception ex) { };
+        }
+    }
+
+    public static Team importObject(Team fetchTeam) throws SQLException, NullPointerException, IllegalArgumentException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet rs = null;
+        try {
+            rs = connection.createStatement().executeQuery("SELECT * FROM teams WHERE nazwa='" + fetchTeam.getName() + "'");
+            if(rs.next()) {
+                Team team = new Team();
+                team.setId(rs.getInt(1));
+                team.setName(rs.getString(2));
+                team.setCreationDate(rs.getDate(3));
+                team.setLeaderId(rs.getInt(4));
+                return team;
+            } else {
+                throw new IllegalArgumentException("Team no longer in database.");
+            }
+        } catch (SQLException | NullPointerException | IllegalArgumentException ex) {
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };
@@ -43,12 +68,12 @@ public class TeamsModification {
                 throw new IllegalArgumentException("Project with this name already in database.");
             }
             else {
-                String sqlStatement = "INSERT INTO teams(nazwa, data_utworzenia, pesel_leader) VALUES " +
+                String sqlStatement = "INSERT INTO teams(nazwa, data_utworzenia, id_leader) VALUES " +
                         "(?,?,?)";
                 preparedStatement = connection.prepareStatement(sqlStatement);
                 preparedStatement.setString(1, team.getName());
                 preparedStatement.setDate(2, team.getCreationDate());
-                preparedStatement.setObject(3, team.getLeaderPesel());
+                preparedStatement.setObject(3, team.getLeaderId());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException | IllegalArgumentException | NullPointerException ex){
@@ -66,19 +91,18 @@ public class TeamsModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
-            // TODO: edit in other tables
             // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT * FROM teams WHERE nazwa='" + previousTeam.getName() + "'"
+                    "SELECT * FROM teams WHERE id='" + newTeam.getId() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE teams SET nazwa = ?, data_utworzenia = ?, pesel_leader = ?" +
-                        "WHERE nazwa = ?";
+                String updateStatement = "UPDATE teams SET nazwa = ?, data_utworzenia = ?, id_leader = ?" +
+                        "WHERE id = ?";
                 preparedStatement = connection.prepareStatement(updateStatement);
                 preparedStatement.setString(1,newTeam.getName());
                 preparedStatement.setDate(2,newTeam.getCreationDate());
-                preparedStatement.setString(3,newTeam.getLeaderPesel());
-                preparedStatement.setString(4,previousTeam.getName());
+                preparedStatement.setObject(3,newTeam.getLeaderId());
+                preparedStatement.setInt(4,newTeam.getId());
                 preparedStatement.executeUpdate();
             } else {
                 throw new IllegalArgumentException("Team no longer in database.");
@@ -100,13 +124,13 @@ public class TeamsModification {
         ResultSet inWorkerDabase = null;
         try {
             selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
-                    "SELECT teams.* FROM teams WHERE nazwa='" + team.getName() + "'"
+                    "SELECT teams.* FROM teams WHERE id='" + team.getId() + "'"
             );
             inProjectDatabase = connection.createStatement().executeQuery(
-                    "SELECT * FROM projects WHERE nazwa_zespolu='" + team.getName() + "'"
+                    "SELECT * FROM projects WHERE id_team='" + team.getId() + "'"
             );
             inWorkerDabase = connection.createStatement().executeQuery(
-                    "SELECT * FROM workers WHERE nazwa_zespolu='" + team.getName() + "'"
+                    "SELECT * FROM workers WHERE id_team='" + team.getId() + "'"
             );
             if(inProjectDatabase.next()){
                 throw new SQLDataException("Team in projects table.");

@@ -48,7 +48,7 @@ public class EditTeamDialog extends AbstractDialog {
             leaderComboBox.setItems(leaderObservableList);
             leaderComboBox.setEditable(false);
             for (int index = 0; index < leaderObservableList.size(); index++) {
-                if(leaderObservableList.get(index).getPesel().equals(team.getLeaderPesel())){
+                if(leaderObservableList.get(index).getId().equals(team.getLeaderId())){
                     leaderComboBox.getSelectionModel().select(index);
                     break;
                 }
@@ -99,7 +99,8 @@ public class EditTeamDialog extends AbstractDialog {
         if (result.isPresent()) {
             teamAfterEdition.setName(result.get().getName());
             teamAfterEdition.setCreationDate(result.get().getCreationDate());
-            teamAfterEdition.setLeaderPesel(result.get().getPeselLeader());
+            teamAfterEdition.setLeaderId(result.get().getLeaderId());
+            teamAfterEdition.setId(teamBeforeEdition.getId());
             try {
                 TeamsModification.editObject(teamBeforeEdition,teamAfterEdition);
             } catch (SQLException | NullPointerException ex){
@@ -117,13 +118,13 @@ public class EditTeamDialog extends AbstractDialog {
     private class Result {
         private String name;
         private Date creationDate;
-        private String peselLeader = null;
+        private Integer leaderId = null;
 
         public Result(String name, LocalDate creationDate, Worker leader) {
             this.name = name;
             this.creationDate = Date.valueOf(creationDate);
             if(leader != null) {
-                this.peselLeader = leader.getPesel();
+                this.leaderId = leader.getId();
             }
         }
 
@@ -135,8 +136,8 @@ public class EditTeamDialog extends AbstractDialog {
             return creationDate;
         }
 
-        public String getPeselLeader() {
-            return peselLeader;
+        public Integer getLeaderId() {
+            return leaderId;
         }
     }
 }

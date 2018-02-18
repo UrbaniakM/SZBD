@@ -27,7 +27,7 @@ public class Projects extends AnchorPane{
     private static final TableColumn<Project, String> nameColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Project, String> beginDateColumn = new TableColumn<>("Began");
     private static final TableColumn<Project, String> endDateColumn = new TableColumn<>("Ended");
-    private static final TableColumn<Project, String> teamColumn = new TableColumn<>("Team");
+    //private static final TableColumn<Project, String> teamColumn = new TableColumn<>("Team");
 
     private Project selectedProject = null;
 
@@ -62,9 +62,9 @@ public class Projects extends AnchorPane{
                 return new ReadOnlyStringWrapper("");
             }
         });
-        teamColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("teamName"));
+        //teamColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("teamName"));
 
-        projectsTable.getColumns().addAll(nameColumn, beginDateColumn, endDateColumn, teamColumn);
+        projectsTable.getColumns().addAll(nameColumn, beginDateColumn, endDateColumn);//, teamColumn);
         projectsTable.setEditable(false);
         refreshTableView();
 
@@ -79,7 +79,11 @@ public class Projects extends AnchorPane{
         addProjectButton.setOnMouseClicked((MouseEvent event) -> {
             Project newProject = new AddProjectDialog().popDialog();
             if(newProject != null){
-                observableList.add(newProject);
+                try {
+                    observableList.add(ProjectsModification.importObject(newProject));
+                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
+                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                }
             }
         });
 
@@ -93,7 +97,7 @@ public class Projects extends AnchorPane{
                     selectedProject = null;
                     projectsTable.getSelectionModel().clearSelection();
                 }
-            }  // TODO: if no longer in database, remove from tableview / refresh
+            }
         });
         deleteProjectButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedProject != null){

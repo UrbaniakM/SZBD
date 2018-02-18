@@ -43,7 +43,7 @@ public class EditHolidayDialog extends AbstractDialog {
             workerComboBox.setItems(workerObservableList);
             workerComboBox.setEditable(false);
             for (int index = 0; index < workerObservableList.size(); index++) {
-                if(workerObservableList.get(index).getPesel().equals(holiday.getPesel())){
+                if(workerObservableList.get(index).getId().equals(holiday.getWorkerId())){
                     workerComboBox.getSelectionModel().select(index);
                     break;
                 }
@@ -53,7 +53,7 @@ public class EditHolidayDialog extends AbstractDialog {
 
                 @Override
                 public String toString(Worker object) {
-                    return object.getName() + " " + object.getLastName() + " " + object.getPesel();
+                    return object.getName() + " " + object.getLastName() + ", PESEL: " + object.getPesel();
                 }
 
                 @Override
@@ -90,7 +90,7 @@ public class EditHolidayDialog extends AbstractDialog {
         this.getDialogPane().setContent(grid);
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(workerComboBox.getValue().getPesel(), beginDateDP.getValue(), endDateDP.getValue());
+                return new Result(workerComboBox.getValue().getId(), beginDateDP.getValue(), endDateDP.getValue());
             }
             return null;
         });
@@ -99,7 +99,7 @@ public class EditHolidayDialog extends AbstractDialog {
     public Holiday popDialog(){
         Optional<Result> result = this.showAndWait();
         if (result.isPresent()) {
-            holidayAfterEdition.setPesel(result.get().getPesel());
+            holidayAfterEdition.setWorkerId(result.get().getWorkerId());
             holidayAfterEdition.setBeginDate(result.get().getBeginDate());
             holidayAfterEdition.setEndDate(result.get().getEndDate());
             holidayAfterEdition.setId(holidayBeforeEdition.getId());
@@ -119,18 +119,18 @@ public class EditHolidayDialog extends AbstractDialog {
 
 
     private class Result {
-        private String pesel;
+        private Integer workerId;
         private Date beginDate;
         private Date endDate;
 
-        public Result(String pesel, LocalDate beginDate, LocalDate endDate){
-            this.pesel = pesel;
+        public Result(Integer workerId, LocalDate beginDate, LocalDate endDate){
+            this.workerId = workerId;
             this.beginDate = Date.valueOf(beginDate);
             this.endDate = Date.valueOf(endDate);
         }
 
-        public String getPesel() {
-            return pesel;
+        public Integer getWorkerId() {
+            return workerId;
         }
 
 

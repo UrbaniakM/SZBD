@@ -9,16 +9,18 @@ import java.sql.Date;
 public class Team {
     private String name;
     private Date creationDate;
-    private String leaderPesel;
+    private Integer id;
+    private Integer leaderId;
 
     public Team(){
 
     }
 
     public Team(Team team){
+        this.id = team.getId();
         this.name = team.getName();
         this.creationDate = team.getCreationDate();
-        this.leaderPesel = team.getLeaderPesel();
+        this.leaderId = team.getLeaderId();
     }
 
     public String getName() {
@@ -37,11 +39,19 @@ public class Team {
         this.creationDate = creationDate;
     }
 
-    public String getLeaderPesel() {
-        return leaderPesel;
+    public Integer getLeaderId() {
+        return leaderId;
     }
 
-    public void setLeaderPesel(String leaderPesel) {
-        this.leaderPesel = leaderPesel;
+    public void setLeaderId(Integer leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

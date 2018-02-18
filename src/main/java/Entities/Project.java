@@ -10,17 +10,19 @@ public class Project {
     private String name;
     private Date beginDate;
     private Date endDate = null;
-    private String teamName;
+    private Integer id;
+    private Integer teamId;
 
     public Project(){
 
     }
 
     public Project(Project project){
+        this.id = project.getId();
         this.name = project.getName();
         this.beginDate = project.getBeginDate();
         this.endDate = project.getEndDate();
-        this.teamName = project.getTeamName();
+        this.teamId = project.getTeamId();
     }
 
     public String getName() {
@@ -47,11 +49,19 @@ public class Project {
         this.endDate = endDate;
     }
 
-    public String getTeamName() {
-        return teamName;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Integer teamId) {
+        this.teamId = teamId;
     }
 }

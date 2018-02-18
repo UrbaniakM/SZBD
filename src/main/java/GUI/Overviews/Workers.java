@@ -26,8 +26,8 @@ public class Workers extends AnchorPane{
     private static final TableColumn<Worker, String> peselColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hired");
     private static final TableColumn<Worker, String> bonusColumn = new TableColumn<>("Bonus");
-    private static final TableColumn<Worker, String> positionNameColumn = new TableColumn<>("Position");
-    private static final TableColumn<Worker, String> teamNameColumn = new TableColumn<>("Team");
+    //private static final TableColumn<Worker, String> positionNameColumn = new TableColumn<>("Position");
+    //private static final TableColumn<Worker, String> teamNameColumn = new TableColumn<>("Team");
 
     private Worker selectedWorker = null;
 
@@ -58,9 +58,9 @@ public class Workers extends AnchorPane{
             return new ReadOnlyStringWrapper(value.getValue().getHireDate().toString());
         });
         bonusColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("bonus"));
-        positionNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("positionName"));
-        teamNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("teamName"));
-        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, bonusColumn, positionNameColumn, teamNameColumn);
+        //positionNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("positionName"));
+        //teamNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("teamName"));
+        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, bonusColumn);//, positionNameColumn, teamNameColumn);
         workersTable.setEditable(false);
         refreshTableView();
 
@@ -75,7 +75,11 @@ public class Workers extends AnchorPane{
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             Worker newWorker = new AddWorkerDialog().popDialog();
             if(newWorker != null){
-                observableList.add(newWorker);
+                try {
+                    observableList.add(WorkersModification.importObject(newWorker));
+                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
+                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                }
             }
         });
 
@@ -89,8 +93,9 @@ public class Workers extends AnchorPane{
                     selectedWorker = null;
                     workersTable.getSelectionModel().clearSelection();
                 }
-            }  // TODO: if no longer in database, remove from tableview / refresh
+            }
         });
+
         deleteWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
                 if(new DeleteAlert().popDialog()){

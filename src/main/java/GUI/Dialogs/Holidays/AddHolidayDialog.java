@@ -80,7 +80,7 @@ public class AddHolidayDialog extends AbstractDialog {
         this.getDialogPane().setContent(grid);
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(workerComboBox.getValue().getPesel(), beginDateDP.getValue(), endDateDP.getValue());
+                return new Result(workerComboBox.getValue().getId(), beginDateDP.getValue(), endDateDP.getValue());
             }
             return null;
         });
@@ -91,7 +91,7 @@ public class AddHolidayDialog extends AbstractDialog {
         Optional<Result> result = this.showAndWait();
         if (result.isPresent()) {
             Holiday holiday = new Holiday();
-            holiday.setPesel(result.get().getPesel());
+            holiday.setWorkerId(result.get().getWorkerId());
             holiday.setBeginDate(result.get().getBeginDate());
             holiday.setEndDate(result.get().getEndDate());
             try {
@@ -109,18 +109,18 @@ public class AddHolidayDialog extends AbstractDialog {
     }
 
     private class Result {
-        private String pesel;
+        private Integer workerId;
         private Date beginDate;
         private Date endDate;
 
-        public Result(String pesel, LocalDate beginDate, LocalDate endDate){
-            this.pesel = pesel;
+        public Result(Integer workerId, LocalDate beginDate, LocalDate endDate){
+            this.workerId = workerId;
             this.beginDate = Date.valueOf(beginDate);
             this.endDate = Date.valueOf(endDate);
         }
 
-        public String getPesel() {
-            return pesel;
+        public Integer getWorkerId() {
+            return workerId;
         }
 
 

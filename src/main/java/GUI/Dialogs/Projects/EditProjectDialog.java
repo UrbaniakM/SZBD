@@ -55,7 +55,7 @@ public class EditProjectDialog extends AbstractDialog {
             teamComboBox.setItems(teamObservableList);
             teamComboBox.setEditable(false);
             for (int index = 0; index < teamObservableList.size(); index++) {
-                if(teamObservableList.get(index).getName().equals(project.getTeamName())){
+                if(teamObservableList.get(index).getId().equals(project.getTeamId())){
                     teamComboBox.getSelectionModel().select(index);
                     break;
                 }
@@ -99,7 +99,7 @@ public class EditProjectDialog extends AbstractDialog {
         this.getDialogPane().setContent(grid);
         this.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Result(nameTF.getText(), beginDateDP.getValue(), endDateDP.getValue(), teamComboBox.getValue().getName());
+                return new Result(nameTF.getText(), beginDateDP.getValue(), endDateDP.getValue(), teamComboBox.getValue().getId());
             }
             return null;
         });
@@ -111,7 +111,8 @@ public class EditProjectDialog extends AbstractDialog {
             projectAfterEdition.setName(result.get().getName());
             projectAfterEdition.setBeginDate(result.get().getBeginDate());
             projectAfterEdition.setEndDate(result.get().getEndDate());
-            projectAfterEdition.setTeamName(result.get().getTeamName());
+            projectAfterEdition.setTeamId(result.get().getTeamId());
+            projectAfterEdition.setId(projectBeforeEdition.getId());
             try {
                 ProjectsModification.editObject(projectBeforeEdition,projectAfterEdition);
             } catch (SQLException | NullPointerException ex){
@@ -130,15 +131,15 @@ public class EditProjectDialog extends AbstractDialog {
         private String name;
         private Date beginDate;
         private Date endDate = null;
-        private String teamName;
+        private Integer teamId;
 
-        public Result(String name, LocalDate beginDate, LocalDate endDate, String teamName) {
+        public Result(String name, LocalDate beginDate, LocalDate endDate, Integer teamId) {
             this.name = name;
             this.beginDate = Date.valueOf(beginDate);
             if(endDate != null){
                 this.endDate = Date.valueOf(endDate);
             }
-            this.teamName = teamName;
+            this.teamId = teamId;
         }
 
         public String getName() {
@@ -153,8 +154,8 @@ public class EditProjectDialog extends AbstractDialog {
             return endDate;
         }
 
-        public String getTeamName() {
-            return teamName;
+        public Integer getTeamId() {
+            return teamId;
         }
     }
 }
