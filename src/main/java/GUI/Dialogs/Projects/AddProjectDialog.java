@@ -103,8 +103,10 @@ public class AddProjectDialog extends AbstractDialog {
                 ProjectsModification.addObject(project);
             } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new project", "Project already in database.").showAndWait();
+                return null;
             }
             return project;
         }

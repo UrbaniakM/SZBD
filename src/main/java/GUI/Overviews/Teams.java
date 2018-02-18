@@ -37,10 +37,11 @@ public class Teams extends AnchorPane{
     private static Button deleteTeamButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
+    private static ObservableList<Team> observableList;
 
     public final static void refreshTableView(){
         try {
-            ObservableList<Team> observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
+            observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
             teamsTable.setItems(observableList);
         } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
@@ -69,22 +70,31 @@ public class Teams extends AnchorPane{
         });
 
         addTeamButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddTeamDialog().popDialog();
-            refreshTableView(); // TODO refresh tylko dla nowo dodanego
+            Team newTeam = new AddTeamDialog().popDialog();
+            if(newTeam != null){
+                observableList.add(newTeam);
+            }
         });
 
         editTeamButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedTeam != null){
-                new EditTeamDialog(selectedTeam).popDialog();
-                refreshTableView(); // TODO refresh tylko dla edytowanego
-                selectedTeam = null;
-            }
+                Team newTeam = new EditTeamDialog(selectedTeam).popDialog();
+                if(newTeam != null) {
+                    int index = observableList.indexOf(selectedTeam);
+                    observableList.remove(index);
+                    observableList.add(index, newTeam);
+                    selectedTeam = null;
+                    teamsTable.getSelectionModel().clearSelection();
+                }
+            }  // TODO: if no longer in database, remove from tableview / refresh
         });
         deleteTeamButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedTeam != null){
                 if(new DeleteAlert().popDialog()){
                     try{
                         TeamsModification.deleteObject(selectedTeam);
+                        observableList.remove(selectedTeam);
+                        teamsTable.getSelectionModel().clearSelection();
                         selectedTeam = null;
                     } catch (SQLDataException ex){
                         if(ex.getMessage().equals("Team in projects table.")){
@@ -100,8 +110,9 @@ public class Teams extends AnchorPane{
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                    } finally {
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                        observableList.remove(selectedTeam);
+                        teamsTable.getSelectionModel().clearSelection();
+                        selectedTeam = null;
                     }
                 }
             }

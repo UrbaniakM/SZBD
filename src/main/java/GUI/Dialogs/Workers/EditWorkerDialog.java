@@ -169,8 +169,10 @@ public class EditWorkerDialog extends AbstractDialog {
                 WorkersModification.editObject(workerBeforeEdition,workerAfterEdition);
             } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with editing the worker", "Worker no longer in database.").showAndWait();
+                return null;
             }
             return workerAfterEdition;
         }

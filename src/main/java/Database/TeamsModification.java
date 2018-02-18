@@ -66,6 +66,8 @@ public class TeamsModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try {
+            // TODO: edit in other tables
+            // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM teams WHERE nazwa='" + previousTeam.getName() + "'"
             );

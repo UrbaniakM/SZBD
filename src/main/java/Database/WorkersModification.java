@@ -76,6 +76,7 @@ public class WorkersModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
+            // TODO: edit in other tables
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT pesel FROM workers WHERE pesel='" + previousWorker.getPesel() + "'"
             );

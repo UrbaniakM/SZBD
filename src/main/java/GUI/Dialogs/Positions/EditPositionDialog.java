@@ -75,8 +75,10 @@ public class EditPositionDialog extends AbstractDialog {
                 PositionsModification.editObject(positionBeforeEdition,positionAfterEdition);
             } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with editing the position", "Position no longer in database.").showAndWait();
+                return null;
             }
             return positionAfterEdition;
         }

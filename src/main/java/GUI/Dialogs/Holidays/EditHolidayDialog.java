@@ -102,12 +102,15 @@ public class EditHolidayDialog extends AbstractDialog {
             holidayAfterEdition.setPesel(result.get().getPesel());
             holidayAfterEdition.setBeginDate(result.get().getBeginDate());
             holidayAfterEdition.setEndDate(result.get().getEndDate());
+            holidayAfterEdition.setId(holidayBeforeEdition.getId());
             try {
                 HolidaysModification.editObject(holidayBeforeEdition, holidayAfterEdition);
             } catch (SQLException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with editing the holiday", "Holiday no longer in database.").showAndWait();
+                return null;
             }
             return holidayAfterEdition;
         }

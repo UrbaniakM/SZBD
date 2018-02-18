@@ -37,10 +37,11 @@ public class Projects extends AnchorPane{
     private static Button deleteProjectButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
+    private static ObservableList<Project> observableList;
 
     public final static void refreshTableView(){
         try {
-            ObservableList<Project> observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
+            observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
             projectsTable.setItems(observableList);
         } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
@@ -76,29 +77,39 @@ public class Projects extends AnchorPane{
         });
 
         addProjectButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddProjectDialog().popDialog();
-            refreshTableView(); // TODO refresh tylko dla nowo dodanego
+            Project newProject = new AddProjectDialog().popDialog();
+            if(newProject != null){
+                observableList.add(newProject);
+            }
         });
 
         editProjectButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedProject != null){
-                new EditProjectDialog(selectedProject).popDialog();
-                refreshTableView(); // TODO refresh tylko dla edytowanego
-                selectedProject = null;
-            }
+                Project newProject = new EditProjectDialog(selectedProject).popDialog();
+                if(newProject != null) {
+                    int index = observableList.indexOf(selectedProject);
+                    observableList.remove(index);
+                    observableList.add(index, newProject);
+                    selectedProject = null;
+                    projectsTable.getSelectionModel().clearSelection();
+                }
+            }  // TODO: if no longer in database, remove from tableview / refresh
         });
         deleteProjectButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedProject != null){
                 if(new DeleteAlert().popDialog()){
                     try{
                         ProjectsModification.deleteObject(selectedProject);
+                        observableList.remove(selectedProject);
+                        projectsTable.getSelectionModel().clearSelection();
                         selectedProject = null;
                     } catch (SQLException ex){
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected project no longer in database.").showAndWait();
-                    } finally {
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                        observableList.remove(selectedProject);
+                        projectsTable.getSelectionModel().clearSelection();
+                        selectedProject = null;
                     }
                 }
             }

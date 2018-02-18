@@ -34,11 +34,11 @@ public class Positions extends AnchorPane {
     private static Button editPositionButton = new Button("Edit");
     private static Button deletePositionButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
-
+    private static ObservableList<Position> observableList;
 
     public final static void refreshTableView(){
         try {
-            ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+            observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
             positionsTable.setItems(observableList);
         } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
@@ -64,22 +64,31 @@ public class Positions extends AnchorPane {
         });
 
         addPositionButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddPositionDialog().popDialog();
-            refreshTableView(); // TODO refresh tylko dla nowo dodanego
+            Position newPosition = new AddPositionDialog().popDialog();
+            if(newPosition != null) {
+                observableList.add(newPosition);
+            }
         });
 
         editPositionButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedPosition != null){
-                new EditPositionDialog(selectedPosition).popDialog();
-                refreshTableView(); // TODO refresh tylko dla edytowanego
-                selectedPosition = null;
-            }
+                Position newPosition = new EditPositionDialog(selectedPosition).popDialog();
+                if(newPosition != null) {
+                    int index = observableList.indexOf(selectedPosition);
+                    observableList.remove(index);
+                    observableList.add(index, newPosition);
+                    selectedPosition = null;
+                    positionsTable.getSelectionModel().clearSelection();
+                }
+            }  // TODO: if no longer in database, remove from tableview / refresh
         });
         deletePositionButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedPosition != null){
                 if(new DeleteAlert().popDialog()){
                     try{
                         PositionsModification.deleteObject(selectedPosition);
+                        observableList.remove(selectedPosition);
+                        positionsTable.getSelectionModel().clearSelection();
                         selectedPosition = null;
                     } catch (SQLDataException ex){
                         new ExceptionAlert("Error with deleting",
@@ -89,8 +98,9 @@ public class Positions extends AnchorPane {
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                    } finally {
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                        observableList.remove(selectedPosition);
+                        positionsTable.getSelectionModel().clearSelection();
+                        selectedPosition = null;
                     }
                 }
             }

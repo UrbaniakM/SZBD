@@ -75,8 +75,10 @@ public class AddPositionDialog extends AbstractDialog {
                 PositionsModification.addObject(position);
             } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new position", "Position with this name already in database.").showAndWait();
+                return null;
             }
             return position;
         }

@@ -37,10 +37,11 @@ public class Workers extends AnchorPane{
     private static Button deleteWorkerButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
+    private static ObservableList<Worker> observableList;
 
     public final static void refreshTableView(){
         try {
-            ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
+            observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
             workersTable.setItems(observableList);
         } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
@@ -72,22 +73,31 @@ public class Workers extends AnchorPane{
         });
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            new AddWorkerDialog().popDialog();
-            refreshTableView(); // TODO refresh tylko dla nowo dodanego
+            Worker newWorker = new AddWorkerDialog().popDialog();
+            if(newWorker != null){
+                observableList.add(newWorker);
+            }
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
-                new EditWorkerDialog(selectedWorker).popDialog();
-                refreshTableView(); // TODO refresh tylko dla edytowanego
-                selectedWorker = null;
-            }
+                Worker newWorker = new EditWorkerDialog(selectedWorker).popDialog();
+                if(newWorker != null) {
+                    int index = observableList.indexOf(selectedWorker);
+                    observableList.remove(index);
+                    observableList.add(index, newWorker);
+                    selectedWorker = null;
+                    workersTable.getSelectionModel().clearSelection();
+                }
+            }  // TODO: if no longer in database, remove from tableview / refresh
         });
         deleteWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
                 if(new DeleteAlert().popDialog()){
                     try{
                         WorkersModification.deleteObject(selectedWorker);
+                        observableList.remove(selectedWorker);
+                        workersTable.getSelectionModel().clearSelection();
                         selectedWorker = null;
                     } catch (SQLDataException ex){
                         if(ex.getMessage().equals("Worker in teams table.")){
@@ -103,8 +113,9 @@ public class Workers extends AnchorPane{
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                    } finally {
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                        observableList.remove(selectedWorker);
+                        workersTable.getSelectionModel().clearSelection();
+                        selectedWorker = null;
                     }
                 }
             }

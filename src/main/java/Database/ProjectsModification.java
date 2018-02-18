@@ -68,6 +68,7 @@ public class ProjectsModification {
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
+            // TODO: edit in other tables
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT nazwa FROM projects WHERE nazwa='" + previousProject.getName() + "'"
             );

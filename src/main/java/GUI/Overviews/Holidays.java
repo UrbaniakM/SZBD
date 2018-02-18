@@ -36,10 +36,12 @@ public class Holidays extends AnchorPane {
     private static Button deleteHolidayButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
+    private static ObservableList<Holiday> observableList;
+
 
     public final static void refreshTableView(){ // TODO: wywolanie tego dla kazdej zmiany w klasach w paczce Database
         try {
-            ObservableList<Holiday> observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
+            observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
             holidaysTable.setItems(observableList);
         } catch (SQLException | NullPointerException ex){
             new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
@@ -71,15 +73,20 @@ public class Holidays extends AnchorPane {
 
         addHolidayButton.setOnMouseClicked((MouseEvent event) -> {
             new AddHolidayDialog().popDialog();
-            refreshTableView(); // TODO refresh tylko dla nowo dodanego
+            refreshTableView();  // TODO: fetch Holiday_Id from database rather than refresh whole table
         });
 
         editHolidayButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedHoliday != null){
-                new EditHolidayDialog(selectedHoliday).popDialog();
-                refreshTableView(); // TODO refresh tylko dla edytowanego
-                selectedHoliday = null;
-            }
+                Holiday newHoliday = new EditHolidayDialog(selectedHoliday).popDialog();
+                if(newHoliday != null) {
+                    int index = observableList.indexOf(selectedHoliday);
+                    observableList.remove(index);
+                    observableList.add(index, newHoliday);
+                    selectedHoliday = null;
+                    holidaysTable.getSelectionModel().clearSelection();
+                }
+            } // TODO: if no longer in database, remove from tableview / refresh
         });
 
         deleteHolidayButton.setOnMouseClicked((MouseEvent event) -> {
@@ -87,13 +94,16 @@ public class Holidays extends AnchorPane {
                 if(new DeleteAlert().popDialog()){
                     try{
                         HolidaysModification.deleteObject(selectedHoliday);
+                        observableList.remove(selectedHoliday);
+                        holidaysTable.getSelectionModel().clearSelection();
                         selectedHoliday = null;
                     } catch (SQLException ex){
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                    } finally {
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                        observableList.remove(selectedHoliday);
+                        holidaysTable.getSelectionModel().clearSelection();
+                        selectedHoliday = null;
                     }
                 }
             }

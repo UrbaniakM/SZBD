@@ -104,8 +104,10 @@ public class EditTeamDialog extends AbstractDialog {
                 TeamsModification.editObject(teamBeforeEdition,teamAfterEdition);
             } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with editing the team", "Team no longer in database.").showAndWait();
+                return null;
             }
             return teamAfterEdition;
         }

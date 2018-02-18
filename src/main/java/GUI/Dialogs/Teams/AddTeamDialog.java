@@ -95,8 +95,10 @@ public class AddTeamDialog extends AbstractDialog {
                 TeamsModification.addObject(team);
             } catch (SQLException | NullPointerException ex){
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                return null;
             } catch (IllegalArgumentException ex){
                 new ExceptionAlert("Error with adding new team", "Team with this name already in database.").showAndWait();
+                return null;
             }
             return team;
         }
