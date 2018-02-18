@@ -30,7 +30,7 @@ public class PositionsModification {
         }
     }
 
-    public static void addObject(Position position) throws SQLException, IllegalArgumentException, NullPointerException { // TODO: EMPTY VALUES
+    public static void addObject(Position position) throws SQLException, IllegalArgumentException, NullPointerException {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -59,7 +59,7 @@ public class PositionsModification {
         }
     }
 
-    public static void editObject(Position previousPosition, Position newPosition) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
+    public static void editObject(Position previousPosition, Position newPosition) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;

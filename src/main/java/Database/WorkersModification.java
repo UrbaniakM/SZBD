@@ -37,7 +37,7 @@ public class WorkersModification {
         }
     }
 
-    public static void addObject(Worker worker) throws SQLException, IllegalArgumentException, NullPointerException { // TODO: EMPTY VALUES
+    public static void addObject(Worker worker) throws SQLException, IllegalArgumentException, NullPointerException {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -88,7 +88,7 @@ public class WorkersModification {
                 preparedStatement.setString(2,newWorker.getLastName());
                 preparedStatement.setString(3,newWorker.getPesel());
                 preparedStatement.setDate(4,newWorker.getHireDate());
-                preparedStatement.setObject(5,newWorker.getBonus()); // TODO: EMPTY VALUES: setObject where integer can be null
+                preparedStatement.setObject(5,newWorker.getBonus());
                 preparedStatement.setString(6,newWorker.getPositionName());
                 preparedStatement.setString(7,newWorker.getTeamName());
                 preparedStatement.setString(8,previousWorker.getPesel());
@@ -112,7 +112,6 @@ public class WorkersModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         ResultSet inTeamDatabase = null;
-        ResultSet inHolidaysDabase = null;
         try {
             selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
                     "SELECT workers.* FROM workers WHERE pesel='" + worker.getPesel() + "'"
@@ -120,17 +119,14 @@ public class WorkersModification {
             inTeamDatabase = connection.createStatement().executeQuery(
                     "SELECT * FROM teams WHERE pesel_leader='" + worker.getPesel() + "'"
             );
-            inHolidaysDabase = connection.createStatement().executeQuery(
-                    "SELECT * FROM holidays WHERE pesel='" + worker.getPesel() + "'"
-            );
             if(inTeamDatabase.next()){
                 throw new SQLDataException("Worker in teams table.");  // TODO: assign null leader
-            } else if(inHolidaysDabase.next()){
-                throw new SQLDataException("Worker in holidays table."); // TODO: delete all holidays
-            } else if(selectStatement.next()){
+            }
+            else if(selectStatement.next()){
+                HolidaysModification.deleteObject(worker); // delete holidays assigned to this worker
                 selectStatement.deleteRow();
             } else {
-                throw new IllegalArgumentException("Position no longer in database.");
+                throw new IllegalArgumentException("Worker no longer in database.");
             }
         } catch (SQLException | IllegalArgumentException | NullPointerException ex){
             throw ex;
@@ -138,8 +134,6 @@ public class WorkersModification {
             try { connection.close(); }  catch (Exception ex) { };
             try { inTeamDatabase.getStatement().close(); } catch (Exception ex) { };
             try { inTeamDatabase.close(); }  catch (Exception ex) { };
-            try { inHolidaysDabase.getStatement().close(); } catch (Exception ex) { };
-            try { inHolidaysDabase.close(); }  catch (Exception ex) { };
             try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { selectStatement.close(); }  catch (Exception ex) { };
         }

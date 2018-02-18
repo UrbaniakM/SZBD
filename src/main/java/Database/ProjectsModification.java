@@ -32,7 +32,7 @@ public class ProjectsModification {
         }
     }
 
-    public static void addObject(Project project) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
+    public static void addObject(Project project) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet selectStatement = null;
@@ -63,7 +63,7 @@ public class ProjectsModification {
         }
     }
 
-    public static void editObject(Project previousProject, Project newProject) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
+    public static void editObject(Project previousProject, Project newProject) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;

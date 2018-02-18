@@ -61,7 +61,7 @@ public class TeamsModification {
         }
     }
 
-    public static void editObject(Team previousTeam, Team newTeam) throws SQLException, IllegalArgumentException, NullPointerException{ // TODO: EMPTY VALUES
+    public static void editObject(Team previousTeam, Team newTeam) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
         PreparedStatement preparedStatement = null;

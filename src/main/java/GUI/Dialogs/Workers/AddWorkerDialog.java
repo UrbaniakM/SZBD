@@ -105,7 +105,7 @@ public class AddWorkerDialog extends AbstractDialog {
         TextFieldRestrictions.addTextLimiter(peselTF,11);
         TextFieldRestrictions.addTextLimiter(bonusTF,6);
 
-        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType); // TODO: copy to another dialogs
+        Node loginButton = this.getDialogPane().lookupButton(confirmButtonType);
         loginButton.setDisable(true);
         loginButton.disableProperty().bind(
                 nameTF.textProperty().isEmpty()
@@ -184,7 +184,7 @@ public class AddWorkerDialog extends AbstractDialog {
                 this.bonus = Integer.valueOf(bonus);
             }
             this.positionName = positionName;
-            if(team != null){  // TODO: allow team and bonus to be null - W KAZDYM DIALOGU
+            if(team != null){
                 this.teamName = team.getName();
             }
         }

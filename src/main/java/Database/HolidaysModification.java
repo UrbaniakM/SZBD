@@ -1,6 +1,7 @@
 package Database;
 
 import Entities.Holiday;
+import Entities.Worker;
 import GUI.ApplicationGUI;
 import oracle.net.jdbc.nl.NLException;
 
@@ -109,6 +110,26 @@ public class HolidaysModification {
                 throw new IllegalArgumentException("Holiday no longer in database.");
             }
         } catch (SQLException | IllegalArgumentException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+
+    }
+
+    public static void deleteObject(Worker worker) throws SQLException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT holidays.* FROM holidays WHERE pesel='" + worker.getPesel() + "'"
+            );
+            while(selectStatement.next()){
+                selectStatement.deleteRow();
+            }
+        } catch (SQLException ex){
             throw ex;
         } finally {
             try { connection.close(); }  catch (Exception ex) { };

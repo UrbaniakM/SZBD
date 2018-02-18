@@ -100,15 +100,9 @@ public class Workers extends AnchorPane{
                         workersTable.getSelectionModel().clearSelection();
                         selectedWorker = null;
                     } catch (SQLDataException ex){
-                        if(ex.getMessage().equals("Worker in teams table.")){
                             new ExceptionAlert("Error with deleting",
                                     "This worker is assigned as a leader to at least one team. " +
                                             "Delete the team(teams) or change its(their) leader before deleting this worker.").showAndWait();
-                        } else{
-                            new ExceptionAlert("Error with deleting",
-                                    "This worker has at least one holiday. " +
-                                            "Delete the holiday(holidays).").showAndWait();
-                        }
                     } catch (SQLException ex){
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
