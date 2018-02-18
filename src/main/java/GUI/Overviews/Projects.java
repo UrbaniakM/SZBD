@@ -3,6 +3,7 @@ package GUI.Overviews;
 import Database.ProjectsModification;
 import Entities.Project;
 import GUI.ApplicationGUI;
+import GUI.Dialogs.DeleteAlert;
 import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.Projects.AddProjectDialog;
 import GUI.Dialogs.Projects.EditProjectDialog;
@@ -31,12 +32,13 @@ public class Projects extends AnchorPane{
     private Project selectedProject = null;
 
     private static ButtonBar buttons = new ButtonBar();
-    private static Button addTeamButton = new Button("Add");;
-    private static Button editTeamButton = new Button("Edit");
+    private static Button addProjectButton = new Button("Add");;
+    private static Button editProjectButton = new Button("Edit");
+    private static Button deleteProjectButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
 
-    private void refreshTableView(){
+    public final static void refreshTableView(){
         try {
             ObservableList<Project> observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
             projectsTable.setItems(observableList);
@@ -73,21 +75,36 @@ public class Projects extends AnchorPane{
             }
         });
 
-        addTeamButton.setOnMouseClicked((MouseEvent event) -> {
+        addProjectButton.setOnMouseClicked((MouseEvent event) -> {
             new AddProjectDialog().popDialog();
             refreshTableView(); // TODO refresh tylko dla nowo dodanego
         });
 
-        editTeamButton.setOnMouseClicked((MouseEvent event) -> {
+        editProjectButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedProject != null){
                 new EditProjectDialog(selectedProject).popDialog();
                 refreshTableView(); // TODO refresh tylko dla edytowanego
                 selectedProject = null;
             }
         });
-        // TODO removeHolidayButton
+        deleteProjectButton.setOnMouseClicked((MouseEvent event) -> {
+            if(selectedProject != null){
+                if(new DeleteAlert().popDialog()){
+                    try{
+                        ProjectsModification.deleteObject(selectedProject);
+                        selectedProject = null;
+                    } catch (SQLException ex){
+                        new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                    } catch (IllegalArgumentException ex){
+                        new ExceptionAlert("Error with deleting", "Selected project no longer in database.").showAndWait();
+                    } finally {
+                        refreshTableView(); // TODO refresh tylko dla edytowanego
+                    }
+                }
+            }
+        });
 
-        buttons.getButtons().addAll(addTeamButton, editTeamButton);
+        buttons.getButtons().addAll(addProjectButton, editProjectButton, deleteProjectButton);
 
         backButton.setOnMouseClicked((MouseEvent event) -> {
             ApplicationGUI.getMainStage().setScene(ApplicationGUI.getMainScene());

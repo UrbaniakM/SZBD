@@ -35,7 +35,7 @@ public class Teams extends AnchorPane{
     private static Button backButton = new Button("\u2ba8");
 
 
-    private void refreshTableView(){
+    public final static void refreshTableView(){
         try {
             ObservableList<Team> observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
             teamsTable.setItems(observableList);

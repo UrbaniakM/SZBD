@@ -36,7 +36,7 @@ public class Positions extends AnchorPane {
     private static Button backButton = new Button("\u2ba8");
 
 
-    private void refreshTableView(){
+    public final static void refreshTableView(){
         try {
             ObservableList<Position> observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
             positionsTable.setItems(observableList);
@@ -80,7 +80,6 @@ public class Positions extends AnchorPane {
                 if(new DeleteAlert().popDialog()){
                     try{
                         PositionsModification.deleteObject(selectedPosition);
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
                         selectedPosition = null;
                     } catch (SQLDataException ex){
                         new ExceptionAlert("Error with deleting",
@@ -91,6 +90,8 @@ public class Positions extends AnchorPane {
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
+                    } finally {
+                        refreshTableView(); // TODO refresh tylko dla edytowanego
                     }
                 }
             }

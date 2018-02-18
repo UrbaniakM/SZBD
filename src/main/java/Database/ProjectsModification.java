@@ -3,10 +3,7 @@ package Database;
 import Entities.Project;
 import GUI.ApplicationGUI;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,5 +94,25 @@ public class ProjectsModification {
         }
     }
 
-    // TODO: DELETE OBJECT
+    public static void deleteObject(Project project) throws SQLException, IllegalArgumentException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT projects.* FROM projects WHERE nazwa='" + project.getName() + "'"
+            );
+            if(selectStatement.next()){
+                selectStatement.deleteRow();
+            } else {
+                throw new IllegalArgumentException("Project no longer in database.");
+            }
+        } catch (SQLException | IllegalArgumentException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+
+    }
 }

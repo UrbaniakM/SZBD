@@ -35,7 +35,7 @@ public class Workers extends AnchorPane{
     private static Button backButton = new Button("\u2ba8");
 
 
-    private void refreshTableView(){
+    public final static void refreshTableView(){
         try {
             ObservableList<Worker> observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
             workersTable.setItems(observableList);

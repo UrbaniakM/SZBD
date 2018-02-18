@@ -87,13 +87,13 @@ public class Holidays extends AnchorPane {
                 if(new DeleteAlert().popDialog()){
                     try{
                         HolidaysModification.deleteObject(selectedHoliday);
-                        refreshTableView(); // TODO refresh tylko dla edytowanego
                         selectedHoliday = null;
                     } catch (SQLException ex){
-                        ex.printStackTrace();
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
+                    } finally {
+                        refreshTableView(); // TODO refresh tylko dla edytowanego
                     }
                 }
             }
