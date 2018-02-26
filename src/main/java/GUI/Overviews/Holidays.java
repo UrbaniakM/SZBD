@@ -36,20 +36,16 @@ public class Holidays extends AnchorPane {
     private static Button deleteHolidayButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
-    private static ObservableList<Holiday> observableList;
+    public static ObservableList<Holiday> holidaysObservableList = FXCollections.emptyObservableList();
 
-
-    public final static void refreshTableView(){ // TODO: wywolanie tego dla kazdej zmiany w klasach w paczce Database
-        try {
-            observableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
-            holidaysTable.setItems(observableList);
-        } catch (SQLException | NullPointerException ex){
-            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-        }
+    public synchronized final static void refreshTableView() throws SQLException, NullPointerException{
+        holidaysObservableList = FXCollections.observableArrayList(new HolidaysModification().importObject());
+        holidaysTable.setItems(holidaysObservableList);
     }
 
     public Holidays(){
         super();
+        holidaysTable.setItems(holidaysObservableList);
 
         //peselColumn.setCellValueFactory(new PropertyValueFactory<Holiday,String>("pesel"));
         beginDateColumn.setCellValueFactory(value -> {
@@ -62,7 +58,6 @@ public class Holidays extends AnchorPane {
         //holidaysTable.getColumns().addAll(peselColumn, beginDateColumn, endDateColumn);
         holidaysTable.getColumns().addAll(beginDateColumn, endDateColumn);
         holidaysTable.setEditable(false);
-        refreshTableView();
 
         holidaysTable.setColumnResizePolicy((param) -> true);
 
@@ -76,7 +71,7 @@ public class Holidays extends AnchorPane {
             Holiday newHoliday = new AddHolidayDialog().popDialog();
             if(newHoliday != null) {
                 try {
-                    observableList.add(HolidaysModification.importObject(newHoliday));
+                    holidaysObservableList.add(HolidaysModification.importObject(newHoliday));
                 } catch (SQLException | NullPointerException | IllegalArgumentException ex){
                     new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 }
@@ -87,9 +82,9 @@ public class Holidays extends AnchorPane {
             if(selectedHoliday != null){
                 Holiday newHoliday = new EditHolidayDialog(selectedHoliday).popDialog();
                 if(newHoliday != null) {
-                    int index = observableList.indexOf(selectedHoliday);
-                    observableList.remove(index);
-                    observableList.add(index, newHoliday);
+                    int index = holidaysObservableList.indexOf(selectedHoliday);
+                    holidaysObservableList.remove(index);
+                    holidaysObservableList.add(index, newHoliday);
                     selectedHoliday = null;
                     holidaysTable.getSelectionModel().clearSelection();
                 }
@@ -101,14 +96,14 @@ public class Holidays extends AnchorPane {
                 if(new DeleteAlert().popDialog()){
                     try{
                         HolidaysModification.deleteObject(selectedHoliday);
-                        observableList.remove(selectedHoliday);
+                        holidaysObservableList.remove(selectedHoliday);
                         holidaysTable.getSelectionModel().clearSelection();
                         selectedHoliday = null;
                     } catch (SQLException ex){
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                        observableList.remove(selectedHoliday);
+                        holidaysObservableList.remove(selectedHoliday);
                         holidaysTable.getSelectionModel().clearSelection();
                         selectedHoliday = null;
                     }

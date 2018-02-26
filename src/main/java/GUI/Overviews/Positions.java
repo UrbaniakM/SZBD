@@ -34,26 +34,23 @@ public class Positions extends AnchorPane {
     private static Button editPositionButton = new Button("Edit");
     private static Button deletePositionButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
-    private static ObservableList<Position> observableList;
 
-    public final static void refreshTableView(){
-        try {
-            observableList = FXCollections.observableArrayList(new PositionsModification().importObject());
-            positionsTable.setItems(observableList);
-        } catch (SQLException | NullPointerException ex){
-            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-        }
+    public static ObservableList<Position> positionsObservableList = FXCollections.observableArrayList();
+
+    public synchronized final static void refreshTableView() throws NullPointerException, SQLException{
+        positionsObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
+        positionsTable.setItems(positionsObservableList);
     }
 
     public Positions(){
         super();
+        positionsTable.setItems(positionsObservableList);
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<Position,String>("name"));
         wageColumn.setCellValueFactory(new PropertyValueFactory<Position,String>("wage"));
 
         positionsTable.getColumns().addAll(nameColumn, wageColumn);
         positionsTable.setEditable(false);
-        refreshTableView();
 
         positionsTable.setColumnResizePolicy((param) -> true);
 
@@ -67,7 +64,7 @@ public class Positions extends AnchorPane {
             Position newPosition = new AddPositionDialog().popDialog();
             if(newPosition != null) {
                 try {
-                    observableList.add(PositionsModification.importObject(newPosition));
+                    positionsObservableList.add(PositionsModification.importObject(newPosition));
                 } catch (SQLException | NullPointerException | IllegalArgumentException ex){
                     new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 }
@@ -78,9 +75,9 @@ public class Positions extends AnchorPane {
             if(selectedPosition != null){
                 Position newPosition = new EditPositionDialog(selectedPosition).popDialog();
                 if(newPosition != null) {
-                    int index = observableList.indexOf(selectedPosition);
-                    observableList.remove(index);
-                    observableList.add(index, newPosition);
+                    int index = positionsObservableList.indexOf(selectedPosition);
+                    positionsObservableList.remove(index);
+                    positionsObservableList.add(index, newPosition);
                     selectedPosition = null;
                     positionsTable.getSelectionModel().clearSelection();
                 }
@@ -91,7 +88,7 @@ public class Positions extends AnchorPane {
                 if(new DeleteAlert().popDialog()){
                     try{
                         PositionsModification.deleteObject(selectedPosition);
-                        observableList.remove(selectedPosition);
+                        positionsObservableList.remove(selectedPosition);
                         positionsTable.getSelectionModel().clearSelection();
                         selectedPosition = null;
                     } catch (SQLDataException ex){
@@ -102,7 +99,7 @@ public class Positions extends AnchorPane {
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                        observableList.remove(selectedPosition);
+                        positionsObservableList.remove(selectedPosition);
                         positionsTable.getSelectionModel().clearSelection();
                         selectedPosition = null;
                     }

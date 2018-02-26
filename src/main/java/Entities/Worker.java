@@ -15,6 +15,8 @@ public class Worker{
     private Integer positionId;
     private Integer teamId = null;
     private Integer id;
+    private String teamName;
+    private String positionName = null;
 
     public Worker(Worker worker) {
         this.id = worker.getId();
@@ -25,6 +27,8 @@ public class Worker{
         this.bonus = worker.getBonus();
         this.positionId = worker.getPositionId();
         this.teamId = worker.getTeamId();
+        this.teamName = worker.getTeamName();
+        this.positionName = worker.getPositionName();
     }
 
     public Worker(){
@@ -94,5 +98,21 @@ public class Worker{
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 }

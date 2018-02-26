@@ -90,7 +90,7 @@ public class PositionsModification {
         try {
             // TODO: check if name not already in database
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT id FROM positions WHERE id='" + previousPosition.getId() + "'"
+                    "SELECT id FROM positions WHERE id='" + newPosition.getId() + "'"
             );
             if(selectStatement.next()){
                 String updateStatement = "UPDATE positions SET nazwa = ?, pensja = ? WHERE id = ?";

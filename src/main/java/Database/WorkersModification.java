@@ -15,7 +15,10 @@ public class WorkersModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM workers");
+            //rs = connection.createStatement().executeQuery("SELECT * FROM workers");
+            rs = connection.createStatement().executeQuery("SELECT workers.id, pesel, imie, nazwisko, data_zatrudnienia," +
+                    "premia, id_position, id_team, positions.nazwa, teams.nazwa FROM workers INNER JOIN positions ON id_position = positions.id " +
+                    "LEFT JOIN teams ON id_team = teams.id"); // TODO: rozbij to na getTeamInfo oraz getPositionInfo (arg: Integer id)
             while(rs.next()) {
                 Worker worker = new Worker();
                 worker.setId(rs.getInt(1));
@@ -26,6 +29,8 @@ public class WorkersModification {
                 worker.setBonus(rs.getInt(6));
                 worker.setPositionId(rs.getInt(7));
                 worker.setTeamId(rs.getInt(8));
+                worker.setPositionName(rs.getString(9));
+                worker.setTeamName(rs.getString(10));
                 data.add(worker);
             }
             return data;
@@ -42,7 +47,10 @@ public class WorkersModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM workers WHERE pesel='" + fetchWorker.getPesel() + "'");
+            rs = connection.createStatement().executeQuery("SELECT workers.id, pesel, imie, nazwisko, data_zatrudnienia, " +
+                    "premia, id_position, id_team, positions.nazwa, teams.nazwa FROM workers WHERE pesel='" + fetchWorker.getPesel() +
+                    "' INNER JOIN positions ON id_position = positions.id " + "LEFT JOIN teams ON id_team = teams.id"
+            );
             if(rs.next()) {
                 Worker worker = new Worker();
                 worker.setId(rs.getInt(1));
@@ -120,7 +128,7 @@ public class WorkersModification {
                 preparedStatement.setObject(5,newWorker.getBonus());
                 preparedStatement.setInt(6,newWorker.getPositionId());
                 preparedStatement.setObject(7,newWorker.getTeamId());
-                preparedStatement.setInt(8,previousWorker.getId());
+                preparedStatement.setInt(8,newWorker.getId());
                 preparedStatement.executeUpdate();
             } else {
                 throw new IllegalArgumentException("Worker no longer in database.");

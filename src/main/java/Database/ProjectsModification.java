@@ -71,7 +71,7 @@ public class ProjectsModification {
             }
             else {
                 String sqlStatement = "INSERT INTO projects(nazwa, data_rozpoczecia, data_zakonczenia, id_team) VALUES " +
-                        "(?,?,?,?)"; // TODO: data_zakoNczenia, nie data_zakoczenia
+                        "(?,?,?,?)";
                 preparedStatement = connection.prepareStatement(sqlStatement);
                 preparedStatement.setString(1, project.getName());
                 preparedStatement.setDate(2, project.getBeginDate());
@@ -96,7 +96,7 @@ public class ProjectsModification {
         try {
             // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT nazwa FROM projects WHERE nazwa='" + previousProject.getName() + "'"
+                    "SELECT nazwa FROM projects WHERE nazwa='" + newProject.getName() + "'"
             );
             if(selectStatement.next()){
                 String updateStatement = "UPDATE projects SET nazwa = ?, data_rozpoczecia = ?, data_zakonczenia = ?, id_team = ?" +

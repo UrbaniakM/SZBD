@@ -99,7 +99,7 @@ public class HolidaysModification {
         PreparedStatement preparedStatement = null;
         try { // TODO: check if not already in database
             selectStatement = connection.createStatement().executeQuery(
-                    "SELECT id FROM holidays WHERE id='" + previousHoliday.getId() + "'"
+                    "SELECT id FROM holidays WHERE id='" + newHoliday.getId() + "'"
             );
             if(selectStatement.next()){
                 String updateStatement = "UPDATE holidays SET id_worker = ?, czas_rozpoczecia = ?, czas_zakonczenia = ?" + // TODO: zakoNczenia, nie zakoczenia
@@ -108,7 +108,7 @@ public class HolidaysModification {
                 preparedStatement.setInt(1,newHoliday.getWorkerId());
                 preparedStatement.setDate(2,newHoliday.getBeginDate());
                 preparedStatement.setDate(3,newHoliday.getEndDate());
-                preparedStatement.setInt(4,previousHoliday.getId());
+                preparedStatement.setInt(4,newHoliday.getId());
                 preparedStatement.executeUpdate();
             } else {
                 throw new IllegalArgumentException("Holiday no longer in database.");

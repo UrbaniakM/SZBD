@@ -14,6 +14,7 @@ import java.sql.Connection;
 
 public class ApplicationGUI extends Application {
     public static DatabaseConnection databaseConnection;
+    private static Thread refreshLists = null;
 
     private static Stage mainStage;
     private static Scene mainScene;
@@ -25,7 +26,19 @@ public class ApplicationGUI extends Application {
     private static Tile holidaysTile = new Tile(150);
 
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if(refreshLists != null) {
+                refreshLists.interrupt();
+            }
+        }));
         launch(args);
+    }
+
+    @Override
+    public void stop(){
+        if(refreshLists != null) {
+            refreshLists.interrupt();
+        }
     }
 
     private Scene mainGUI(){
@@ -58,6 +71,9 @@ public class ApplicationGUI extends Application {
         this.mainStage = mainStage;
         LoginDialog loginDialog = new LoginDialog();
         databaseConnection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
+
+        refreshLists = new RefreshLists();
+        refreshLists.start();
 
         mainScene = mainGUI();
         mainStage.setResizable(false);

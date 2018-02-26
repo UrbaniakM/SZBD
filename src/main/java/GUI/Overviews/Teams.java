@@ -37,19 +37,16 @@ public class Teams extends AnchorPane{
     private static Button deleteTeamButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
-    private static ObservableList<Team> observableList;
+    public static ObservableList<Team> teamsObservableList = FXCollections.emptyObservableList();
 
-    public final static void refreshTableView(){
-        try {
-            observableList = FXCollections.observableArrayList(new TeamsModification().importObject());
-            teamsTable.setItems(observableList);
-        } catch (SQLException | NullPointerException ex){
-            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-        }
+    public synchronized final static void refreshTableView() throws SQLException, NullPointerException{
+        teamsObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
+        teamsTable.setItems(teamsObservableList);
     }
 
     public Teams(){
         super();
+        teamsTable.setItems(teamsObservableList);
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<Team,String>("name"));
         creationDateColumn.setCellValueFactory(value -> {
@@ -59,7 +56,6 @@ public class Teams extends AnchorPane{
 
         teamsTable.getColumns().addAll(nameColumn, creationDateColumn);//, peselLeaderColumn);
         teamsTable.setEditable(false);
-        refreshTableView();
 
         teamsTable.setColumnResizePolicy((param) -> true);
 
@@ -73,7 +69,7 @@ public class Teams extends AnchorPane{
             Team newTeam = new AddTeamDialog().popDialog();
             if(newTeam != null){
                 try {
-                    observableList.add(TeamsModification.importObject(newTeam));
+                    teamsObservableList.add(TeamsModification.importObject(newTeam));
                 } catch (SQLException | NullPointerException | IllegalArgumentException ex){
                     new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 }
@@ -84,9 +80,9 @@ public class Teams extends AnchorPane{
             if(selectedTeam != null){
                 Team newTeam = new EditTeamDialog(selectedTeam).popDialog();
                 if(newTeam != null) {
-                    int index = observableList.indexOf(selectedTeam);
-                    observableList.remove(index);
-                    observableList.add(index, newTeam);
+                    int index = teamsObservableList.indexOf(selectedTeam);
+                    teamsObservableList.remove(index);
+                    teamsObservableList.add(index, newTeam);
                     selectedTeam = null;
                     teamsTable.getSelectionModel().clearSelection();
                 }
@@ -97,7 +93,7 @@ public class Teams extends AnchorPane{
                 if(new DeleteAlert().popDialog()){
                     try{
                         TeamsModification.deleteObject(selectedTeam);
-                        observableList.remove(selectedTeam);
+                        teamsObservableList.remove(selectedTeam);
                         teamsTable.getSelectionModel().clearSelection();
                         selectedTeam = null;
                     } catch (SQLDataException ex){
@@ -114,7 +110,7 @@ public class Teams extends AnchorPane{
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                        observableList.remove(selectedTeam);
+                        teamsObservableList.remove(selectedTeam);
                         teamsTable.getSelectionModel().clearSelection();
                         selectedTeam = null;
                     }

@@ -37,19 +37,16 @@ public class Projects extends AnchorPane{
     private static Button deleteProjectButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
-    private static ObservableList<Project> observableList;
+    public static ObservableList<Project> projectsObservableList = FXCollections.emptyObservableList();
 
-    public final static void refreshTableView(){
-        try {
-            observableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
-            projectsTable.setItems(observableList);
-        } catch (SQLException | NullPointerException ex){
-            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-        }
+    public synchronized final static void refreshTableView() throws SQLException, NullPointerException{
+        projectsObservableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
+        projectsTable.setItems(projectsObservableList);
     }
 
     public Projects(){
         super();
+        projectsTable.setItems(projectsObservableList);
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("name"));
         beginDateColumn.setCellValueFactory(value -> {
@@ -66,7 +63,6 @@ public class Projects extends AnchorPane{
 
         projectsTable.getColumns().addAll(nameColumn, beginDateColumn, endDateColumn);//, teamColumn);
         projectsTable.setEditable(false);
-        refreshTableView();
 
         projectsTable.setColumnResizePolicy((param) -> true);
 
@@ -80,7 +76,7 @@ public class Projects extends AnchorPane{
             Project newProject = new AddProjectDialog().popDialog();
             if(newProject != null){
                 try {
-                    observableList.add(ProjectsModification.importObject(newProject));
+                    projectsObservableList.add(ProjectsModification.importObject(newProject));
                 } catch (SQLException | NullPointerException | IllegalArgumentException ex){
                     new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 }
@@ -91,9 +87,9 @@ public class Projects extends AnchorPane{
             if(selectedProject != null){
                 Project newProject = new EditProjectDialog(selectedProject).popDialog();
                 if(newProject != null) {
-                    int index = observableList.indexOf(selectedProject);
-                    observableList.remove(index);
-                    observableList.add(index, newProject);
+                    int index = projectsObservableList.indexOf(selectedProject);
+                    projectsObservableList.remove(index);
+                    projectsObservableList.add(index, newProject);
                     selectedProject = null;
                     projectsTable.getSelectionModel().clearSelection();
                 }
@@ -104,14 +100,14 @@ public class Projects extends AnchorPane{
                 if(new DeleteAlert().popDialog()){
                     try{
                         ProjectsModification.deleteObject(selectedProject);
-                        observableList.remove(selectedProject);
+                        projectsObservableList.remove(selectedProject);
                         projectsTable.getSelectionModel().clearSelection();
                         selectedProject = null;
                     } catch (SQLException ex){
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected project no longer in database.").showAndWait();
-                        observableList.remove(selectedProject);
+                        projectsObservableList.remove(selectedProject);
                         projectsTable.getSelectionModel().clearSelection();
                         selectedProject = null;
                     }

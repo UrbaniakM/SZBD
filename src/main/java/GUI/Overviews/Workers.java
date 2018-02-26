@@ -19,15 +19,14 @@ import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 public class Workers extends AnchorPane{
-
     private static final TableView<Worker> workersTable = new TableView<>();
     private static final TableColumn<Worker, String> firstNameColumn = new TableColumn<>("First name");
     private static final TableColumn<Worker, String> lastNameColumn = new TableColumn<>("Last name");
     private static final TableColumn<Worker, String> peselColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Worker, String> hireDateColumn = new TableColumn<>("Hired");
     private static final TableColumn<Worker, String> bonusColumn = new TableColumn<>("Bonus");
-    //private static final TableColumn<Worker, String> positionNameColumn = new TableColumn<>("Position");
-    //private static final TableColumn<Worker, String> teamNameColumn = new TableColumn<>("Team");
+    private static final TableColumn<Worker, String> positionNameColumn = new TableColumn<>("Position");
+    private static final TableColumn<Worker, String> teamNameColumn = new TableColumn<>("Team");
 
     private Worker selectedWorker = null;
 
@@ -37,19 +36,20 @@ public class Workers extends AnchorPane{
     private static Button deleteWorkerButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
-    private static ObservableList<Worker> observableList;
+    public static ObservableList<Worker> workersObservableList = FXCollections.observableArrayList();
 
-    public final static void refreshTableView(){
-        try {
-            observableList = FXCollections.observableArrayList(new WorkersModification().importObject());
-            workersTable.setItems(observableList);
-        } catch (SQLException | NullPointerException ex){
-            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-        }
+    private static void addItem(Worker worker){
+
+    }
+
+    public synchronized final static void refreshTableView() throws NullPointerException, SQLException{
+        workersObservableList = FXCollections.observableArrayList(new WorkersModification().importObject());
+        workersTable.setItems(workersObservableList);
     }
 
     public Workers(){
         super();
+        workersTable.setItems(workersObservableList);
 
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("name"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("lastName"));
@@ -58,11 +58,10 @@ public class Workers extends AnchorPane{
             return new ReadOnlyStringWrapper(value.getValue().getHireDate().toString());
         });
         bonusColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("bonus"));
-        //positionNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("positionName"));
-        //teamNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("teamName"));
-        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, bonusColumn);//, positionNameColumn, teamNameColumn);
+        positionNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("positionName"));
+        teamNameColumn.setCellValueFactory(new PropertyValueFactory<Worker,String>("teamName"));
+        workersTable.getColumns().addAll(firstNameColumn, lastNameColumn, peselColumn, hireDateColumn, bonusColumn, positionNameColumn, teamNameColumn);
         workersTable.setEditable(false);
-        refreshTableView();
 
         workersTable.setColumnResizePolicy((param) -> true);
 
@@ -76,7 +75,7 @@ public class Workers extends AnchorPane{
             Worker newWorker = new AddWorkerDialog().popDialog();
             if(newWorker != null){
                 try {
-                    observableList.add(WorkersModification.importObject(newWorker));
+                    workersObservableList.add(WorkersModification.importObject(newWorker));
                 } catch (SQLException | NullPointerException | IllegalArgumentException ex){
                     new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 }
@@ -87,9 +86,19 @@ public class Workers extends AnchorPane{
             if(selectedWorker != null){
                 Worker newWorker = new EditWorkerDialog(selectedWorker).popDialog();
                 if(newWorker != null) {
-                    int index = observableList.indexOf(selectedWorker);
-                    observableList.remove(index);
-                    observableList.add(index, newWorker);
+                    if( !newWorker.getTeamId().equals(selectedWorker.getTeamId()) || !newWorker.getPositionId().equals(selectedWorker.getPositionId()) ){
+                        try { // TODO: NIE DZIALA
+                            int index = workersObservableList.indexOf(selectedWorker);
+                            workersObservableList.remove(index);
+                            workersObservableList.add(index, WorkersModification.importObject(newWorker));
+                        } catch (SQLException | NullPointerException | IllegalArgumentException ex){
+                            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                        }
+                    } else {
+                        int index = workersObservableList.indexOf(selectedWorker);
+                        workersObservableList.remove(index);
+                        workersObservableList.add(index, newWorker);
+                    }
                     selectedWorker = null;
                     workersTable.getSelectionModel().clearSelection();
                 }
@@ -101,7 +110,7 @@ public class Workers extends AnchorPane{
                 if(new DeleteAlert().popDialog()){
                     try{
                         WorkersModification.deleteObject(selectedWorker);
-                        observableList.remove(selectedWorker);
+                        //workersObservableList.remove(selectedWorker);
                         workersTable.getSelectionModel().clearSelection();
                         selectedWorker = null;
                     } catch (SQLDataException ex){
@@ -112,7 +121,7 @@ public class Workers extends AnchorPane{
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();
-                        observableList.remove(selectedWorker);
+                        workersObservableList.remove(selectedWorker);
                         workersTable.getSelectionModel().clearSelection();
                         selectedWorker = null;
                     }
