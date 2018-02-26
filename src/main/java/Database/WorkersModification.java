@@ -18,7 +18,7 @@ public class WorkersModification {
             //rs = connection.createStatement().executeQuery("SELECT * FROM workers");
             rs = connection.createStatement().executeQuery("SELECT workers.id, pesel, imie, nazwisko, data_zatrudnienia," +
                     "premia, id_position, id_team, positions.nazwa, teams.nazwa FROM workers INNER JOIN positions ON id_position = positions.id " +
-                    "LEFT JOIN teams ON id_team = teams.id"); // TODO: rozbij to na getTeamInfo oraz getPositionInfo (arg: Integer id)
+                    "LEFT JOIN teams ON id_team = teams.id");
             while(rs.next()) {
                 Worker worker = new Worker();
                 worker.setId(rs.getInt(1));
@@ -48,8 +48,8 @@ public class WorkersModification {
         ResultSet rs = null;
         try {
             rs = connection.createStatement().executeQuery("SELECT workers.id, pesel, imie, nazwisko, data_zatrudnienia, " +
-                    "premia, id_position, id_team, positions.nazwa, teams.nazwa FROM workers WHERE pesel='" + fetchWorker.getPesel() +
-                    "' INNER JOIN positions ON id_position = positions.id " + "LEFT JOIN teams ON id_team = teams.id"
+                    "premia, id_position, id_team, positions.nazwa, teams.nazwa FROM workers INNER JOIN positions ON id_position = positions.id "
+                    + "LEFT JOIN teams ON id_team = teams.id WHERE pesel='" + fetchWorker.getPesel() +"'"
             );
             if(rs.next()) {
                 Worker worker = new Worker();

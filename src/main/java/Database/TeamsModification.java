@@ -13,13 +13,15 @@ public class TeamsModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM teams");
+            rs = connection.createStatement().executeQuery("SELECT teams.id, teams.nazwa, data_utworzenia, id_leader, workers.pesel FROM teams " +
+                    "LEFT JOIN workers ON id_leader=workers.id");
             while(rs.next()) {
                 Team team = new Team();
                 team.setId(rs.getInt(1));
                 team.setName(rs.getString(2));
                 team.setCreationDate(rs.getDate(3));
                 team.setLeaderId(rs.getInt(4));
+                team.setLeaderPesel(rs.getString(5));
                 data.add(team);
             }
             return data;

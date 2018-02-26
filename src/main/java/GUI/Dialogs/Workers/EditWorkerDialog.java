@@ -8,8 +8,6 @@ import Entities.Team;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
 import GUI.Dialogs.ExceptionAlert;
-import GUI.Overviews.Positions;
-import GUI.Overviews.Teams;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -59,7 +57,8 @@ public class EditWorkerDialog extends AbstractDialog {
         bonusTF.setText(workerBeforeEdition.getBonus().toString());
 
         ComboBox<Position> positionComboBox = new ComboBox<>();
-            ObservableList<Position> positionObservableList = FXCollections.observableArrayList(Positions.positionsObservableList);
+        try {
+            ObservableList<Position> positionObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
             positionComboBox.setItems(positionObservableList);
             positionComboBox.setEditable(false);
             for (int index = 0; index < positionObservableList.size(); index++) {
@@ -82,9 +81,13 @@ public class EditWorkerDialog extends AbstractDialog {
                             ap.getName().equals(string)).findFirst().orElse(null);
                 }
             });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
 
         ComboBox<Team> teamComboBox = new ComboBox<>();
-            ObservableList<Team> teamObservableList = FXCollections.observableArrayList(Teams.teamsObservableList);
+        try {
+            ObservableList<Team> teamObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
             teamComboBox.setItems(teamObservableList);
             teamComboBox.setEditable(false);
             for (int index = 0; index < teamObservableList.size(); index++) {
@@ -107,6 +110,9 @@ public class EditWorkerDialog extends AbstractDialog {
                             ap.getName().equals(string)).findFirst().orElse(null);
                 }
             });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
 
         Node loginButton = this.getDialogPane().lookupButton(confirmButtonType);
         loginButton.setDisable(true);

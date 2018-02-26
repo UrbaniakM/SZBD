@@ -5,11 +5,15 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.util.Optional;
 
 public class LoginDialog extends Dialog {
+    private ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+    private ButtonType cancelButtonType = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+
     private String username;
     private String password;
     /*final Action actionLogin = new AbstractAction("Login") {
@@ -20,12 +24,12 @@ public class LoginDialog extends Dialog {
         }
     };*/
 
-    public LoginDialog(){ // TODO: if cancel, then exit application; IF WRONG LOGIN, ANOTHER 2 ATTEMPTS
+    public LoginDialog(){
         super();
         this.setTitle("Log to database");
+        initStyle(StageStyle.UNDECORATED);
 
-        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
-        this.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        this.getDialogPane().getButtonTypes().addAll(loginButtonType, cancelButtonType);
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -59,6 +63,8 @@ public class LoginDialog extends Dialog {
         this.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
                 return new Pair<>(username.getText(), password.getText());
+            } else if(dialogButton == cancelButtonType){
+                System.exit(0);
             }
             return null;
         });

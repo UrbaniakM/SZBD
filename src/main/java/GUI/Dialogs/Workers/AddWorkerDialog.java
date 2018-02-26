@@ -8,8 +8,6 @@ import Entities.Team;
 import Entities.Worker;
 import GUI.Dialogs.AbstractDialog;
 import GUI.Dialogs.ExceptionAlert;
-import GUI.Overviews.Positions;
-import GUI.Overviews.Teams;
 import GUI.TextFieldRestrictions;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -53,7 +51,8 @@ public class AddWorkerDialog extends AbstractDialog {
         bonusTF.setPromptText("Bonus");
 
         ComboBox<Position> positionComboBox = new ComboBox<>();
-            ObservableList<Position> positionObservableList = FXCollections.observableArrayList(Positions.positionsObservableList);
+        try {
+            ObservableList<Position> positionObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
             positionComboBox.setItems(positionObservableList);
             positionComboBox.setEditable(false);
 
@@ -70,9 +69,13 @@ public class AddWorkerDialog extends AbstractDialog {
                             ap.getName().equals(string)).findFirst().orElse(null);
                 }
             });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
 
         ComboBox<Team> teamComboBox = new ComboBox<>();
-            ObservableList<Team> teamObservableList = FXCollections.observableArrayList(Teams.teamsObservableList);
+        try {
+            ObservableList<Team> teamObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
             teamComboBox.setItems(teamObservableList);
             teamComboBox.setEditable(false);
 
@@ -89,6 +92,9 @@ public class AddWorkerDialog extends AbstractDialog {
                             ap.getName().equals(string)).findFirst().orElse(null);
                 }
             });
+        } catch (SQLException ex){
+            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+        }
 
 
         TextFieldRestrictions.addIntegerRestriction(bonusTF);
@@ -123,6 +129,7 @@ public class AddWorkerDialog extends AbstractDialog {
         grid.add(positionComboBox, 1, 6);
         grid.add(new Label("Team:"),0,7);
         grid.add(teamComboBox, 1, 7);
+
 
         this.getDialogPane().setContent(grid);
         Platform.runLater(() -> nameTF.requestFocus());

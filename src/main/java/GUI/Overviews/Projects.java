@@ -27,7 +27,7 @@ public class Projects extends AnchorPane{
     private static final TableColumn<Project, String> nameColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Project, String> beginDateColumn = new TableColumn<>("Began");
     private static final TableColumn<Project, String> endDateColumn = new TableColumn<>("Ended");
-    //private static final TableColumn<Project, String> teamColumn = new TableColumn<>("Team");
+    private static final TableColumn<Project, String> teamColumn = new TableColumn<>("Team");
 
     private Project selectedProject = null;
 
@@ -37,7 +37,17 @@ public class Projects extends AnchorPane{
     private static Button deleteProjectButton = new Button("Delete");
     private static Button backButton = new Button("\u2ba8");
 
-    public static ObservableList<Project> projectsObservableList = FXCollections.emptyObservableList();
+    public static ObservableList<Project> projectsObservableList = FXCollections.observableArrayList();
+
+    private synchronized static void removeObject(Project project){
+        projectsObservableList.remove(project);
+    }
+
+    private synchronized static void editObject(Project prev, Project act){
+        int index = projectsObservableList.indexOf(prev);
+        projectsObservableList.remove(index);
+        projectsObservableList.add(index,act);
+    }
 
     public synchronized final static void refreshTableView() throws SQLException, NullPointerException{
         projectsObservableList = FXCollections.observableArrayList(new ProjectsModification().importObject());
@@ -59,9 +69,9 @@ public class Projects extends AnchorPane{
                 return new ReadOnlyStringWrapper("");
             }
         });
-        //teamColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("teamName"));
+        teamColumn.setCellValueFactory(new PropertyValueFactory<Project,String>("teamName"));
 
-        projectsTable.getColumns().addAll(nameColumn, beginDateColumn, endDateColumn);//, teamColumn);
+        projectsTable.getColumns().addAll(nameColumn, beginDateColumn, endDateColumn, teamColumn);
         projectsTable.setEditable(false);
 
         projectsTable.setColumnResizePolicy((param) -> true);
@@ -73,14 +83,7 @@ public class Projects extends AnchorPane{
         });
 
         addProjectButton.setOnMouseClicked((MouseEvent event) -> {
-            Project newProject = new AddProjectDialog().popDialog();
-            if(newProject != null){
-                try {
-                    projectsObservableList.add(ProjectsModification.importObject(newProject));
-                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
-                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-                }
-            }
+            new AddProjectDialog().popDialog();
         });
 
         editProjectButton.setOnMouseClicked((MouseEvent event) -> {
@@ -88,8 +91,7 @@ public class Projects extends AnchorPane{
                 Project newProject = new EditProjectDialog(selectedProject).popDialog();
                 if(newProject != null) {
                     int index = projectsObservableList.indexOf(selectedProject);
-                    projectsObservableList.remove(index);
-                    projectsObservableList.add(index, newProject);
+                    //editObject(selectedProject, newProject);
                     selectedProject = null;
                     projectsTable.getSelectionModel().clearSelection();
                 }
@@ -100,7 +102,7 @@ public class Projects extends AnchorPane{
                 if(new DeleteAlert().popDialog()){
                     try{
                         ProjectsModification.deleteObject(selectedProject);
-                        projectsObservableList.remove(selectedProject);
+                        //removeObject(selectedProject);
                         projectsTable.getSelectionModel().clearSelection();
                         selectedProject = null;
                     } catch (SQLException ex){

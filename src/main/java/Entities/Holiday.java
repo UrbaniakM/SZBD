@@ -10,6 +10,7 @@ public class Holiday {
     private Date beginDate;
     private Date endDate;
     private Integer workerId;
+    private String workerPesel;
 
     public Holiday(){
 
@@ -20,6 +21,15 @@ public class Holiday {
         this.beginDate = holiday.getBeginDate();
         this.endDate = holiday.getEndDate();
         this.workerId = holiday.getWorkerId();
+        this.workerPesel = holiday.getWorkerPesel();
+    }
+
+    public String getWorkerPesel() {
+        return workerPesel;
+    }
+
+    public void setWorkerPesel(String workerPesel) {
+        this.workerPesel = workerPesel;
     }
 
     public Date getBeginDate() {

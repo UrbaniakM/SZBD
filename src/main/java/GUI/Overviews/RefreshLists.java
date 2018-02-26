@@ -1,9 +1,7 @@
 package GUI.Overviews;
 
-import Database.TeamsModification;
-import Database.WorkersModification;
 import GUI.Dialogs.ExceptionAlert;
-import javafx.collections.FXCollections;
+import javafx.application.Platform;
 
 import java.sql.SQLException;
 
@@ -15,16 +13,36 @@ public class RefreshLists extends Thread{
         while(!isInterrupted()){
             try {
                 Workers.refreshTableView();
+                if(isInterrupted()){
+                    break;
+                }
                 Teams.refreshTableView();
+                if(isInterrupted()){
+                    break;
+                }
                 Holidays.refreshTableView();
+                if(isInterrupted()){
+                    break;
+                }
                 Positions.refreshTableView();
+                if(isInterrupted()){
+                    break;
+                }
                 Projects.refreshTableView();
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             } catch (SQLException | NullPointerException ex){
-                new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-            } catch (InterruptedException ex){
+                Platform.runLater(() -> {
+                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
+                });
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e){
+                    break;
+                }
+            } catch (InterruptedException e){
                 break;
             }
+
         }
     }
 }

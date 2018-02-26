@@ -38,8 +38,14 @@ public class Workers extends AnchorPane{
 
     public static ObservableList<Worker> workersObservableList = FXCollections.observableArrayList();
 
-    private static void addItem(Worker worker){
+    private synchronized static void removeObject(Worker worker){
+        workersObservableList.remove(worker);
+    }
 
+    private synchronized static void editObject(Worker prev, Worker act){
+        int index = workersObservableList.indexOf(prev);
+        workersObservableList.remove(index);
+        workersObservableList.add(index,act);
     }
 
     public synchronized final static void refreshTableView() throws NullPointerException, SQLException{
@@ -72,33 +78,14 @@ public class Workers extends AnchorPane{
         });
 
         addWorkerButton.setOnMouseClicked((MouseEvent event) -> {
-            Worker newWorker = new AddWorkerDialog().popDialog();
-            if(newWorker != null){
-                try {
-                    workersObservableList.add(WorkersModification.importObject(newWorker));
-                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
-                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-                }
-            }
+            new AddWorkerDialog().popDialog();
         });
 
         editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedWorker != null){
                 Worker newWorker = new EditWorkerDialog(selectedWorker).popDialog();
                 if(newWorker != null) {
-                    if( !newWorker.getTeamId().equals(selectedWorker.getTeamId()) || !newWorker.getPositionId().equals(selectedWorker.getPositionId()) ){
-                        try { // TODO: NIE DZIALA
-                            int index = workersObservableList.indexOf(selectedWorker);
-                            workersObservableList.remove(index);
-                            workersObservableList.add(index, WorkersModification.importObject(newWorker));
-                        } catch (SQLException | NullPointerException | IllegalArgumentException ex){
-                            new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-                        }
-                    } else {
-                        int index = workersObservableList.indexOf(selectedWorker);
-                        workersObservableList.remove(index);
-                        workersObservableList.add(index, newWorker);
-                    }
+                    //editObject(selectedWorker,newWorker);
                     selectedWorker = null;
                     workersTable.getSelectionModel().clearSelection();
                 }
@@ -110,7 +97,7 @@ public class Workers extends AnchorPane{
                 if(new DeleteAlert().popDialog()){
                     try{
                         WorkersModification.deleteObject(selectedWorker);
-                        //workersObservableList.remove(selectedWorker);
+                        //removeObject(selectedWorker);
                         workersTable.getSelectionModel().clearSelection();
                         selectedWorker = null;
                     } catch (SQLDataException ex){

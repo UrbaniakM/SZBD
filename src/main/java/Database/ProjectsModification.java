@@ -13,7 +13,8 @@ public class ProjectsModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM projects");
+            rs = connection.createStatement().executeQuery("SELECT projects.id, projects.nazwa, data_rozpoczecia, data_zakonczenia," +
+                    " id_team, teams.nazwa FROM projects LEFT JOIN teams ON id_team = teams.id");
             while(rs.next()) {
                 Project project = new Project();
                 project.setId(rs.getInt(1));
@@ -21,6 +22,7 @@ public class ProjectsModification {
                 project.setBeginDate(rs.getDate(3));
                 project.setEndDate(rs.getDate(4));
                 project.setTeamId(rs.getInt(5));
+                project.setTeamName(rs.getString(6));
                 data.add(project);
             }
             return data;

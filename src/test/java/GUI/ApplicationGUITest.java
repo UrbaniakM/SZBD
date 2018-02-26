@@ -18,7 +18,9 @@ public class ApplicationGUITest extends Application {
     @Override
     public void start(Stage primaryStage) {
         LoginDialog loginDialog = new LoginDialog();
-        Connection connection = new DatabaseConnection(loginDialog.getUsername(),loginDialog.getPassword()).getConnection();
+        try {
+            Connection connection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword()).getConnection();
+        } catch (Exception ex) { }
         primaryStage.setScene(new Scene(new Workers()));
         primaryStage.show();
     }

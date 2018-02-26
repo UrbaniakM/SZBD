@@ -27,7 +27,7 @@ public class Teams extends AnchorPane{
     private static final TableView<Team> teamsTable = new TableView<>();
     private static final TableColumn<Team, String> nameColumn = new TableColumn<>("Pesel");
     private static final TableColumn<Team, String> creationDateColumn = new TableColumn<>("Created");
-    //private static final TableColumn<Team, String> peselLeaderColumn = new TableColumn<>("Leader (PESEL)");
+    private static final TableColumn<Team, String> peselLeaderColumn = new TableColumn<>("Leader (PESEL)");
 
     private Team selectedTeam = null;
 
@@ -38,6 +38,16 @@ public class Teams extends AnchorPane{
     private static Button backButton = new Button("\u2ba8");
 
     public static ObservableList<Team> teamsObservableList = FXCollections.emptyObservableList();
+
+    private synchronized static void removeObject(Team team){
+        teamsObservableList.remove(team);
+    }
+
+    private synchronized static void editObject(Team prev, Team act){
+        int index = teamsObservableList.indexOf(prev);
+        teamsObservableList.remove(index);
+        teamsObservableList.add(index,act);
+    }
 
     public synchronized final static void refreshTableView() throws SQLException, NullPointerException{
         teamsObservableList = FXCollections.observableArrayList(new TeamsModification().importObject());
@@ -52,9 +62,9 @@ public class Teams extends AnchorPane{
         creationDateColumn.setCellValueFactory(value -> {
             return new ReadOnlyStringWrapper(value.getValue().getCreationDate().toString());
         });
-        //peselLeaderColumn.setCellValueFactory(new PropertyValueFactory<Team,String>("leaderPesel"));
+        peselLeaderColumn.setCellValueFactory(new PropertyValueFactory<Team,String>("leaderPesel"));
 
-        teamsTable.getColumns().addAll(nameColumn, creationDateColumn);//, peselLeaderColumn);
+        teamsTable.getColumns().addAll(nameColumn, creationDateColumn, peselLeaderColumn);
         teamsTable.setEditable(false);
 
         teamsTable.setColumnResizePolicy((param) -> true);
@@ -66,23 +76,15 @@ public class Teams extends AnchorPane{
         });
 
         addTeamButton.setOnMouseClicked((MouseEvent event) -> {
-            Team newTeam = new AddTeamDialog().popDialog();
-            if(newTeam != null){
-                try {
-                    teamsObservableList.add(TeamsModification.importObject(newTeam));
-                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
-                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-                }
-            }
+            new AddTeamDialog().popDialog();
+
         });
 
         editTeamButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedTeam != null){
                 Team newTeam = new EditTeamDialog(selectedTeam).popDialog();
                 if(newTeam != null) {
-                    int index = teamsObservableList.indexOf(selectedTeam);
-                    teamsObservableList.remove(index);
-                    teamsObservableList.add(index, newTeam);
+                    //editObject(selectedTeam,newTeam);
                     selectedTeam = null;
                     teamsTable.getSelectionModel().clearSelection();
                 }
@@ -93,7 +95,7 @@ public class Teams extends AnchorPane{
                 if(new DeleteAlert().popDialog()){
                     try{
                         TeamsModification.deleteObject(selectedTeam);
-                        teamsObservableList.remove(selectedTeam);
+                        //removeObject(selectedTeam);
                         teamsTable.getSelectionModel().clearSelection();
                         selectedTeam = null;
                     } catch (SQLDataException ex){

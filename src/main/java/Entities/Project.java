@@ -12,6 +12,7 @@ public class Project {
     private Date endDate = null;
     private Integer id;
     private Integer teamId;
+    private String teamName;
 
     public Project(){
 
@@ -23,6 +24,15 @@ public class Project {
         this.beginDate = project.getBeginDate();
         this.endDate = project.getEndDate();
         this.teamId = project.getTeamId();
+        this.teamName = project.getTeamName();
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
     public String getName() {

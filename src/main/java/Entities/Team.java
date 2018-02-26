@@ -11,6 +11,7 @@ public class Team {
     private Date creationDate;
     private Integer id;
     private Integer leaderId;
+    private String leaderPesel;
 
     public Team(){
 
@@ -21,6 +22,15 @@ public class Team {
         this.name = team.getName();
         this.creationDate = team.getCreationDate();
         this.leaderId = team.getLeaderId();
+        this.leaderPesel = team.getLeaderPesel();
+    }
+
+    public String getLeaderPesel() {
+        return leaderPesel;
+    }
+
+    public void setLeaderPesel(String leaderPesel) {
+        this.leaderPesel = leaderPesel;
     }
 
     public String getName() {

@@ -37,6 +37,16 @@ public class Positions extends AnchorPane {
 
     public static ObservableList<Position> positionsObservableList = FXCollections.observableArrayList();
 
+    private synchronized static void removeObject(Position position){
+        positionsObservableList.remove(position);
+    }
+
+    private synchronized static void editObject(Position prev, Position act){
+        int index = positionsObservableList.indexOf(prev);
+        positionsObservableList.remove(index);
+        positionsObservableList.add(index,act);
+    }
+
     public synchronized final static void refreshTableView() throws NullPointerException, SQLException{
         positionsObservableList = FXCollections.observableArrayList(new PositionsModification().importObject());
         positionsTable.setItems(positionsObservableList);
@@ -61,23 +71,14 @@ public class Positions extends AnchorPane {
         });
 
         addPositionButton.setOnMouseClicked((MouseEvent event) -> {
-            Position newPosition = new AddPositionDialog().popDialog();
-            if(newPosition != null) {
-                try {
-                    positionsObservableList.add(PositionsModification.importObject(newPosition));
-                } catch (SQLException | NullPointerException | IllegalArgumentException ex){
-                    new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
-                }
-            }
+            new AddPositionDialog().popDialog();
         });
 
         editPositionButton.setOnMouseClicked((MouseEvent event) -> {
             if(selectedPosition != null){
                 Position newPosition = new EditPositionDialog(selectedPosition).popDialog();
                 if(newPosition != null) {
-                    int index = positionsObservableList.indexOf(selectedPosition);
-                    positionsObservableList.remove(index);
-                    positionsObservableList.add(index, newPosition);
+                    //editObject(selectedPosition, newPosition);
                     selectedPosition = null;
                     positionsTable.getSelectionModel().clearSelection();
                 }
@@ -88,7 +89,7 @@ public class Positions extends AnchorPane {
                 if(new DeleteAlert().popDialog()){
                     try{
                         PositionsModification.deleteObject(selectedPosition);
-                        positionsObservableList.remove(selectedPosition);
+                        //removeObject(selectedPosition);
                         positionsTable.getSelectionModel().clearSelection();
                         selectedPosition = null;
                     } catch (SQLDataException ex){

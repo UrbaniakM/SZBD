@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 public class EditProjectDialog extends AbstractDialog {
     private ButtonType confirmButtonType;
+    private Button clearDate = new Button("Clear");
     private Project projectAfterEdition;
     private Project projectBeforeEdition;
 
@@ -87,12 +89,17 @@ public class EditProjectDialog extends AbstractDialog {
         );
 
 
+        clearDate.setOnMouseClicked((MouseEvent event) -> {
+            endDateDP.setValue(null);
+        });
+
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
         grid.add(new Label("Begin date:"), 0, 2);
         grid.add(beginDateDP, 1, 2);
         grid.add(new Label("End date:"), 0, 3);
         grid.add(endDateDP, 1, 3);
+        grid.add(clearDate,3,3);
         grid.add(new Label("Team:"),0,4);
         grid.add(teamComboBox, 1, 4);
 

@@ -18,13 +18,15 @@ public class HolidaysModification {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet rs = null;
         try {
-            rs = connection.createStatement().executeQuery("SELECT * FROM holidays");
+            rs = connection.createStatement().executeQuery("SELECT holidays.id, id_worker, czas_rozpoczecia," +
+                    " czas_zakonczenia, workers.pesel FROM holidays LEFT JOIN workers ON id_worker=workers.id");
             while(rs.next()) {
                 Holiday holiday = new Holiday();
                 holiday.setId(rs.getInt(1));
                 holiday.setWorkerId(rs.getInt(2));
                 holiday.setBeginDate(rs.getDate(3));
                 holiday.setEndDate(rs.getDate(4));
+                holiday.setWorkerPesel(rs.getString(5));
                 data.add(holiday);
             }
             return data;

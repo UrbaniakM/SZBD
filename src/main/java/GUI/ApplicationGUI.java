@@ -2,6 +2,7 @@ package GUI;
 
 import Database.*;
 import Entities.Position;
+import GUI.Dialogs.ExceptionAlert;
 import GUI.Dialogs.LoginDialog;
 import GUI.Overviews.*;
 import javafx.application.Application;
@@ -11,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ApplicationGUI extends Application {
     public static DatabaseConnection databaseConnection;
@@ -69,8 +71,21 @@ public class ApplicationGUI extends Application {
     @Override
     public void start(Stage mainStage) {
         this.mainStage = mainStage;
-        LoginDialog loginDialog = new LoginDialog();
-        databaseConnection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
+        for(int i = 1; i <= 3; i++) {
+            try{
+                LoginDialog loginDialog = new LoginDialog();
+                databaseConnection = new DatabaseConnection(loginDialog.getUsername(), loginDialog.getPassword());
+                databaseConnection.getConnection();
+                break;
+            } catch (SQLException ex){
+                if(i == 3){
+                    new ExceptionAlert("Wrong login/password", "Closing the application").showAndWait();
+                    System.exit(100);
+                } else {
+                    new ExceptionAlert("Wrong login/password", "Number of attempts: " + i).showAndWait();
+                }
+            }
+        }
 
         refreshLists = new RefreshLists();
         refreshLists.start();
