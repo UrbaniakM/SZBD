@@ -111,9 +111,16 @@ public class WorkersModification {
     public static void editObject(Worker previousWorker, Worker newWorker) throws SQLException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
+        ResultSet uniquePesel;
         PreparedStatement preparedStatement = null;
         try {
-            // TODO: make sure UNIQUE PESEL
+            uniquePesel = connection.createStatement().executeQuery("SELECT id FROM workers WHERE pesel='" + newWorker.getPesel() +"'");
+            if(uniquePesel.next()){
+                Integer id = uniquePesel.getInt(1);
+                if(id != previousWorker.getId()){
+                    throw new IllegalArgumentException("Another worker with PESEL");
+                }
+            }
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT id FROM workers WHERE id='" + newWorker.getId() + "'"
             );

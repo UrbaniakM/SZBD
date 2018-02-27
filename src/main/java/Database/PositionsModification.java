@@ -86,9 +86,16 @@ public class PositionsModification {
     public static void editObject(Position previousPosition, Position newPosition) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
+        ResultSet uniqueName;
         PreparedStatement preparedStatement = null;
         try {
-            // TODO: check if name not already in database
+            uniqueName = connection.createStatement().executeQuery("SELECT id FROM positions WHERE nazwa='" + newPosition.getName() + "'");
+            if(uniqueName.next()){
+                Integer id = uniqueName.getInt(1);
+                if(id != previousPosition.getId()){
+                    throw new IllegalArgumentException("Another position with this name");
+                }
+            }
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT id FROM positions WHERE id='" + newPosition.getId() + "'"
             );

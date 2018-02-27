@@ -126,7 +126,11 @@ public class EditProjectDialog extends AbstractDialog {
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 return null;
             } catch (IllegalArgumentException ex){
-                new ExceptionAlert("Error with editing the project", "Project no longer in database.").showAndWait();
+                if(ex.getMessage().equals("Another project with this name")){
+                    new ExceptionAlert("Error with editing the worker", "Another project with this name in database.").showAndWait();
+                } else {
+                    new ExceptionAlert("Error with editing the project", "Project no longer in database.").showAndWait();
+                }
                 return null;
             }
             return projectAfterEdition;

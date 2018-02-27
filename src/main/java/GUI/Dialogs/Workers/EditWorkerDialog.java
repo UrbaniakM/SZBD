@@ -175,7 +175,11 @@ public class EditWorkerDialog extends AbstractDialog {
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 return null;
             } catch (IllegalArgumentException ex){
-                new ExceptionAlert("Error with editing the worker", "Worker no longer in database.").showAndWait();
+                if(ex.getMessage().equals("Another worker with PESEL")){
+                    new ExceptionAlert("Error with editing the worker", "Another worker with this PESEL in database.").showAndWait();
+                } else {
+                    new ExceptionAlert("Error with editing the worker", "Worker no longer in database.").showAndWait();
+                }
                 return null;
             }
             return workerAfterEdition;

@@ -107,7 +107,11 @@ public class EditTeamDialog extends AbstractDialog {
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 return null;
             } catch (IllegalArgumentException ex){
-                new ExceptionAlert("Error with editing the team", "Team no longer in database.").showAndWait();
+                if(ex.getMessage().equals("Another team with this name")){
+                    new ExceptionAlert("Error with editing the worker", "Another team with this name in database.").showAndWait();
+                } else {
+                    new ExceptionAlert("Error with editing the team", "Team no longer in database.").showAndWait();
+                }
                 return null;
             }
             return teamAfterEdition;

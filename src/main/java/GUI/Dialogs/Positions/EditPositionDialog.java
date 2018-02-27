@@ -78,7 +78,11 @@ public class EditPositionDialog extends AbstractDialog {
                 new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                 return null;
             } catch (IllegalArgumentException ex){
-                new ExceptionAlert("Error with editing the position", "Position no longer in database.").showAndWait();
+                if(ex.getMessage().equals("Another position with this name")){
+                    new ExceptionAlert("Error with editing the worker", "Another position with this name in database.").showAndWait();
+                } else {
+                    new ExceptionAlert("Error with editing the position", "Position no longer in database.").showAndWait();
+                }
                 return null;
             }
             return positionAfterEdition;

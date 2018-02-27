@@ -91,9 +91,16 @@ public class TeamsModification {
     public static void editObject(Team previousTeam, Team newTeam) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
+        ResultSet uniqueName;
         PreparedStatement preparedStatement = null;
         try {
-            // TODO: check if not already in database
+            uniqueName = connection.createStatement().executeQuery("SELECT id FROM teams WHERE nazwa='" + newTeam.getName() + "'");
+            if(uniqueName.next()){
+                Integer id = uniqueName.getInt(1);
+                if(id != previousTeam.getId()){
+                    throw new IllegalArgumentException("Another team with this name");
+                }
+            }
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT * FROM teams WHERE id='" + newTeam.getId() + "'"
             );

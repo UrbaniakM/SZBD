@@ -94,9 +94,16 @@ public class ProjectsModification {
     public static void editObject(Project previousProject, Project newProject) throws SQLException, IllegalArgumentException, NullPointerException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
         ResultSet selectStatement = null;
+        ResultSet uniqueName;
         PreparedStatement preparedStatement = null;
         try {
-            // TODO: check if not already in database
+            uniqueName = connection.createStatement().executeQuery("SELECT id FROM projects WHERE nazwa='" + newProject.getName() + "'");
+            if(uniqueName.next()){
+                Integer id = uniqueName.getInt(1);
+                if(id != previousProject.getId()){
+                    throw new IllegalArgumentException("Another project with this name");
+                }
+            }
             selectStatement = connection.createStatement().executeQuery(
                     "SELECT nazwa FROM projects WHERE nazwa='" + newProject.getName() + "'"
             );
