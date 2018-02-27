@@ -164,9 +164,9 @@ public class WorkersModification {
                     "SELECT * FROM teams WHERE id_leader='" + worker.getId() + "'"
             );
             if(inTeamDatabase.next()){
-                throw new SQLDataException("Worker in teams table.");  // TODO: assign null leader
+                TeamsModification.setNullLeader(worker);
             }
-            else if(selectStatement.next()){
+            if(selectStatement.next()){
                 HolidaysModification.deleteObject(worker); // delete holidays assigned to this worker
                 selectStatement.deleteRow();
             } else {

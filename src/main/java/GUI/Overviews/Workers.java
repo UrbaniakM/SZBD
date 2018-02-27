@@ -81,7 +81,7 @@ public class Workers extends AnchorPane{
             new AddWorkerDialog().popDialog();
         });
 
-        editWorkerButton.setOnMouseClicked((MouseEvent event) -> {
+        editWorkerButton.setOnMouseClicked(event -> {
             if(selectedWorker != null){
                 Worker newWorker = new EditWorkerDialog(selectedWorker).popDialog();
                 if(newWorker != null) {
@@ -92,7 +92,7 @@ public class Workers extends AnchorPane{
             }
         });
 
-        deleteWorkerButton.setOnMouseClicked((MouseEvent event) -> {
+        deleteWorkerButton.setOnMouseClicked(event -> {
             if(selectedWorker != null){
                 if(new DeleteAlert().popDialog()){
                     try{
@@ -100,11 +100,8 @@ public class Workers extends AnchorPane{
                         //removeObject(selectedWorker);
                         workersTable.getSelectionModel().clearSelection();
                         selectedWorker = null;
-                    } catch (SQLDataException ex){
-                            new ExceptionAlert("Error with deleting",
-                                    "This worker is assigned as a leader to at least one team. " +
-                                            "Delete the team(teams) or change its(their) leader before deleting this worker.").showAndWait();
                     } catch (SQLException ex){
+                        ex.printStackTrace();
                         new ExceptionAlert("Database error", "Problem with connection. Try again later.").showAndWait();
                     } catch (IllegalArgumentException ex){
                         new ExceptionAlert("Error with deleting", "Selected holiday no longer in database.").showAndWait();

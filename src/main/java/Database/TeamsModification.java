@@ -1,6 +1,7 @@
 package Database;
 
 import Entities.Team;
+import Entities.Worker;
 import GUI.ApplicationGUI;
 
 import java.sql.*;
@@ -123,6 +124,26 @@ public class TeamsModification {
             try { selectStatement.close(); }  catch (Exception ex) { };
             try { selectStatement.getStatement().close(); } catch (Exception ex) { };
             try { preparedStatement.close(); }  catch (Exception ex) { };
+        }
+    }
+
+    public static void setNullLeader(Worker worker) throws SQLException, IllegalArgumentException, NullPointerException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT id_leader FROM teams WHERE id_leader='" + worker.getId() + "'"
+            );
+            while(selectStatement.next()){
+                selectStatement.updateObject("id_leader",null);
+                selectStatement.updateRow();
+            }
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
         }
     }
 
