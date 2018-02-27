@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 public class AddWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
+    private Button clearTeam = new Button("Clear");
 
     public AddWorkerDialog(){
         super();
@@ -114,6 +116,9 @@ public class AddWorkerDialog extends AbstractDialog {
                         .or( peselTF.textProperty().isEmpty() )
         );
 
+        clearTeam.setOnMouseClicked((MouseEvent event) -> {
+            teamComboBox.setValue(null);
+        });
 
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
@@ -129,6 +134,7 @@ public class AddWorkerDialog extends AbstractDialog {
         grid.add(positionComboBox, 1, 6);
         grid.add(new Label("Team:"),0,7);
         grid.add(teamComboBox, 1, 7);
+        grid.add(clearTeam,2,7);
 
 
         this.getDialogPane().setContent(grid);

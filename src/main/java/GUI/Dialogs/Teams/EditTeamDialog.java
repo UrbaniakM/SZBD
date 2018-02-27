@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 public class EditTeamDialog extends AbstractDialog {
     private ButtonType confirmButtonType;
+    private Button clearLeader = new Button("Clear");
     private Team teamAfterEdition;
     private Team teamBeforeEdition;
 
@@ -77,6 +79,9 @@ public class EditTeamDialog extends AbstractDialog {
                 nameTF.textProperty().isEmpty()
         );
 
+        clearLeader.setOnMouseClicked((MouseEvent event) -> {
+            leaderComboBox.setValue(null);
+        });
 
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
@@ -84,6 +89,7 @@ public class EditTeamDialog extends AbstractDialog {
         grid.add(creationDateDP, 1, 2);
         grid.add(new Label("Leader:"), 0, 3);
         grid.add(leaderComboBox, 1, 3);
+        grid.add(clearLeader,2,3);
 
         this.getDialogPane().setContent(grid);
         this.setResultConverter(dialogButton -> {

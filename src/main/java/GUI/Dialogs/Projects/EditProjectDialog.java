@@ -99,7 +99,7 @@ public class EditProjectDialog extends AbstractDialog {
         grid.add(beginDateDP, 1, 2);
         grid.add(new Label("End date:"), 0, 3);
         grid.add(endDateDP, 1, 3);
-        grid.add(clearDate,3,3);
+        grid.add(clearDate,2,3);
         grid.add(new Label("Team:"),0,4);
         grid.add(teamComboBox, 1, 4);
 

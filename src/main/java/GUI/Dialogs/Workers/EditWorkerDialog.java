@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 public class EditWorkerDialog extends AbstractDialog {
     ButtonType confirmButtonType;
+    private Button clearTeam = new Button("Clear");
     Worker workerAfterEdition;
     Worker workerBeforeEdition;
 
@@ -131,6 +133,10 @@ public class EditWorkerDialog extends AbstractDialog {
         TextFieldRestrictions.addTextLimiter(peselTF,11);
         TextFieldRestrictions.addTextLimiter(bonusTF,6);
 
+        clearTeam.setOnMouseClicked((MouseEvent event) -> {
+            teamComboBox.setValue(null);
+        });
+
         grid.add(new Label("Name:"), 0, 1);
         grid.add(nameTF, 1, 1);
         grid.add(new Label("Last name:"), 0, 2);
@@ -145,6 +151,7 @@ public class EditWorkerDialog extends AbstractDialog {
         grid.add(positionComboBox, 1, 6);
         grid.add(new Label("Team:"),0,7);
         grid.add(teamComboBox, 1, 7);
+        grid.add(clearTeam,2,7);
 
 
         this.getDialogPane().setContent(grid);
