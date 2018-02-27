@@ -151,6 +151,26 @@ public class WorkersModification {
         }
     }
 
+    public static void setNullTeam(Team team) throws SQLException, IllegalArgumentException, NullPointerException{
+        Connection connection = ApplicationGUI.databaseConnection.getConnection();
+        ResultSet selectStatement = null;
+        try {
+            selectStatement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE).executeQuery(
+                    "SELECT id_team FROM workers WHERE id_team='" + team.getId() + "'"
+            );
+            while(selectStatement.next()){
+                selectStatement.updateObject("id_team",null);
+                selectStatement.updateRow();
+            }
+        } catch (SQLException | IllegalArgumentException | NullPointerException ex){
+            throw ex;
+        } finally {
+            try { connection.close(); }  catch (Exception ex) { };
+            try { selectStatement.getStatement().close(); } catch (Exception ex) { };
+            try { selectStatement.close(); }  catch (Exception ex) { };
+        }
+    }
+
 
     public static void deleteObject(Worker worker) throws SQLException, IllegalArgumentException, NullPointerException {
         Connection connection = ApplicationGUI.databaseConnection.getConnection();

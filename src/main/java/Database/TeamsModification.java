@@ -165,8 +165,9 @@ public class TeamsModification {
             if(inProjectDatabase.next()){
                 throw new SQLDataException("Team in projects table.");
             } else if(inWorkerDabase.next()){
-                throw new SQLDataException("Team in workers table."); // TODO: assign null team
-            } else if(selectStatement.next()){
+                WorkersModification.setNullTeam(team);
+            }
+            if(selectStatement.next()){
                 selectStatement.deleteRow();
             } else {
                 throw new IllegalArgumentException("Position no longer in database.");
