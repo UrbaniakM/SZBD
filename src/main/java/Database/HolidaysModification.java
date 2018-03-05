@@ -104,7 +104,7 @@ public class HolidaysModification {
                     "SELECT id FROM holidays WHERE id='" + newHoliday.getId() + "'"
             );
             if(selectStatement.next()){
-                String updateStatement = "UPDATE holidays SET id_worker = ?, czas_rozpoczecia = ?, czas_zakonczenia = ?" + // TODO: zakoNczenia, nie zakoczenia
+                String updateStatement = "UPDATE holidays SET id_worker = ?, czas_rozpoczecia = ?, czas_zakonczenia = ?" +
                         "WHERE id = ?";
                 preparedStatement = connection.prepareStatement(updateStatement);
                 preparedStatement.setInt(1,newHoliday.getWorkerId());
@@ -146,6 +146,11 @@ public class HolidaysModification {
         }
 
     }
+
+    public static void calculateHolidays(Worker worker){
+        // TODO, + new TableView
+    }
+
 
     public static void deleteObject(Worker worker) throws SQLException{
         Connection connection = ApplicationGUI.databaseConnection.getConnection();
